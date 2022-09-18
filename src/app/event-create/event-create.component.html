@@ -1,0 +1,42 @@
+<p>create-event works!</p>
+
+<span class="p-float-label">
+    <input id="float-input" type="text" pInputText>
+    <label for="float-input">Название события</label>
+</span>
+<span class="p-float-label">
+    <textarea id="float-textarea" pInputTextarea></textarea>
+    <label for="float-textarea">Описание события</label>
+</span>
+<span class="p-float-label">
+    <p-inputNumber id="float-places" [min]="0" [max]="100" [showButtons]="true" incrementButtonIcon="pi pi-plus"
+        decrementButtonIcon="pi pi-minus">
+    </p-inputNumber>
+    <label for="float-places">Кол-во мест</label>
+</span>
+<span class="p-float-label">
+    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+
+    <label for="float-groups">Выберите группы</label>
+</span>
+
+<p-fileUpload name="myfile[]" url="./upload.php" [multiple]="true"></p-fileUpload>
+
+<p-calendar selectionMode="range"></p-calendar>
+<div class="form-field">
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+</div>
+<div class="form-field">
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+
+</div>
+<div class="form-field">
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+
+</div>

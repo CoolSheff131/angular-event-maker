@@ -2,15 +2,48 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import { EventsComponent } from './events/events.component';
+import { EventComponent } from './event/event.component';
+import { EventItemComponent } from './components/event-item/event-item.component';
+import { RouterModule, Routes } from '@angular/router';
+import { EventCreateComponent } from './event-create/event-create.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { FileUploadModule } from 'primeng/fileupload';
+import { HttpClientModule } from '@angular/common/http';
+const routes: Routes = [
+  { path: '/', component: EventsComponent },
+  { path: '/events/:id', component: EventComponent },
+  { path: '/event-create', component: EventCreateComponent },
+];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    EventsComponent,
+    EventComponent,
+    EventItemComponent,
+    EventCreateComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    ButtonModule,
+    MultiSelectModule,
+    InputTextModule,
+    CalendarModule,
+    InputTextareaModule,
+    InputNumberModule,
+    FileUploadModule,
+    HttpClientModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
