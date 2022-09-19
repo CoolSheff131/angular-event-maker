@@ -16,10 +16,12 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FileUploadModule } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
+import { DataViewModule } from 'primeng/dataview';
+import { CardModule } from 'primeng/card';
 const routes: Routes = [
-  { path: '/', component: EventsComponent },
-  { path: '/events/:id', component: EventComponent },
-  { path: '/event-create', component: EventCreateComponent },
+  { path: '', component: EventsComponent },
+  { path: 'events/:id', component: EventComponent },
+  { path: 'event-create', component: EventCreateComponent },
 ];
 
 @NgModule({
@@ -42,6 +44,8 @@ const routes: Routes = [
     InputNumberModule,
     FileUploadModule,
     HttpClientModule,
+    DataViewModule,
+    CardModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

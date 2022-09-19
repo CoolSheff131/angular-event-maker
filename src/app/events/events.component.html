@@ -1,1 +1,18 @@
-<p>events works!</p>
+<p-dataView [value]="cars">
+    <ng-template pTemplate="header">
+        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+    </ng-template>
+    <ng-template let-car pTemplate="listItem">
+        <div>
+            {{car.id}}
+        </div>
+    </ng-template>
+    <ng-template let-car pTemplate="gridItem">
+        <div class="grid md:col-3 grid">
+            <p-card>
+                {{car.id}}
+            </p-card>
+
+        </div>
+    </ng-template>
+</p-dataView>

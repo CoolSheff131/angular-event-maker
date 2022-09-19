@@ -15,9 +15,14 @@
     <label for="float-places">Кол-во мест</label>
 </span>
 <span class="p-float-label">
-    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+    <p-multiSelect [options]="cities" optionLabel="Выберите группы" display="chip"></p-multiSelect>
 
     <label for="float-groups">Выберите группы</label>
+</span>
+<span class="p-float-label">
+    <p-multiSelect [options]="cities" optionLabel="Укажите теги" display="chip"></p-multiSelect>
+
+    <label for="float-groups">Укажите теги</label>
 </span>
 
 <p-fileUpload name="myfile[]" url="./upload.php" [multiple]="true"></p-fileUpload>
