@@ -18,6 +18,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
 import { DataViewModule } from 'primeng/dataview';
 import { CardModule } from 'primeng/card';
+import { DropdownModule } from 'primeng/dropdown';
+
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -46,6 +48,7 @@ const routes: Routes = [
     HttpClientModule,
     DataViewModule,
     CardModule,
+    DropdownModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

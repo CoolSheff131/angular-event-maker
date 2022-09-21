@@ -1,47 +1,76 @@
-<p>create-event works!</p>
-
+<h1>Создание мероприятия</h1>
+<h2>Введите название мероприятия</h2>
 <span class="p-float-label">
     <input id="float-input" type="text" pInputText>
-    <label for="float-input">Название события</label>
+    <label for="float-input">Название мероприятия</label>
 </span>
+
+<h2>Введите описание мероприятия</h2>
+
 <span class="p-float-label">
     <textarea id="float-textarea" pInputTextarea></textarea>
-    <label for="float-textarea">Описание события</label>
+    <label for="float-textarea">Описание мероприятия</label>
 </span>
+<h2>Введите количество мест на мероприятии</h2>
 <span class="p-float-label">
     <p-inputNumber id="float-places" [min]="0" [max]="100" [showButtons]="true" incrementButtonIcon="pi pi-plus"
         decrementButtonIcon="pi pi-minus">
     </p-inputNumber>
     <label for="float-places">Кол-во мест</label>
 </span>
+
+<h2>Выберите для каких групп это мероприятие</h2>
+
 <span class="p-float-label">
     <p-multiSelect [options]="cities" optionLabel="Выберите группы" display="chip"></p-multiSelect>
 
     <label for="float-groups">Выберите группы</label>
 </span>
+
+<h2>Укажите теги мероприятия</h2>
+
 <span class="p-float-label">
     <p-multiSelect [options]="cities" optionLabel="Укажите теги" display="chip"></p-multiSelect>
 
     <label for="float-groups">Укажите теги</label>
 </span>
 
+<h2>Загрузите изображения мероприятия</h2>
+
 <p-fileUpload name="myfile[]" url="./upload.php" [multiple]="true"></p-fileUpload>
 
+
+<h2>Укажите с какого по какое число будет проходить мероприятие</h2>
 <p-calendar selectionMode="range"></p-calendar>
+
+<h2>Укажите время в конкретные даты</h2>
+
 <div class="form-field">
+    <span>Укажите время в 21.09.22</span>
+    <span>С</span>
     <p-calendar [timeOnly]="true"></p-calendar>
+    <span>по</span>
     <p-calendar [timeOnly]="true"></p-calendar>
-    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
-</div>
-<div class="form-field">
-    <p-calendar [timeOnly]="true"></p-calendar>
-    <p-calendar [timeOnly]="true"></p-calendar>
-    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+    <span>Выберите аудитории</span>
+    <p-dropdown [options]="cities" optionLabel="name"></p-dropdown>
 
 </div>
 <div class="form-field">
+    <span>Укажите время в 22.09.22</span>
+    <span>С</span>
     <p-calendar [timeOnly]="true"></p-calendar>
+    <span>по</span>
     <p-calendar [timeOnly]="true"></p-calendar>
-    <p-multiSelect [options]="cities" optionLabel="Выберите аудитории" display="chip"></p-multiSelect>
+    <span>Выберите аудитории</span>
+    <p-dropdown [options]="cities" optionLabel="name"></p-dropdown>
 
+</div>
+<div class="form-field">
+    <span>Укажите время в 23.09.22</span>
+    <span>С</span>
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <span>по</span>
+    <p-calendar [timeOnly]="true"></p-calendar>
+    <span>Выберите аудитории</span>
+    <p-dropdown [options]="cities" optionLabel="name"></p-dropdown>
 </div>
