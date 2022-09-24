@@ -1,1 +1,57 @@
-<p>event works!</p>
+<h1> {{ event.title }}</h1>
+
+<div>
+    <h1>Описание</h1>
+    <p> {{ event.description }}</p>
+</div>
+
+
+<div>
+    <span> Количество людей которые пойдут</span>
+    <p> {{ event.peopleWillCome }} из {{ event.places }}</p>
+    <p-progressBar [value]="getProgressPeople()" [showValue]="false"></p-progressBar>
+</div>
+
+
+
+<p-accordion>
+    <p-accordionTab [header]="getHeaderDates()">
+        <p-table [value]="event.days" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Дата начала</th>
+                    <th>Место проведения</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-day>
+                <tr>
+                    <td>{{day.timeStart}}</td>
+                    <td>{{day.auditory.name}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-accordionTab>
+</p-accordion>
+
+
+<div>
+    <h1>Теги</h1>
+    <p-tag *ngFor="let tag of event.tags" [value]="tag.name"></p-tag>
+</div>
+<div>
+    <h1>Для групп</h1>
+    <p-tag *ngFor="let group of event.groups" [value]="group.name"></p-tag>
+</div>
+
+<p-galleria [value]="event.images" [numVisible]="5">
+    <ng-template pTemplate="item" let-item>
+        <img [src]="item" [alt]="item" />
+    </ng-template>
+    <ng-template pTemplate="thumbnail" let-item>
+        <img class="galleria-thumbnail" [src]="item" [alt]="item" />
+
+    </ng-template>
+</p-galleria>
+
+
+<p-button type="submit" label="Записаться"></p-button>

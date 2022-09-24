@@ -20,7 +20,11 @@ import { DataViewModule } from 'primeng/dataview';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { GalleriaModule } from 'primeng/galleria';
+import { AccordionModule } from 'primeng/accordion';
+import { TableModule } from 'primeng/table';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { TagModule } from 'primeng/tag';
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -52,6 +56,11 @@ const routes: Routes = [
     DataViewModule,
     CardModule,
     DropdownModule,
+    GalleriaModule,
+    AccordionModule,
+    TableModule,
+    ProgressBarModule,
+    TagModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

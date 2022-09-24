@@ -6,6 +6,7 @@ import { Group } from '../api/interfaces/group.interface';
 import differenceInDays from 'date-fns/differenceInDays';
 import addDays from 'date-fns/addDays';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { convertDateToString } from '../utils/convert-date-to-string';
 interface City {
   name: string;
   code: string;
@@ -73,11 +74,9 @@ export class EventCreateComponent implements OnInit {
       return;
     }
     const [dateStart] = this.eventRange.value;
-    console.log(dateStart);
-    const s = addDays(dateStart, dayNumber);
-    console.log(s);
+    const date = addDays(dateStart, dayNumber);
 
-    return `${s.getDate()}.${s.getMonth()}.${s.getFullYear()}`;
+    return convertDateToString(date);
   }
 
   handleFileChange(event: any) {
