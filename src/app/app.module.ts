@@ -19,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataViewModule } from 'primeng/dataview';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: EventsComponent },
@@ -37,6 +38,8 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
+    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     ButtonModule,
     MultiSelectModule,
