@@ -1,1 +1,59 @@
-<app-event></app-event>
+<header class="header">
+    <div class="title">
+        <h1>Автоматизированная система для проведения мероприятий</h1>
+    </div>
+    <div class="user" (click)="onUserClick()">
+        <div *ngIf="isLogged; else login">{{ 'Имя пользователя' }}</div>
+        <ng-template #login>
+            <p-button label="Войти или зарегестрироваться"></p-button>
+        </ng-template>
+    </div>
+</header>
+<p-sidebar [(visible)]="display" position="right">
+    <div *ngIf="isLogged; else loginForm"></div>
+    <ng-template #loginForm>
+        <h1 class="login-form__title">Войдите в личный кабинет или зарегестрируйтесь</h1>
+        <p-tabView>
+            <p-tabPanel header="Вход">
+                <form (ngSubmit)="onSubmitSignIn()">
+                    <span class="p-float-label">
+                        <input id="signInLogin" name="signInLogin" [formControl]="signInLogin" type="text" pInputText>
+                        <label for="signInLogin">Логин</label>
+                    </span>
+                    <span class="p-float-label">
+                        <input id="signInPassword" name="signInPassword" [formControl]="signInPassword" type="password"
+                            pInputText />
+                        <label for="signInPassword">Пароль</label>
+                    </span>
+                    <p-button type="submit" label="Войти"></p-button>
+
+                </form>
+            </p-tabPanel>
+            <p-tabPanel header="Регистрация">
+                <form (ngSubmit)="onSubmitSignUp()">
+                    <span class="p-float-label">
+                        <input id="signUpLogin" name="signUpLogin" [formControl]="signUpLogin" type="text" pInputText>
+                        <label for="signUpLogin">Логин</label>
+                    </span>
+                    <span class="p-float-label">
+                        <input id="signUpName" name="signUpName" [formControl]="signUpName" type="text" pInputText>
+                        <label for="signUpName">Имя</label>
+                    </span>
+                    <span class="p-float-label">
+                        <input id="signUpEmail" name="signUpEmail" [formControl]="signUpEmail" type="text" pInputText>
+                        <label for="signUpEmail">эл. почта</label>
+                    </span>
+                    <span class="p-float-label">
+                        <p-password id="signUpPassword" name="signUpPassword" [formControl]="signUpPassword">
+                        </p-password>
+                        <label for="signUpPassword">Пароль</label>
+                    </span>
+                    <p-button type="submit" label="Зарегестрироваться"></p-button>
+
+                </form>
+            </p-tabPanel>
+        </p-tabView>
+    </ng-template>
+
+
+</p-sidebar>

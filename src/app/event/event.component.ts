@@ -7,7 +7,7 @@ import { convertDateToString } from '../utils/convert-date-to-string';
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css'],
 })
-export class EventComponent implements OnInit {
+export class EventComponent {
   event!: Event;
 
   constructor() {}
@@ -25,6 +25,4 @@ export class EventComponent implements OnInit {
       );
     return 0;
   }
-
-  ngOnInit(): void {}
 }

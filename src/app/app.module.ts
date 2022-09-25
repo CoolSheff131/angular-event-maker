@@ -25,6 +25,9 @@ import { AccordionModule } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
+import { SidebarModule } from 'primeng/sidebar';
+import { TabViewModule } from 'primeng/tabview';
+import { PasswordModule } from 'primeng/password';
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -61,6 +64,9 @@ const routes: Routes = [
     TableModule,
     ProgressBarModule,
     TagModule,
+    SidebarModule,
+    TabViewModule,
+    PasswordModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
