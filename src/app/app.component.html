@@ -3,14 +3,18 @@
         <h1>Автоматизированная система для проведения мероприятий</h1>
     </div>
     <div class="user" (click)="onUserClick()">
-        <div *ngIf="isLogged; else login">{{ 'Имя пользователя' }}</div>
+        <div *ngIf="isLogged; else login">{{authedUser!.name}}</div>
         <ng-template #login>
             <p-button label="Войти или зарегестрироваться"></p-button>
         </ng-template>
     </div>
 </header>
 <p-sidebar [(visible)]="display" position="right">
-    <div *ngIf="isLogged; else loginForm"></div>
+    <div *ngIf="isLogged; else loginForm">
+        {{authedUser!.name}}
+
+        <p-button label="Выйти" (onClick)="unauthorize()"></p-button>
+    </div>
     <ng-template #loginForm>
         <h1 class="login-form__title">Войдите в личный кабинет или зарегестрируйтесь</h1>
         <p-tabView>

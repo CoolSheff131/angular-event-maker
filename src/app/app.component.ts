@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PrimeNGConfig } from 'primeng/api';
+import { Observable } from 'rxjs';
 import { ApiService } from './api/api.service';
+import { User } from './api/interfaces/user.interface';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +13,7 @@ import { ApiService } from './api/api.service';
 })
 export class AppComponent {
   title = 'event-maker';
-  isLogged = false;
+
   display = false;
 
   signInLogin = new FormControl('');
@@ -20,13 +23,26 @@ export class AppComponent {
   signUpEmail = new FormControl('');
   signUpPassword = new FormControl('');
   signUpName = new FormControl('');
+
+  authedUser: User | undefined;
+
   constructor(
     private readonly primengConfig: PrimeNGConfig,
-    private readonly apiService: ApiService
-  ) {}
+    private readonly userService: UserService
+  ) {
+    userService.authedUser$.subscribe((user) => {
+      console.log(user);
+      this.authedUser = user;
+    });
+  }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
+    console.log(this.authedUser);
+  }
+
+  get isLogged() {
+    return Boolean(this.authedUser);
   }
 
   onSubmitSignIn() {
@@ -39,11 +55,7 @@ export class AppComponent {
 
     const login = this.signInLogin.value;
     const password = this.signInPassword.value;
-    this.apiService.login(login, password).subscribe({
-      next: (value) => {
-        console.log(value);
-      },
-    });
+    this.userService.login(login, password);
   }
 
   onSubmitSignUp() {
@@ -64,14 +76,14 @@ export class AppComponent {
     const password = this.signUpPassword.value;
     const email = this.signUpEmail.value;
     const name = this.signUpName.value;
-    this.apiService.register(login, name, email, password).subscribe({
-      next: (value) => {
-        console.log(value);
-      },
-    });
+    this.userService.register(login, name, email, password);
   }
 
   onUserClick() {
     this.display = true;
+  }
+
+  unauthorize() {
+    this.userService.unauthorizeUser();
   }
 }
