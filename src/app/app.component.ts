@@ -4,7 +4,7 @@ import { PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { ApiService } from './api/api.service';
 import { User } from './api/interfaces/user.interface';
-import { UserService } from './services/user.service';
+import { UserService } from './pages/admin/services/user.service';
 
 @Component({
   selector: 'app-root',

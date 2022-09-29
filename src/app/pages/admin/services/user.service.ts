@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ApiService } from '../api/api.service';
-import { User } from '../api/interfaces/user.interface';
+import { ApiService } from '../../../api/api.service';
+import { User } from '../../../api/interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  createUser(value: string) {
+    throw new Error('Method not implemented.');
+  }
+  private allUsers = new Subject<User[]>();
+
+  allUsers$ = this.allUsers.asObservable();
+
   private authedUser = new Subject<User | undefined>();
 
   authedUser$ = this.authedUser.asObservable();
@@ -20,6 +27,14 @@ export class UserService {
       },
       error: (err) => {
         this.unauthorizeUser();
+      },
+    });
+  }
+
+  getAllUsers() {
+    this.apiService.getUsers().subscribe({
+      next: (users) => {
+        this.allUsers.next(users);
       },
     });
   }

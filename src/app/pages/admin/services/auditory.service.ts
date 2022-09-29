@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, tap } from 'rxjs';
-import { ApiService } from '../api/api.service';
-import { Auditory } from '../api/interfaces/auditory.interface';
+import { ApiService } from '../../../api/api.service';
+import { Auditory } from '../../../api/interfaces/auditory.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AuditoryService {
@@ -10,18 +10,18 @@ export class AuditoryService {
   auditories$ = this.auditories.asObservable();
   constructor(private readonly apiService: ApiService) {}
 
-  getAuditories() {
-    this.apiService.getAuditories().subscribe({
-      next: (auditories) => {
-        this.auditories.next(auditories);
-      },
-    });
-  }
-
-  createAuditory(auditoryName: string) {
+  createAuditory(value: string) {
     this.apiService
-      .createAuditory(auditoryName)
+      .createGroup(value)
       .pipe(tap(() => this.getAuditories()))
       .subscribe();
+  }
+
+  getAuditories() {
+    this.apiService.getGroups().subscribe({
+      next: (groups) => {
+        this.auditories.next(groups);
+      },
+    });
   }
 }

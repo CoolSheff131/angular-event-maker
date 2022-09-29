@@ -11,10 +11,10 @@
         </ng-template>
     </p-toolbar>
 
-    <p-table [value]="auditories" dataKey="id" [rowHover]="true">
+    <p-table [value]="users" dataKey="id" [rowHover]="true">
         <ng-template pTemplate="caption">
             <div class="flex align-items-center justify-content-between">
-                <h5 class="m-0">Управление аудиториями</h5>
+                <h5 class="m-0">Управление пользователями</h5>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text" placeholder="Search..." />
@@ -30,12 +30,12 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-auditory>
+        <ng-template pTemplate="body" let-user>
             <tr class="table-row">
                 <td>
                     <p-tableCheckbox></p-tableCheckbox>
                 </td>
-                <td>{{auditory.name}}</td>
+                <td>{{user.name}}</td>
 
                 <td class="table-row__actions">
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
@@ -45,7 +45,7 @@
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="flex align-items-center justify-content-between">
-                In total there are 0 auditory.
+                Всего 0 пользователей.
             </div>
         </ng-template>
     </p-table>
@@ -56,7 +56,7 @@
     <ng-template pTemplate="content">
         <span class="p-float-label">
             <input id="auditoryName" name="auditoryName" [formControl]="auditoryName" type="text" pInputText>
-            <label for="auditoryName">Название аудитории</label>
+            <label for="auditoryName">Имя пользователя</label>
         </span>
 
 

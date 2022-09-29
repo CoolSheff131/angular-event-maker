@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Auditory } from '../../api/interfaces/auditory.interface';
-import { AuditoryService } from '../../services/auditory.service';
+import { Auditory } from '../../../api/interfaces/auditory.interface';
+import { AuditoryService } from '../services/auditory.service';
 
 @Component({
-  selector: 'app-event-tags',
-  templateUrl: './event-tags.component.html',
-  styleUrls: ['./event-tags.component.css'],
+  selector: 'app-auditories',
+  templateUrl: './auditories.component.html',
+  styleUrls: ['./auditories.component.css'],
 })
-export class EventTagsComponent implements OnInit {
+export class AdminAuditoriesComponent implements OnInit {
   addDialog = false;
 
   auditoryName = new FormControl<string>('');

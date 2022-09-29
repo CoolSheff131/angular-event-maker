@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { Auditory } from './interfaces/auditory.interface';
 import { AuthData } from './interfaces/auth.interface';
+import { Event } from './interfaces/event.interface';
 import { EventReview } from './interfaces/eventReview.interface';
 import { EventTag } from './interfaces/eventTag.interface';
 import { Group } from './interfaces/group.interface';
@@ -71,7 +72,7 @@ export class ApiService {
   }
 
   getEvents() {
-    return this.httpService.get<Auditory[]>(this.API_URL + 'events');
+    return this.httpService.get<Event[]>(this.API_URL + 'events');
   }
   getAuditories() {
     return this.httpService.get<Auditory[]>(this.API_URL + 'auditories');
@@ -93,8 +94,8 @@ export class ApiService {
     return this.httpService.get<User[]>(this.API_URL + 'users');
   }
 
-  createEvent() {
-    return this.httpService.post<Auditory>(this.API_URL + 'events', {});
+  createEvent(a: any) {
+    return this.httpService.post<Event>(this.API_URL + 'events', {});
   }
   createAuditory(auditoryName: string) {
     console.log(auditoryName);
