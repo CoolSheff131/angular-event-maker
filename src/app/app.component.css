@@ -1,6 +1,13 @@
 .header {
   display: flex;
   justify-content: space-between;
+  padding: 5px;
+}
+
+.header__title {
+  text-decoration: none;
+  color: var(--gray);
+  font-size: 14px;
 }
 
 .user {
@@ -9,4 +16,25 @@
 
 .login-form__title {
   font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.menu__title {
+  color: var(--gray);
+  font-size: 24px;
+  text-align: center;
+}
+
+.menu__item {
+  display: block;
+  text-decoration: none;
 }

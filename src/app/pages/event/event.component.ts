@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Event } from '../api/interfaces/event.interface';
-import { convertDateToString } from '../utils/convert-date-to-string';
+import { Event } from '../../api/interfaces/event.interface';
+import { convertDateToString } from '../../utils/convert-date-to-string';
 
 @Component({
   selector: 'app-event',

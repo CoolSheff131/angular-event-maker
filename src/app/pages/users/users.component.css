@@ -1,0 +1,7 @@
+.table-row {
+  display: flex;
+}
+
+.table-row__actions {
+  display: flex;
+}

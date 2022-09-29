@@ -1,25 +1,39 @@
 <header class="header">
-    <div class="title">
+    <a [routerLink]="'/'" class="header__title">
         <h1>Автоматизированная система для проведения мероприятий</h1>
-    </div>
+    </a>
     <div class="user" (click)="onUserClick()">
-        <div *ngIf="isLogged; else login">{{authedUser!.name}}</div>
+
+        <button pButton type="button" [label]="authedUser!.name" class="p-button-text"
+            *ngIf="isLogged; else login"></button>
         <ng-template #login>
             <p-button label="Войти или зарегестрироваться"></p-button>
         </ng-template>
     </div>
 </header>
 <p-sidebar [(visible)]="display" position="right">
-    <div *ngIf="isLogged; else loginForm">
-        {{authedUser!.name}}
-
-        <p-button label="Выйти" (onClick)="unauthorize()"></p-button>
+    <div *ngIf="isLogged; else loginForm" class="menu">
+        <div class="menu__title">
+            <!-- {{authedUser!.name}} -->
+            Администратор
+        </div>
+        <a [routerLink]="'/event-create'" pButton type="button" label="Мероприятия" class="p-button-text menu__item">
+        </a>
+        <a [routerLink]="'/event-tag'" pButton type="button" label="Теги мероприятий" class="p-button-text menu__item">
+        </a>
+        <a [routerLink]="'/auditories'" pButton type="button" label="Аудитории" class="p-button-text menu__item">
+        </a>
+        <a [routerLink]="'/groups'" pButton type="button" label="Группы" class="p-button-text menu__item">
+        </a>
+        <a [routerLink]="'/users'" pButton type="button" label="Пользователи" class="p-button-text menu__item">
+        </a>
+        <button pButton type="button" label="Выйти" (onClick)="unauthorize()" class="menu__item"></button>
     </div>
     <ng-template #loginForm>
         <h1 class="login-form__title">Войдите в личный кабинет или зарегестрируйтесь</h1>
         <p-tabView>
             <p-tabPanel header="Вход">
-                <form (ngSubmit)="onSubmitSignIn()">
+                <form (ngSubmit)="onSubmitSignIn()" class="form">
                     <span class="p-float-label">
                         <input id="signInLogin" name="signInLogin" [formControl]="signInLogin" type="text" pInputText>
                         <label for="signInLogin">Логин</label>
@@ -34,7 +48,7 @@
                 </form>
             </p-tabPanel>
             <p-tabPanel header="Регистрация">
-                <form (ngSubmit)="onSubmitSignUp()">
+                <form (ngSubmit)="onSubmitSignUp()" class="form">
                     <span class="p-float-label">
                         <input id="signUpLogin" name="signUpLogin" [formControl]="signUpLogin" type="text" pInputText>
                         <label for="signUpLogin">Логин</label>
@@ -59,5 +73,5 @@
         </p-tabView>
     </ng-template>
 
-
 </p-sidebar>
+<router-outlet></router-outlet>

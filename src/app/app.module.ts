@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { EventsComponent } from './events/events.component';
-import { EventComponent } from './event/event.component';
+import { EventsComponent } from './pages/events/events.component';
+import { EventComponent } from './pages/event/event.component';
 import { EventItemComponent } from './components/event-item/event-item.component';
 import { RouterModule, Routes } from '@angular/router';
-import { EventCreateComponent } from './event-create/event-create.component';
+import { EventCreateComponent } from './pages/event-create/event-create.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -28,10 +28,24 @@ import { TagModule } from 'primeng/tag';
 import { SidebarModule } from 'primeng/sidebar';
 import { TabViewModule } from 'primeng/tabview';
 import { PasswordModule } from 'primeng/password';
+import { AuditoriesComponent } from './pages/auditories/auditories.component';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RatingModule } from 'primeng/rating';
+import { UsersComponent } from './pages/users/users.component';
+import { EventTagsComponent } from './pages/event-tags/event-tags.component';
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
   { path: 'event-create', component: EventCreateComponent },
+  { path: 'event-tag', component: AuditoriesComponent },
+  { path: 'auditories', component: AuditoriesComponent },
+  { path: 'groups', component: AuditoriesComponent },
+  { path: 'users', component: AuditoriesComponent },
 ];
 
 @NgModule({
@@ -41,6 +55,9 @@ const routes: Routes = [
     EventComponent,
     EventItemComponent,
     EventCreateComponent,
+    AuditoriesComponent,
+    UsersComponent,
+    EventTagsComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,6 +84,12 @@ const routes: Routes = [
     SidebarModule,
     TabViewModule,
     PasswordModule,
+    ToastModule,
+    ToolbarModule,
+    DialogModule,
+    ConfirmDialogModule,
+    RadioButtonModule,
+    RatingModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

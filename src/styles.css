@@ -84,3 +84,6 @@ select {
   padding: 0;
   box-sizing: border-box;
 }
+:root {
+  --gray: #495057;
+}
