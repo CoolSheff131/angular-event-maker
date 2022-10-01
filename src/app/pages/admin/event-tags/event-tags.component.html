@@ -3,7 +3,6 @@
         <ng-template pTemplate="left">
             <button pButton pRipple label="Добавть" (click)="openAddDialog()" icon="pi pi-plus"
                 class="p-button-success mr-2"></button>
-            <button pButton pRipple label="Удалить'" icon=" pi pi-trash" class="p-button-danger"></button>
         </ng-template>
 
         <ng-template pTemplate="right">
@@ -23,23 +22,18 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 3rem">
-                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                </th>
                 <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-auditory>
+        <ng-template pTemplate="body" let-eventTag>
             <tr class="table-row">
-                <td>
-                    <p-tableCheckbox></p-tableCheckbox>
-                </td>
-                <td>{{auditory.name}}</td>
-
+                <td>{{eventTag.name}}</td>
                 <td class="table-row__actions">
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"></button>
+                    <button (click)="editEventTag(eventTag)" pButton pRipple icon="pi pi-pencil"
+                        class="p-button-rounded p-button-success mr-2"></button>
+                    <button (click)="deleteGroup(eventTag)" pButton pRipple icon="pi pi-trash"
+                        class="p-button-rounded p-button-warning"></button>
                 </td>
             </tr>
         </ng-template>
@@ -51,15 +45,12 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="addDialog" [style]="{width: '450px'}" header="Добавить аудиторию" [modal]="true"
-    styleClass="p-fluid">
+<p-dialog [(visible)]="addDialog" [style]="{width: '450px'}" header="Добавить тег" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
         <span class="p-float-label">
-            <input id="auditoryName" name="auditoryName" [formControl]="auditoryName" type="text" pInputText>
-            <label for="auditoryName">Название аудитории</label>
+            <input id="eventTagNameAdd" name="eventTagNameAdd" [formControl]="eventTagNameAdd" type="text" pInputText>
+            <label for="eventTagNameAdd">Название тега</label>
         </span>
-
-
     </ng-template>
 
     <ng-template pTemplate="footer">
@@ -67,5 +58,21 @@
             (click)="closeAddDialog()"></button>
         <button type="submit" pButton pRipple label="Добавить" icon="pi pi-check" class="p-button-text"
             (click)="onSubmitAuditory()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="isEditDialogShown" [style]="{width: '450px'}" header="Редактирование тега" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <span class="p-float-label">
+            <input id="auditoryName" name="auditoryName" [formControl]="eventTagNameEdit" type="text" pInputText>
+            <label for="auditoryName">Название тега</label>
+        </span>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
+            (click)="closeEditDialog()"></button>
+        <button type="submit" pButton pRipple label="Сохранить" icon="pi pi-check" class="p-button-text"
+            (click)="onSubmitEditAuditory()"></button>
     </ng-template>
 </p-dialog>

@@ -12,8 +12,10 @@ import { AuditoryService } from '../services/auditory.service';
 })
 export class AdminEventTagsComponent implements OnInit {
   addDialog = false;
+  isEditDialogShown = false;
 
-  auditoryName = new FormControl<string>('');
+  eventTagNameEdit = new FormControl<string>('');
+  eventTagNameAdd = new FormControl<string>('');
   eventTags: EventTag[] = [];
 
   constructor(private readonly eventTagService: EventTagService) {
@@ -34,10 +36,34 @@ export class AdminEventTagsComponent implements OnInit {
   }
 
   onSubmitAuditory() {
-    if (!this.auditoryName.value?.trim()) {
+    if (!this.eventTagNameAdd.value?.trim()) {
       return;
     }
-    console.log(this.auditoryName.value);
-    this.eventTagService.createEventTag(this.auditoryName.value);
+    this.eventTagService.createEventTag(this.eventTagNameAdd.value);
+  }
+
+  closeEditDialog() {
+    this.isEditDialogShown = false;
+  }
+
+  eventTagIdEdit = '';
+
+  editEventTag(eventTag: EventTag) {
+    this.isEditDialogShown = true;
+    this.eventTagIdEdit = eventTag.id;
+    this.eventTagNameEdit.setValue(eventTag.name);
+  }
+  deleteGroup(group: EventTag) {
+    this.eventTagService.deleteEventTag(group);
+  }
+
+  onSubmitEditAuditory() {
+    if (!this.eventTagNameEdit.value?.trim()) {
+      return;
+    }
+    this.eventTagService.updateEventTag(
+      this.eventTagIdEdit,
+      this.eventTagNameEdit.value
+    );
   }
 }

@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Subject, tap } from 'rxjs';
 import { ApiService } from '../../../api/api.service';
-import { Auditory } from '../../../api/interfaces/auditory.interface';
 import { EventTag } from '../../../api/interfaces/eventTag.interface';
 
 @Injectable({ providedIn: 'root' })
 export class EventTagService {
+  updateEventTag(eventTagIdEdit: string, eventTagName: string) {
+    this.apiService
+      .updateEventTag(eventTagIdEdit, { name: eventTagName })
+      .pipe(tap(() => this.getEventTags()))
+      .subscribe();
+  }
+  deleteEventTag(group: EventTag) {
+    this.apiService
+      .deleteEventTag(group.id)
+      .pipe(tap(() => this.getEventTags()))
+      .subscribe();
+  }
   private eventTags = new Subject<EventTag[]>();
 
   eventTags$ = this.eventTags.asObservable();

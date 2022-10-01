@@ -11,6 +11,14 @@ import { User } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  updateEventTag(id: string, eventTag: Partial<EventTag>) {
+    return this.httpService.patch(this.API_URL + `event-tags/${id}`, {
+      ...eventTag,
+    });
+  }
+  deleteEventTag(id: string) {
+    return this.httpService.delete(this.API_URL + `event-tags/${id}`);
+  }
   updateGroup(id: string, group: Partial<Group>) {
     return this.httpService.patch(this.API_URL + `groups/${id}`, {
       ...group,
@@ -113,9 +121,9 @@ export class ApiService {
     });
   }
 
-  createEventTag(eventTagName: EventTag) {
+  createEventTag(eventTag: EventTag) {
     return this.httpService.post<EventTag>(this.API_URL + 'event-tags', {
-      eventTagName,
+      ...eventTag,
     });
   }
 
