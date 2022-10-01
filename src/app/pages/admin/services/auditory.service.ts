@@ -10,9 +10,9 @@ export class AuditoryService {
   auditories$ = this.auditories.asObservable();
   constructor(private readonly apiService: ApiService) {}
 
-  createAuditory(value: string) {
+  createAuditory(auditoryName: string) {
     this.apiService
-      .createGroup(value)
+      .createAuditory({ id: '', name: auditoryName })
       .pipe(tap(() => this.getAuditories()))
       .subscribe();
   }

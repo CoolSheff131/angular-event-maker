@@ -11,6 +11,11 @@ import { User } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  updateGroup(id: string, group: Partial<Group>) {
+    return this.httpService.patch(this.API_URL + `groups/${id}`, {
+      ...group,
+    });
+  }
   private readonly API_URL = 'http://localhost:3000/';
 
   constructor(private httpService: HttpClient) {}
@@ -86,6 +91,10 @@ export class ApiService {
     return this.httpService.get<Group[]>(this.API_URL + 'groups');
   }
 
+  deleteGroup(id: string) {
+    return this.httpService.delete(this.API_URL + `groups/${id}`);
+  }
+
   getEventReviews() {
     return this.httpService.get<EventReview[]>(this.API_URL + 'event-reviews');
   }
@@ -97,30 +106,29 @@ export class ApiService {
   createEvent(a: any) {
     return this.httpService.post<Event>(this.API_URL + 'events', {});
   }
-  createAuditory(auditoryName: string) {
-    console.log(auditoryName);
+  createAuditory(auditory: Auditory) {
+    console.log(auditory);
     return this.httpService.post<Auditory>(this.API_URL + 'auditories', {
-      auditoryName,
+      ...auditory,
     });
   }
 
-  createEventTag(eventTagName: string) {
+  createEventTag(eventTagName: EventTag) {
     return this.httpService.post<EventTag>(this.API_URL + 'event-tags', {
       eventTagName,
     });
   }
 
-  createGroup(groupName: string) {
+  createGroup(group: Group) {
     return this.httpService.post<Group>(this.API_URL + 'groups', {
-      groupName,
+      ...group,
     });
   }
 
-  createEventReview() {
-    return this.httpService.post<EventReview>(
-      this.API_URL + 'event-reviews',
-      {}
-    );
+  createEventReview(eventReview: any) {
+    return this.httpService.post<EventReview>(this.API_URL + 'event-reviews', {
+      ...eventReview,
+    });
   }
 
   createUser() {

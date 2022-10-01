@@ -5,14 +5,20 @@ import { Group } from '../../../api/interfaces/group.interface';
 
 @Injectable({ providedIn: 'root' })
 export class GroupService {
+  updateGroup(id: string, groupName: string) {
+    this.apiService
+      .updateGroup(id, { name: groupName })
+      .pipe(tap(() => this.getGroups()))
+      .subscribe();
+  }
   private groups = new Subject<Group[]>();
 
   groups$ = this.groups.asObservable();
   constructor(private readonly apiService: ApiService) {}
 
-  createGroup(value: string) {
+  createGroup(groupName: string) {
     this.apiService
-      .createGroup(value)
+      .createGroup({ id: '', name: groupName })
       .pipe(tap(() => this.getGroups()))
       .subscribe();
   }
@@ -22,5 +28,12 @@ export class GroupService {
         this.groups.next(groups);
       },
     });
+  }
+
+  deleteGroup(group: Group) {
+    this.apiService
+      .deleteGroup(group.id)
+      .pipe(tap(() => this.getGroups()))
+      .subscribe();
   }
 }

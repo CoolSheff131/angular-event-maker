@@ -3,7 +3,6 @@
         <ng-template pTemplate="left">
             <button pButton pRipple label="Добавть" (click)="openAddDialog()" icon="pi pi-plus"
                 class="p-button-success mr-2"></button>
-            <button pButton pRipple label="Удалить'" icon=" pi pi-trash" class="p-button-danger"></button>
         </ng-template>
 
         <ng-template pTemplate="right">
@@ -32,20 +31,20 @@
         </ng-template>
         <ng-template pTemplate="body" let-group>
             <tr class="table-row">
-                <td>
-                    <p-tableCheckbox></p-tableCheckbox>
-                </td>
+
                 <td>{{group.name}}</td>
 
                 <td class="table-row__actions">
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"></button>
+                    <button (click)="editGroup(group)" pButton pRipple icon="pi pi-pencil"
+                        class="p-button-rounded p-button-success mr-2"></button>
+                    <button (click)="deleteGroup(group)" pButton pRipple icon="pi pi-trash"
+                        class="p-button-rounded p-button-warning"></button>
                 </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="flex align-items-center justify-content-between">
-                Всего 0 групп.
+                Всего {{groups.length}} групп
             </div>
         </ng-template>
     </p-table>
@@ -55,17 +54,30 @@
     styleClass="p-fluid">
     <ng-template pTemplate="content">
         <span class="p-float-label">
-            <input id="auditoryName" name="auditoryName" [formControl]="auditoryName" type="text" pInputText>
+            <input id="auditoryName" name="auditoryName" [formControl]="groupName" type="text" pInputText>
             <label for="auditoryName">Название группы</label>
         </span>
-
-
     </ng-template>
-
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
             (click)="closeAddDialog()"></button>
         <button type="submit" pButton pRipple label="Добавить" icon="pi pi-check" class="p-button-text"
             (click)="onSubmitAuditory()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="isEditingGroup" [style]="{width: '450px'}" header="Редактирование аудитории" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <span class="p-float-label">
+            <input id="auditoryName" name="auditoryName" [formControl]="groupNameEdit" type="text" pInputText>
+            <label for="auditoryName">Название группы</label>
+        </span>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
+            (click)="closeEditDialog()"></button>
+        <button type="submit" pButton pRipple label="Сохранить" icon="pi pi-check" class="p-button-text"
+            (click)="onSubmitEditAuditory()"></button>
     </ng-template>
 </p-dialog>

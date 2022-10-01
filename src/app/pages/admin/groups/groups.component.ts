@@ -9,14 +9,27 @@ import { Auditory } from '../../../api/interfaces/auditory.interface';
   styleUrls: ['./groups.component.css'],
 })
 export class AdminGroupsComponent implements OnInit {
+  editGroup(group: Group) {
+    this.isEditingGroup = true;
+    this.groupIdEdit = group.id;
+    this.groupNameEdit.setValue(group.name);
+  }
+  deleteGroup(group: Group) {
+    this.groupService.deleteGroup(group);
+  }
   addDialog = false;
 
-  auditoryName = new FormControl<string>('');
+  isEditingGroup = false;
+  groupIdEdit = '0';
+  groupNameEdit = new FormControl<string>('');
+
+  groupName = new FormControl<string>('');
   groups: Group[] = [];
 
   constructor(private readonly groupService: GroupService) {
     groupService.groups$.subscribe((groups) => {
       this.groups = groups;
+      console.log(groups);
     });
   }
   ngOnInit(): void {
@@ -27,15 +40,26 @@ export class AdminGroupsComponent implements OnInit {
     this.addDialog = true;
   }
 
+  closeEditDialog() {
+    this.isEditingGroup = false;
+  }
   closeAddDialog() {
     this.addDialog = false;
   }
 
   onSubmitAuditory() {
-    if (!this.auditoryName.value?.trim()) {
+    if (!this.groupName.value?.trim()) {
       return;
     }
-    console.log(this.auditoryName.value);
-    this.groupService.createGroup(this.auditoryName.value);
+    this.groupService.createGroup(this.groupName.value);
+  }
+
+  onSubmitEditAuditory() {
+    if (!this.groupNameEdit.value?.trim()) {
+      return;
+    }
+    console.log(this.groupNameEdit.value);
+
+    this.groupService.updateGroup(this.groupIdEdit, this.groupNameEdit.value);
   }
 }

@@ -11,9 +11,9 @@ export class EventTagService {
   eventTags$ = this.eventTags.asObservable();
   constructor(private readonly apiService: ApiService) {}
 
-  createEventTag(value: string) {
+  createEventTag(tagName: string) {
     this.apiService
-      .createEventTag(value)
+      .createEventTag({ id: '', name: tagName })
       .pipe(tap(() => this.getEventTags()))
       .subscribe();
   }
