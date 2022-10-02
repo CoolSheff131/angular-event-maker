@@ -3,7 +3,9 @@ import { FormControl } from '@angular/forms';
 import { PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { ApiService } from './api/api.service';
+import { Group } from './api/interfaces/group.interface';
 import { User } from './api/interfaces/user.interface';
+import { GroupService } from './pages/admin/services/group.service';
 import { UserService } from './pages/admin/services/user.service';
 
 @Component({
@@ -23,17 +25,24 @@ export class AppComponent {
   signUpEmail = new FormControl('');
   signUpPassword = new FormControl('');
   signUpName = new FormControl('');
+  userGroupControl = new FormControl<Group | null>(null);
+  groups: Group[] = [];
 
   authedUser: User | undefined;
 
   constructor(
     private readonly primengConfig: PrimeNGConfig,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly groupService: GroupService
   ) {
     userService.authedUser$.subscribe((user) => {
       console.log(user);
       this.authedUser = user;
     });
+    groupService.groups$.subscribe((groups) => {
+      this.groups = groups;
+    });
+    groupService.getGroups();
   }
 
   ngOnInit() {
@@ -71,12 +80,21 @@ export class AppComponent {
     if (this.signUpName.value === null) {
       return;
     }
+    if (!this.userGroupControl.value) {
+      return;
+    }
 
     const login = this.signUpLogin.value;
     const password = this.signUpPassword.value;
     const email = this.signUpEmail.value;
     const name = this.signUpName.value;
-    this.userService.register(login, name, email, password);
+    this.userService.register(
+      login,
+      this.userGroupControl.value,
+      name,
+      email,
+      password
+    );
   }
 
   onUserClick() {

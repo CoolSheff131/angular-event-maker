@@ -1,16 +1,61 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, tap } from 'rxjs';
+import { Group } from 'src/app/api/interfaces/group.interface';
 import { ApiService } from '../../../api/api.service';
-import { User } from '../../../api/interfaces/user.interface';
+import {
+  User,
+  UserRole,
+  UserStudent,
+} from '../../../api/interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  createUser(value: string) {
-    throw new Error('Method not implemented.');
+  deleteUser(user: User) {
+    this.apiService
+      .deleteUser(user.id)
+      .pipe(tap(() => this.getAllUsers()))
+      .subscribe();
   }
-  private allUsers = new Subject<User[]>();
+  updateUserStudent(
+    id: string,
+    login: string,
+    userName: string,
+    email: string,
+    group: Group
+  ) {
+    this.apiService
+      .updateUserStudent(id, {
+        login,
+        email: email,
+        name: userName,
+        group: group,
+      })
+      .pipe(tap(() => this.getAllUsers()))
+      .subscribe();
+  }
+  createUserStudent(
+    userPasword: string,
+    login: string,
+    userName: string,
+    email: string,
+    group: Group
+  ) {
+    this.apiService
+      .createUserStudent({
+        id: '',
+        login: login,
+        password: userPasword,
+        name: userName,
+        email: email,
+        group: group,
+        role: 'student',
+      })
+      .pipe(tap(() => this.getAllUsers()))
+      .subscribe();
+  }
+  private allStudents = new Subject<UserStudent[]>();
 
-  allUsers$ = this.allUsers.asObservable();
+  allStudents$ = this.allStudents.asObservable();
 
   private authedUser = new Subject<User | undefined>();
 
@@ -34,12 +79,13 @@ export class UserService {
   getAllUsers() {
     this.apiService.getUsers().subscribe({
       next: (users) => {
-        this.allUsers.next(users);
+        this.allStudents.next(users);
       },
     });
   }
 
   unauthorizeUser() {
+    console.log('asd');
     this.apiService.unauthorize();
     this.authedUser.next(undefined);
   }
@@ -58,10 +104,16 @@ export class UserService {
     });
   }
 
-  register(login: string, name: string, email: string, password: string) {
+  register(
+    login: string,
+    group: Group,
+    name: string,
+    email: string,
+    password: string
+  ) {
     this.loginStatus.next('pending');
 
-    this.apiService.register(login, name, email, password).subscribe({
+    this.apiService.register(login, group, name, email, password).subscribe({
       next: (authData) => {
         this.authedUser.next(authData);
         this.loginStatus.next('success');

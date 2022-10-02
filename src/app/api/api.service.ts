@@ -7,10 +7,18 @@ import { Event } from './interfaces/event.interface';
 import { EventReview } from './interfaces/eventReview.interface';
 import { EventTag } from './interfaces/eventTag.interface';
 import { Group } from './interfaces/group.interface';
-import { User } from './interfaces/user.interface';
+import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  deleteUser(id: string) {
+    return this.httpService.delete(this.API_URL + `users/${id}`);
+  }
+  updateUserStudent(id: string, userStudent: Partial<UserStudent>) {
+    return this.httpService.patch(this.API_URL + `users/${id}`, {
+      ...userStudent,
+    });
+  }
   updateEventTag(id: string, eventTag: Partial<EventTag>) {
     return this.httpService.patch(this.API_URL + `event-tags/${id}`, {
       ...eventTag,
@@ -68,10 +76,17 @@ export class ApiService {
         })
       );
   }
-  register(login: string, name: string, email: string, password: string) {
+  register(
+    login: string,
+    group: Group,
+    name: string,
+    email: string,
+    password: string
+  ) {
     return this.httpService
       .post<AuthData>(this.API_URL + 'auth/register', {
         login,
+        group,
         name,
         email,
         password,
@@ -108,7 +123,7 @@ export class ApiService {
   }
 
   getUsers() {
-    return this.httpService.get<User[]>(this.API_URL + 'users');
+    return this.httpService.get<UserStudent[]>(this.API_URL + 'users');
   }
 
   createEvent(a: any) {
@@ -139,7 +154,7 @@ export class ApiService {
     });
   }
 
-  createUser() {
-    return this.httpService.post<User>(this.API_URL + 'users', {});
+  createUserStudent(user: UserCreate) {
+    return this.httpService.post<User>(this.API_URL + 'users', { ...user });
   }
 }
