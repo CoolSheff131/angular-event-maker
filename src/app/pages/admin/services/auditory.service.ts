@@ -8,7 +8,9 @@ export class AuditoryService {
   private auditories = new Subject<Auditory[]>();
 
   auditories$ = this.auditories.asObservable();
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) {
+    this.getAuditories();
+  }
 
   createAuditory(auditoryName: string) {
     this.apiService

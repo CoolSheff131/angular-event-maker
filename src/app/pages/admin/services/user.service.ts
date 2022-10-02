@@ -74,6 +74,7 @@ export class UserService {
         this.unauthorizeUser();
       },
     });
+    this.getAllUsers();
   }
 
   getAllUsers() {

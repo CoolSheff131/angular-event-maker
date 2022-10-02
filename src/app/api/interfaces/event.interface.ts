@@ -10,8 +10,7 @@ export interface Event {
   description: string;
   owner: User;
   places: number;
-  dateStart: Date;
-  dateEnd: Date;
+
   groups: Group[];
   tags: EventTag[];
   images: string[];

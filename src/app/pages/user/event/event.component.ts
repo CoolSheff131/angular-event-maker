@@ -13,9 +13,7 @@ export class EventComponent {
   constructor() {}
 
   getHeaderDates() {
-    return `Даты проведения ${convertDateToString(
-      this.event.dateStart
-    )} -  ${convertDateToString(this.event.dateEnd)}`;
+    return `Даты проведения `;
   }
 
   getProgressPeople() {

@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, tap } from 'rxjs';
+import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
+import { Group } from 'src/app/api/interfaces/group.interface';
+import { User } from 'src/app/api/interfaces/user.interface';
 import { ApiService } from '../../../api/api.service';
 import { Event } from '../../../api/interfaces/event.interface';
 
@@ -10,9 +13,25 @@ export class EventService {
   events$ = this.events.asObservable();
   constructor(private readonly apiService: ApiService) {}
 
-  createEvent(value: string) {
+  createEvent(
+    images: FileList,
+    title: string,
+    description: string,
+    owner: User,
+    places: number,
+    groups: Group[],
+    days: EventDay[]
+  ) {
     this.apiService
-      .createEvent(value)
+      .createEvent(
+        Array.from(images),
+        title,
+        description,
+        owner,
+        places,
+        groups,
+        days
+      )
       .pipe(tap(() => this.getEvents()))
       .subscribe();
   }

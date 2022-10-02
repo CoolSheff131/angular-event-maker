@@ -4,6 +4,7 @@ import { map, Observable, of } from 'rxjs';
 import { Auditory } from './interfaces/auditory.interface';
 import { AuthData } from './interfaces/auth.interface';
 import { Event } from './interfaces/event.interface';
+import { EventDay } from './interfaces/eventDay.interface';
 import { EventReview } from './interfaces/eventReview.interface';
 import { EventTag } from './interfaces/eventTag.interface';
 import { Group } from './interfaces/group.interface';
@@ -126,8 +127,27 @@ export class ApiService {
     return this.httpService.get<UserStudent[]>(this.API_URL + 'users');
   }
 
-  createEvent(a: any) {
-    return this.httpService.post<Event>(this.API_URL + 'events', {});
+  createEvent(
+    images: File[],
+    title: string,
+    description: string,
+    owner: User,
+    places: number,
+    groups: Group[],
+    days: EventDay[]
+  ) {
+    const formData = new FormData();
+    images.forEach((file) => {
+      formData.append('images[]', file);
+    });
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('owner', JSON.stringify(owner));
+    formData.append('places', JSON.stringify(places));
+    formData.append('groups', JSON.stringify(groups));
+    formData.append('days', JSON.stringify(days));
+
+    return this.httpService.post<Event>(this.API_URL + 'events', formData);
   }
   createAuditory(auditory: Auditory) {
     console.log(auditory);

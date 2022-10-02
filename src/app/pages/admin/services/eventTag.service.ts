@@ -20,7 +20,9 @@ export class EventTagService {
   private eventTags = new Subject<EventTag[]>();
 
   eventTags$ = this.eventTags.asObservable();
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) {
+    this.getEventTags();
+  }
 
   createEventTag(tagName: string) {
     this.apiService
