@@ -8,6 +8,12 @@ import { Event } from '../../../api/interfaces/event.interface';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
+  deleteEvent(event: Event) {
+    this.apiService
+      .deleteEvent(event.id)
+      .pipe(tap(() => this.getEvents()))
+      .subscribe();
+  }
   private events = new Subject<Event[]>();
 
   events$ = this.events.asObservable();

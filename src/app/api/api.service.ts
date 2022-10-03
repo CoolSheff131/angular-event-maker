@@ -12,6 +12,9 @@ import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  deleteEvent(id: string) {
+    return this.httpService.delete(this.API_URL + `events/${id}`);
+  }
   deleteUser(id: string) {
     return this.httpService.delete(this.API_URL + `users/${id}`);
   }

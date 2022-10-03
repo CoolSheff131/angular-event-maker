@@ -20,6 +20,13 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./events.component.css'],
 })
 export class AdminEventsComponent implements OnInit {
+  deleteEvent(event: Event) {
+    this.eventService.deleteEvent(event);
+  }
+  editEvent(event: Event) {
+    this.isEditing = true;
+    this.formDialog = true;
+  }
   formDialog = false;
   isEditing = false;
   events: Event[] = [];
@@ -56,6 +63,7 @@ export class AdminEventsComponent implements OnInit {
   ) {
     eventService.events$.subscribe((events) => {
       this.events = events;
+      console.log(events);
     });
     userService.allStudents$.subscribe((users) => {
       this.allUsers = users;
