@@ -13,3 +13,7 @@
   padding: 20px;
   padding-bottom: 40px;
 }
+
+.form__error-msg {
+  color: #e24c4c;
+}

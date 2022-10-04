@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
 import { AuditoryService } from '../services/auditory.service';
 
@@ -8,10 +8,14 @@ import { AuditoryService } from '../services/auditory.service';
   templateUrl: './auditories.component.html',
   styleUrls: ['./auditories.component.css'],
 })
-export class AdminAuditoriesComponent implements OnInit {
-  addDialog = false;
+export class AdminAuditoriesComponent {
+  isFormAuditoryOpen = false;
+  isEditing = false;
+  auditoryToEditId = '';
 
-  auditoryName = new FormControl<string>('');
+  auditoryForm = new FormGroup({
+    auditoryName: new FormControl<string>('', [Validators.required]),
+  });
   auditories: Auditory[] = [];
 
   constructor(private readonly auditoryService: AuditoryService) {
@@ -19,23 +23,45 @@ export class AdminAuditoriesComponent implements OnInit {
       this.auditories = auditories;
     });
   }
-  ngOnInit(): void {
-    this.auditoryService.getAuditories();
+
+  openFormDialogToAdd() {
+    this.auditoryForm.reset();
+    this.isEditing = false;
+    this.openFormDialog();
   }
 
-  openAddDialog() {
-    this.addDialog = true;
+  openFormDialog() {
+    this.isFormAuditoryOpen = true;
   }
 
-  closeAddDialog() {
-    this.addDialog = false;
+  closeFormDialog() {
+    this.isFormAuditoryOpen = false;
   }
 
   onSubmitAuditory() {
-    if (!this.auditoryName.value?.trim()) {
+    if (this.auditoryForm.invalid) {
+      this.auditoryForm.markAllAsTouched();
       return;
     }
-    console.log(this.auditoryName.value);
-    this.auditoryService.createAuditory(this.auditoryName.value);
+    if (this.isEditing) {
+      this.auditoryService.updateAuditory(
+        this.auditoryToEditId,
+        this.auditoryForm.controls.auditoryName.value!
+      );
+    } else {
+      this.auditoryService.createAuditory(
+        this.auditoryForm.controls.auditoryName.value!
+      );
+    }
+  }
+
+  editAuditory(auditory: Auditory) {
+    this.auditoryToEditId = auditory.id;
+    this.isEditing = false;
+    this.openFormDialog();
+  }
+
+  deleteAuditory(auditory: Auditory) {
+    this.auditoryService.deleteAuditory(auditory);
   }
 }

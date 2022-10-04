@@ -5,3 +5,6 @@
 .table-row__actions {
   display: flex;
 }
+.form__error-msg {
+  color: #e24c4c;
+}

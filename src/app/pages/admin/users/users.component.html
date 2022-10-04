@@ -51,37 +51,60 @@
 <p-dialog [(visible)]="isFormDialogOpen" [header]="isEditing? 'Редактирование студента': 'Добавление студента'"
     [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
-        <div class="form">
-            <span class="p-float-label">
-                <p-dropdown id="userGroupControl" name="userGroupControl" [options]="groups"
-                    [formControl]="userGroupControl" optionLabel="name"></p-dropdown>
-                <label for="userGroupControl">Группа студента</label>
+        <form #form [formGroup]="userForm" novalidate (ngSubmit)="onSubmitUserForm()" class="form">
+            <span class="p-field p-fluid">
+                <label for="userGroupControl"
+                    [class.form__error-msg]="userForm.controls.userGroupControl.invalid && userForm.controls.userGroupControl.touched">Группа
+                    студента</label>
+                <p-dropdown [class.ng-invalid]="
+                userForm.controls.userGroupControl.invalid" id="userGroupControl" name="userGroupControl"
+                    [options]="groups" formControlName="userGroupControl" optionLabel="name"></p-dropdown>
+                <small *ngIf="userForm.controls.userGroupControl.invalid && userForm.controls.userGroupControl.touched"
+                    id="userGroupControl" class="form__error-msg">Выберите группу</small>
             </span>
 
-            <span class="p-float-label">
-                <input id="userLoginControl" name="userLoginControl" [formControl]="userLoginControl" type="text"
-                    pInputText>
-                <label for="userLoginControl">Логин студента</label>
+            <span class="p-field p-fluid">
+                <label for="userLoginControl"
+                    [class.form__error-msg]="userForm.controls.userLoginControl.invalid && userForm.controls.userLoginControl.touched">Логин
+                    студента</label>
+                <input [class.ng-invalid]="
+                userForm.controls.userLoginControl.invalid" id="userLoginControl" name="userLoginControl"
+                    formControlName="userLoginControl" type="text" pInputText>
+                <small *ngIf="userForm.controls.userLoginControl.invalid && userForm.controls.userLoginControl.touched"
+                    id="userLoginControl" class="form__error-msg">Введите логин</small>
             </span>
-            <span class="p-float-label">
-                <input id="userNameControl" name="userNameControl" [formControl]="userNameControl" type="text"
-                    pInputText>
-                <label for="userNameControl">Имя студента</label>
+            <span class="p-field p-fluid">
+                <label for="userNameControl"
+                    [class.form__error-msg]="userForm.controls.userNameControl.invalid && userForm.controls.userNameControl.touched">Имя
+                    студента</label>
+                <input [class.ng-invalid]="
+                userForm.controls.userNameControl.invalid" id="userNameControl" name="userNameControl"
+                    formControlName="userNameControl" type="text" pInputText>
+                <small *ngIf="userForm.controls.userNameControl.invalid && userForm.controls.userNameControl.touched"
+                    id="userNameControl" class="form__error-msg">Введите имя</small>
             </span>
-            <span class="p-float-label">
-                <input id="userEmailControl" name="userEmailControl" [formControl]="userEmailControl" type="text"
-                    pInputText>
-                <label for="userEmailControl">Почта студента</label>
+            <span class="p-field p-fluid">
+                <label
+                    [class.form__error-msg]="userForm.controls.userEmailControl.invalid && userForm.controls.userEmailControl.touched"
+                    for="userEmailControl">Почта студента</label>
+                <input [class.ng-invalid]="
+                userForm.controls.userEmailControl.invalid" id="userEmailControl" name="userEmailControl"
+                    formControlName="userEmailControl" type="text" pInputText>
+                <small *ngIf="userForm.controls.userEmailControl.invalid && userForm.controls.userEmailControl.touched"
+                    id="userEmailControl" class="form__error-msg">Введите почту</small>
             </span>
-            <span *ngIf="!isEditing" class="p-float-label">
-                <input id="userPasswordControl" name="userPasswordControl" [formControl]="userPasswordControl"
-                    type="text" pInputText>
-                <label for="userPasswordControl">Пароль студента</label>
+            <span class="p-field p-fluid">
+                <label
+                    [class.form__error-msg]="userForm.controls.userPasswordControl.invalid && userForm.controls.userPasswordControl.touched"
+                    for="userPasswordControl">Пароль студента</label>
+                <input [class.ng-invalid]="
+                userForm.controls.userPasswordControl.invalid" id="userPasswordControl" name="userPasswordControl"
+                    formControlName="userPasswordControl" type="text" pInputText>
+                <small
+                    *ngIf="userForm.controls.userPasswordControl.invalid && userForm.controls.userPasswordControl.touched"
+                    id="userPasswordControl" class="form__error-msg">Введите пароль</small>
             </span>
-
-
-
-        </div>
+        </form>
 
     </ng-template>
 
@@ -89,6 +112,7 @@
         <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
             (click)="closeFormDialog()"></button>
         <button type="submit" pButton pRipple [label]="isEditing? 'Сохранить': 'Добавить'" icon="pi pi-check"
-            class="p-button-text" (click)="onSubmitUserForm()"></button>
+            class="p-button-text" [disabled]="userForm.invalid && userForm.touched"
+            (click)="onSubmitUserForm()"></button>
     </ng-template>
 </p-dialog>

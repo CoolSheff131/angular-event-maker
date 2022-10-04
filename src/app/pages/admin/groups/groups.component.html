@@ -50,34 +50,27 @@
     </p-table>
 </div>
 
-<p-dialog [(visible)]="addDialog" [style]="{width: '450px'}" header="Добавить аудиторию" [modal]="true"
-    styleClass="p-fluid">
+<p-dialog [(visible)]="isformGroupDialogOpen" [style]="{width: '450px'}"
+    [header]="isEditing? 'Редактирование группы': 'Добавление группы'" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
-        <span class="p-float-label">
-            <input id="auditoryName" name="auditoryName" [formControl]="groupName" type="text" pInputText>
-            <label for="auditoryName">Название группы</label>
-        </span>
-    </ng-template>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
-            (click)="closeAddDialog()"></button>
-        <button type="submit" pButton pRipple label="Добавить" icon="pi pi-check" class="p-button-text"
-            (click)="onSubmitAuditory()"></button>
-    </ng-template>
-</p-dialog>
+        <form [formGroup]="groupForm" novalidate (ngSubmit)="onSubmitForm()">
+            <span class="p-field p-fluid">
+                <label
+                    [class.form__error-msg]="groupForm.controls.groupName.invalid && groupForm.controls.groupName.touched"
+                    for="groupName">Название группы</label>
+                <input [class.ng-invalid]="
+                groupForm.controls.groupName.invalid" id="userEmailControl" id="groupName" name="groupName"
+                    formControlName="groupName" type="text" pInputText>
+                <small *ngIf="groupForm.controls.groupName.invalid && groupForm.controls.groupName.touched"
+                    id="userGroupControl" class="form__error-msg">Выберите группу</small>
+            </span>
 
-<p-dialog [(visible)]="isEditingGroup" [style]="{width: '450px'}" header="Редактирование аудитории" [modal]="true"
-    styleClass="p-fluid">
-    <ng-template pTemplate="content">
-        <span class="p-float-label">
-            <input id="auditoryName" name="auditoryName" [formControl]="groupNameEdit" type="text" pInputText>
-            <label for="auditoryName">Название группы</label>
-        </span>
+        </form>
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
-            (click)="closeEditDialog()"></button>
-        <button type="submit" pButton pRipple label="Сохранить" icon="pi pi-check" class="p-button-text"
-            (click)="onSubmitEditAuditory()"></button>
+            (click)="closeFormDialog()"></button>
+        <button type="submit" [disabled]="groupForm.invalid && groupForm.touched" pButton pRipple label="Сохранить"
+            icon="pi pi-check" class="p-button-text" (click)="onSubmitForm()"></button>
     </ng-template>
 </p-dialog>

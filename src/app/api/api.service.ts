@@ -12,6 +12,15 @@ import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  updateAuditory(auditoryToEditId: string, auditory: Partial<Auditory>) {
+    return this.httpService.patch(
+      this.API_URL + `auditories/${auditoryToEditId}`,
+      auditory
+    );
+  }
+  deleteAuditory(id: string) {
+    return this.httpService.delete(this.API_URL + `auditories/${id}`);
+  }
   deleteEvent(id: string) {
     return this.httpService.delete(this.API_URL + `events/${id}`);
   }

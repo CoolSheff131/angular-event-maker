@@ -40,6 +40,8 @@ import { AdminEventReviewsComponent } from './pages/admin/event-reviews/event-re
 import { AdminEventsComponent } from './pages/admin/events/events.component';
 import { EventsComponent } from './pages/user/events/events.component';
 import { AdminModule } from './pages/admin/admin.module';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 
 const routes: Routes = [
   { path: '', component: EventsComponent },
@@ -85,6 +87,8 @@ const routes: Routes = [
     ConfirmDialogModule,
     RadioButtonModule,
     RatingModule,
+    MessagesModule,
+    MessageModule,
 
     AdminModule,
   ],

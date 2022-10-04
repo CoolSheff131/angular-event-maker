@@ -19,6 +19,7 @@ export class UserService {
   updateUserStudent(
     id: string,
     login: string,
+    password: string,
     userName: string,
     email: string,
     group: Group
@@ -26,6 +27,7 @@ export class UserService {
     this.apiService
       .updateUserStudent(id, {
         login,
+        password,
         email: email,
         name: userName,
         group: group,

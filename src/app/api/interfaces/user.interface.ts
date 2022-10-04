@@ -12,6 +12,7 @@ export interface User {
 export interface UserStudent extends User {
   group: Group;
   role: 'student';
+  password?: string;
 }
 
 export interface UserCreate extends User {

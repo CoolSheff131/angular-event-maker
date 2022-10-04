@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { ApiService } from './api/api.service';
@@ -18,14 +18,21 @@ export class AppComponent {
 
   display = false;
 
-  signInLogin = new FormControl('');
-  signInPassword = new FormControl('');
+  signInForm = new FormGroup({
+    signInLogin: new FormControl<string>('', [Validators.required]),
+    signInPassword: new FormControl<string>('', [Validators.required]),
+  });
 
-  signUpLogin = new FormControl('');
-  signUpEmail = new FormControl('');
-  signUpPassword = new FormControl('');
-  signUpName = new FormControl('');
-  userGroupControl = new FormControl<Group | null>(null);
+  signUpForm = new FormGroup({
+    signUpLogin: new FormControl<string>('', [Validators.required]),
+    signUpEmail: new FormControl<string>('', [Validators.required]),
+    signUpPassword: new FormControl<string>('', [Validators.required]),
+    signUpName: new FormControl<string>('', [Validators.required]),
+    userGroupControl: new FormControl<Group | null>(null, [
+      Validators.required,
+    ]),
+  });
+
   groups: Group[] = [];
 
   authedUser: User | undefined;
@@ -55,46 +62,28 @@ export class AppComponent {
   }
 
   onSubmitSignIn() {
-    if (this.signInLogin.value === null) {
-      return;
-    }
-    if (this.signInPassword.value === null) {
+    if (this.signInForm.invalid) {
+      this.signInForm.markAllAsTouched();
       return;
     }
 
-    const login = this.signInLogin.value;
-    const password = this.signInPassword.value;
+    const login = this.signInForm.controls.signInLogin.value!;
+    const password = this.signInForm.controls.signInPassword.value!;
     this.userService.login(login, password);
   }
 
   onSubmitSignUp() {
-    if (this.signUpLogin.value === null) {
-      return;
-    }
-    if (this.signUpPassword.value === null) {
-      return;
-    }
-    if (this.signUpEmail.value === null) {
-      return;
-    }
-    if (this.signUpName.value === null) {
-      return;
-    }
-    if (!this.userGroupControl.value) {
+    if (this.signUpForm.invalid) {
+      this.signUpForm.markAllAsTouched();
       return;
     }
 
-    const login = this.signUpLogin.value;
-    const password = this.signUpPassword.value;
-    const email = this.signUpEmail.value;
-    const name = this.signUpName.value;
-    this.userService.register(
-      login,
-      this.userGroupControl.value,
-      name,
-      email,
-      password
-    );
+    const login = this.signUpForm.controls.signUpLogin.value!;
+    const password = this.signUpForm.controls.signUpPassword.value!;
+    const email = this.signUpForm.controls.signUpEmail.value!;
+    const name = this.signUpForm.controls.signUpName.value!;
+    const group = this.signUpForm.controls.userGroupControl.value!;
+    this.userService.register(login, group, name, email, password);
   }
 
   onUserClick() {

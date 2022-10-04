@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
 import { EventTagService } from 'src/app/pages/admin/services/eventTag.service';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
@@ -10,12 +10,15 @@ import { AuditoryService } from '../services/auditory.service';
   templateUrl: './event-tags.component.html',
   styleUrls: ['./event-tags.component.css'],
 })
-export class AdminEventTagsComponent implements OnInit {
-  addDialog = false;
-  isEditDialogShown = false;
+export class AdminEventTagsComponent {
+  isFormDialogOpen = false;
+  isEditing = false;
+  eventTagIdEdit = '';
 
-  eventTagNameEdit = new FormControl<string>('');
-  eventTagNameAdd = new FormControl<string>('');
+  eventTagForm = new FormGroup({
+    eventTagName: new FormControl<string>('', [Validators.required]),
+  });
+
   eventTags: EventTag[] = [];
 
   constructor(private readonly eventTagService: EventTagService) {
@@ -23,47 +26,46 @@ export class AdminEventTagsComponent implements OnInit {
       this.eventTags = auditories;
     });
   }
-  ngOnInit(): void {
-    this.eventTagService.getEventTags();
+
+  openFormDialogToAdd() {
+    this.isEditing = false;
+    this.eventTagForm.reset();
+    this.openFormDialog();
+  }
+  openFormDialog() {
+    this.isFormDialogOpen = true;
   }
 
-  openAddDialog() {
-    this.addDialog = true;
+  closeFormDialog() {
+    this.isFormDialogOpen = false;
   }
 
-  closeAddDialog() {
-    this.addDialog = false;
-  }
-
-  onSubmitAuditory() {
-    if (!this.eventTagNameAdd.value?.trim()) {
+  onSubmitEventTagForm() {
+    if (!this.eventTagForm.invalid) {
+      this.eventTagForm.markAllAsTouched();
       return;
     }
-    this.eventTagService.createEventTag(this.eventTagNameAdd.value);
-  }
 
-  closeEditDialog() {
-    this.isEditDialogShown = false;
+    if (this.isEditing) {
+      this.eventTagService.updateEventTag(
+        this.eventTagIdEdit,
+        this.eventTagForm.controls.eventTagName.value!
+      );
+      this.isEditing = false;
+    } else {
+      this.eventTagService.createEventTag(
+        this.eventTagForm.controls.eventTagName.value!
+      );
+    }
   }
-
-  eventTagIdEdit = '';
 
   editEventTag(eventTag: EventTag) {
-    this.isEditDialogShown = true;
+    this.openFormDialog();
+    this.isEditing = true;
     this.eventTagIdEdit = eventTag.id;
-    this.eventTagNameEdit.setValue(eventTag.name);
+    this.eventTagForm.controls.eventTagName.setValue(eventTag.name);
   }
-  deleteGroup(group: EventTag) {
+  deleteEventTag(group: EventTag) {
     this.eventTagService.deleteEventTag(group);
-  }
-
-  onSubmitEditAuditory() {
-    if (!this.eventTagNameEdit.value?.trim()) {
-      return;
-    }
-    this.eventTagService.updateEventTag(
-      this.eventTagIdEdit,
-      this.eventTagNameEdit.value
-    );
   }
 }

@@ -17,7 +17,9 @@ export class EventService {
   private events = new Subject<Event[]>();
 
   events$ = this.events.asObservable();
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) {
+    this.getEvents();
+  }
 
   createEvent(
     images: FileList,

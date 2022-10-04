@@ -1,7 +1,14 @@
+import { getLocaleDateFormat } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { addDays, differenceInDays } from 'date-fns';
+import {
+  addDays,
+  differenceInDays,
+  getDate,
+  getHours,
+  getMinutes,
+} from 'date-fns';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
@@ -19,14 +26,7 @@ import { UserService } from '../services/user.service';
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css'],
 })
-export class AdminEventsComponent implements OnInit {
-  deleteEvent(event: Event) {
-    this.eventService.deleteEvent(event);
-  }
-  editEvent(event: Event) {
-    this.isEditing = true;
-    this.formDialog = true;
-  }
+export class AdminEventsComponent {
   formDialog = false;
   isEditing = false;
   events: Event[] = [];
@@ -35,19 +35,23 @@ export class AdminEventsComponent implements OnInit {
   allGroups: Group[] = [];
   allUsers: User[] = [];
 
-  eventTitle: FormControl<string | null>;
-  eventDescription: FormControl<string | null>;
-  eventOwner: FormControl<User | null>;
-  eventPlaces: FormControl<number | null>;
-  eventGroups: FormControl<Group[] | null>;
-  eventTags: FormControl<EventTag[] | null>;
-  eventImages: FormControl<File[] | null>;
+  eventForm = new FormGroup({
+    eventTitle: new FormControl<string | null>('', [Validators.required]),
+    eventDescription: new FormControl<string | null>('', [Validators.required]),
+    eventOwner: new FormControl<User | null>(null, [Validators.required]),
+    eventPlaces: new FormControl<number | null>(1, [Validators.required]),
+    eventGroups: new FormControl<Group[] | null>(null, [Validators.required]),
+    eventTags: new FormControl<EventTag[] | null>(null, [Validators.required]),
+    eventImages: new FormControl<File[] | null>(null, [Validators.required]),
+    eventDays: new FormArray<
+      FormGroup<{
+        auditory: FormControl<Auditory | null>;
+        startDate: FormControl<Date | null>;
+      }>
+    >([]),
+  });
+
   eventRange: FormControl<[Date, Date | null] | null>;
-  eventDays: [
-    Date,
-    FormControl<Auditory | null>,
-    FormControl<string | null>
-  ][] = [];
 
   previewImagesUrls: SafeUrl[] | undefined;
   images: undefined | FileList;
@@ -78,17 +82,20 @@ export class AdminEventsComponent implements OnInit {
       this.allGroups = groups;
     });
 
-    this.eventOwner = new FormControl<User | null>(null);
-    this.eventTitle = new FormControl<string | null>('');
-    this.eventDescription = new FormControl<string | null>('');
-    this.eventPlaces = new FormControl<number | null>(null);
-    this.eventRange = new FormControl<[Date, Date] | null>(null);
-    this.eventGroups = new FormControl<Group[] | null>(null);
-    this.eventTags = new FormControl<EventTag[] | null>(null);
-    this.eventImages = new FormControl<File[] | null>(null);
+    this.eventRange = new FormControl<[Date, Date] | null>(null, [
+      Validators.required,
+    ]);
   }
-  ngOnInit(): void {
-    this.eventService.getEvents();
+
+  deleteEvent(event: Event) {
+    this.eventService.deleteEvent(event);
+  }
+  editEvent(event: Event) {
+    this.isEditing = true;
+    this.formDialog = true;
+  }
+  getFormsControls(): FormArray {
+    return this.eventForm.controls.eventDays as FormArray;
   }
 
   openAddDialog() {
@@ -106,6 +113,10 @@ export class AdminEventsComponent implements OnInit {
     return date;
   }
 
+  getDayFormat(day: Date) {
+    return `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
+  }
+
   handleFileChange(event: any) {
     this.images = event.target.files;
     if (this.images) {
@@ -115,38 +126,29 @@ export class AdminEventsComponent implements OnInit {
     }
   }
   onSubmitForm() {
-    console.log(this.images);
-    console.log(this.eventTitle.value);
-    console.log(this.eventDescription.value);
-    console.log(this.eventOwner.value);
-    console.log(this.eventPlaces.value);
-    console.log(this.eventGroups.value);
-    if (
-      !this.images ||
-      !this.eventTitle.value ||
-      !this.eventDescription.value ||
-      !this.eventOwner.value ||
-      !this.eventPlaces.value ||
-      !this.eventGroups.value
-    ) {
+    if (this.eventForm.invalid) {
+      this.eventForm.markAllAsTouched();
       return;
     }
-    const days = this.eventDays.map<EventDay>(
-      ([day, auditControl, timeControl]) => ({
+    const days: EventDay[] = [];
+    this.eventForm.controls.eventDays.value.forEach((value, i) => {
+      days.push({
         id: '',
-        day,
-        auditory: auditControl.value!,
-        timeStart: timeControl.value!,
-      })
-    );
-    console.log(days);
+        day: this.getDayFromStart(i),
+        auditory: value.auditory!,
+        timeStart: `${getHours(value.startDate!)}:${getMinutes(
+          value.startDate!
+        )}`,
+      });
+    });
+
     this.eventService.createEvent(
-      this.images,
-      this.eventTitle.value,
-      this.eventDescription.value,
-      this.eventOwner.value,
-      this.eventPlaces.value,
-      this.eventGroups.value,
+      this.images!,
+      this.eventForm.controls.eventTitle.value!,
+      this.eventForm.controls.eventDescription.value!,
+      this.eventForm.controls.eventOwner.value!,
+      this.eventForm.controls.eventPlaces.value!,
+      this.eventForm.controls.eventGroups.value!,
       days
     );
   }
@@ -159,15 +161,20 @@ export class AdminEventsComponent implements OnInit {
 
     if (dateEnd) {
       const dayCount = differenceInDays(dateEnd, dateStart);
-      for (let i = 0; i < dayCount; i++) {
-        this.eventDays.push([
-          this.getDayFromStart(i),
-          new FormControl<Auditory | null>(null),
-          new FormControl<string | null>(null),
-        ]);
+      for (let i = 0; i <= dayCount; i++) {
+        this.eventForm.controls.eventDays.push(
+          new FormGroup({
+            auditory: new FormControl<Auditory | null>(null, [
+              Validators.required,
+            ]),
+            startDate: new FormControl<Date | null>(null, [
+              Validators.required,
+            ]),
+          })
+        );
       }
     } else {
-      this.eventDays = [];
+      this.eventForm.controls.eventDays.clear();
     }
   }
 }

@@ -38,3 +38,6 @@
   display: block;
   text-decoration: none;
 }
+.form__error-msg {
+  color: #e24c4c;
+}
