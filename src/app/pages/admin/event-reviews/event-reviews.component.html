@@ -1,17 +1,13 @@
 <div class="card">
     <p-toolbar styleClass="mb-4">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="Добавть" (click)="openAddDialog()" icon="pi pi-plus"
+            <button pButton pRipple label="Добавить" (click)="openAddDialog()" icon="pi pi-plus"
                 class="p-button-success mr-2"></button>
-            <button pButton pRipple label="Удалить'" icon=" pi pi-trash" class="p-button-danger"></button>
         </ng-template>
 
-        <ng-template pTemplate="right">
-
-        </ng-template>
     </p-toolbar>
 
-    <p-table [value]="auditories" dataKey="id" [rowHover]="true">
+    <p-table [value]="eventReviews" dataKey="id" [rowHover]="true">
         <ng-template pTemplate="caption">
             <div class="flex align-items-center justify-content-between">
                 <h5 class="m-0">Управление отзывами мероприятий</h5>
@@ -23,19 +19,15 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 3rem">
-                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                </th>
+
                 <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-auditory>
+        <ng-template pTemplate="body" let-eventReview>
             <tr class="table-row">
-                <td>
-                    <p-tableCheckbox></p-tableCheckbox>
-                </td>
-                <td>{{auditory.name}}</td>
+
+                <td>{{eventReview.text}}</td>
 
                 <td class="table-row__actions">
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
@@ -45,19 +37,26 @@
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="flex align-items-center justify-content-between">
-                In total there are 0 auditory.
+                Всего {{eventReviews.length}} обзоров
             </div>
         </ng-template>
     </p-table>
 </div>
 
-<p-dialog [(visible)]="addDialog" [style]="{width: '450px'}" header="Добавить аудиторию" [modal]="true"
-    styleClass="p-fluid">
+<p-dialog [(visible)]="isFormDialogOpen" [style]="{width: '450px'}"
+    [header]="isEditing?'Редактирование отзыва':'Добавить отзыв'" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
-        <span class="p-float-label">
-            <input id="auditoryName" name="auditoryName" [formControl]="auditoryName" type="text" pInputText>
-            <label for="auditoryName">Название аудитории</label>
-        </span>
+        <form [formGroup]="eventReviewForm">
+            <span class="p-float-label">
+                <input id="text" name="text" formControlName="text" type="text" pInputText>
+                <label for="text"></label>
+            </span>
+            <span class="p-float-label">
+                <input id="reviewer" name="reviewer" formControlName="reviewer" type="text" pInputText>
+                <label for="reviewer"></label>
+            </span>
+
+        </form>
 
 
     </ng-template>
@@ -65,7 +64,7 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
             (click)="closeAddDialog()"></button>
-        <button type="submit" pButton pRipple label="Добавить" icon="pi pi-check" class="p-button-text"
-            (click)="onSubmitAuditory()"></button>
+        <button type="submit" pButton pRipple [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check"
+            class="p-button-text" (click)="onSubmitAuditory()"></button>
     </ng-template>
 </p-dialog>

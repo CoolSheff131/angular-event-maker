@@ -1,41 +1,65 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { EventReview } from 'src/app/api/interfaces/eventReview.interface';
+import { User } from 'src/app/api/interfaces/user.interface';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
 import { AuditoryService } from '../services/auditory.service';
+import { EventService } from '../services/event.service';
+import { EventReviewService } from '../services/eventReview.service';
 
 @Component({
   selector: 'app-event-reviews',
   templateUrl: './event-reviews.component.html',
   styleUrls: ['./event-reviews.component.css'],
 })
-export class AdminEventReviewsComponent implements OnInit {
-  addDialog = false;
+export class AdminEventReviewsComponent {
+  isFormDialogOpen = false;
+  isEditing = false;
+  idEditing = '';
 
-  auditoryName = new FormControl<string>('');
-  auditories: Auditory[] = [];
+  eventReviewForm = new FormGroup({
+    reviewer: new FormControl<User | null>(null, [Validators.required]),
+    text: new FormControl('', [Validators.required]),
+    images: new FormControl<File[] | null>(null, [Validators.required]),
+  });
 
-  constructor(private readonly auditoryService: AuditoryService) {
-    auditoryService.auditories$.subscribe((auditories) => {
-      this.auditories = auditories;
+  eventReviews: EventReview[] = [];
+
+  constructor(private readonly eventReviewsService: EventReviewService) {
+    eventReviewsService.eventReviews$.subscribe((eventReviews) => {
+      this.eventReviews = eventReviews;
     });
-  }
-  ngOnInit(): void {
-    this.auditoryService.getAuditories();
   }
 
   openAddDialog() {
-    this.addDialog = true;
+    this.isFormDialogOpen = true;
+    this.isEditing = false;
+  }
+
+  editEventReview(eventReview: EventReview) {
+    this.isFormDialogOpen = true;
+    this.isEditing = true;
+    this.idEditing = eventReview.id;
   }
 
   closeAddDialog() {
-    this.addDialog = false;
+    this.isFormDialogOpen = false;
   }
 
   onSubmitAuditory() {
-    if (!this.auditoryName.value?.trim()) {
+    if (this.eventReviewForm.invalid) {
+      this.eventReviewForm.markAllAsTouched();
       return;
     }
-    console.log(this.auditoryName.value);
-    this.auditoryService.createAuditory(this.auditoryName.value);
+    if (this.isEditing) {
+      this.eventReviewsService.updateEventReview(
+        this.idEditing,
+        this.eventReviewForm.controls.reviewer.value!,
+        this.eventReviewForm.controls.text.value!,
+        this.eventReviewForm.controls.images.value!
+      );
+    } else {
+    }
+    // this.auditoryService.createAuditory(this.auditoryName.value);
   }
 }

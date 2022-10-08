@@ -14,6 +14,7 @@ export class GroupService {
   private groups = new Subject<Group[]>();
 
   groups$ = this.groups.asObservable();
+
   constructor(private readonly apiService: ApiService) {
     this.getGroups();
   }
@@ -24,6 +25,7 @@ export class GroupService {
       .pipe(tap(() => this.getGroups()))
       .subscribe();
   }
+
   getGroups() {
     this.apiService.getGroups().subscribe({
       next: (groups) => {

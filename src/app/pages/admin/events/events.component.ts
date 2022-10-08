@@ -74,6 +74,7 @@ export class AdminEventsComponent {
     });
     auditoryService.auditories$.subscribe((auditories) => {
       this.allAuditories = auditories;
+      console.log(auditories);
     });
     eventTagsService.eventTags$.subscribe((eventTags) => {
       this.allEventTags = eventTags;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
@@ -15,6 +15,7 @@ import { UserService } from './pages/admin/services/user.service';
 })
 export class AppComponent {
   title = 'event-maker';
+  loginStatus: 'waiting' | 'success' | 'error' | 'pending' = 'waiting';
 
   display = false;
 
@@ -40,15 +41,20 @@ export class AppComponent {
   constructor(
     private readonly primengConfig: PrimeNGConfig,
     private readonly userService: UserService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly groupService: GroupService
   ) {
     userService.authedUser$.subscribe((user) => {
       console.log(user);
       this.authedUser = user;
     });
+    userService.loginStatus$.subscribe((status) => {
+      this.loginStatus = status;
+    });
     groupService.groups$.subscribe((groups) => {
       this.groups = groups;
     });
+
     groupService.getGroups();
   }
 
@@ -70,6 +76,10 @@ export class AppComponent {
     const login = this.signInForm.controls.signInLogin.value!;
     const password = this.signInForm.controls.signInPassword.value!;
     this.userService.login(login, password);
+  }
+
+  ngAfterViewChecked(): void {
+    this.changeDetectorRef.detectChanges();
   }
 
   onSubmitSignUp() {

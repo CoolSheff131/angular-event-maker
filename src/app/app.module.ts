@@ -42,7 +42,7 @@ import { EventsComponent } from './pages/user/events/events.component';
 import { AdminModule } from './pages/admin/admin.module';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
-
+import { TooltipModule } from 'primeng/tooltip';
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -89,6 +89,7 @@ const routes: Routes = [
     RatingModule,
     MessagesModule,
     MessageModule,
+    TooltipModule,
 
     AdminModule,
   ],

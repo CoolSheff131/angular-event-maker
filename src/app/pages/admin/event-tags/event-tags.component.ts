@@ -41,18 +41,20 @@ export class AdminEventTagsComponent {
   }
 
   onSubmitEventTagForm() {
-    if (!this.eventTagForm.invalid) {
+    if (this.eventTagForm.invalid) {
       this.eventTagForm.markAllAsTouched();
       return;
     }
 
     if (this.isEditing) {
+      console.log('aASD');
       this.eventTagService.updateEventTag(
         this.eventTagIdEdit,
         this.eventTagForm.controls.eventTagName.value!
       );
       this.isEditing = false;
     } else {
+      console.log('creaate');
       this.eventTagService.createEventTag(
         this.eventTagForm.controls.eventTagName.value!
       );

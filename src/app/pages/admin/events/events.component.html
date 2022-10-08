@@ -1,7 +1,7 @@
 <div class="card">
     <p-toolbar styleClass="mb-4">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="Добавть" (click)="openAddDialog()" icon="pi pi-plus"
+            <button pButton pRipple label="Добавить" (click)="openAddDialog()" icon="pi pi-plus"
                 class="p-button-success mr-2"></button>
         </ng-template>
 
@@ -19,14 +19,23 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
+                <th pSortableColumn="name">Название <p-sortIcon field="title"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">Описание <p-sortIcon field="description"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">Создатель
+                </th>
+                <th pSortableColumn="name">Кол-во мест
                 </th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-event>
             <tr class="table-row">
 
-                <td>{{event.name}}</td>
+                <td>{{event.title}}</td>
+                <td>{{event.description}}</td>
+                <td>{{event.owner?.name}}</td>
+                <td>{{event.places}}</td>
 
                 <td class="table-row__actions">
                     <button (click)="editEvent(event)" pButton pRipple icon="pi pi-pencil"

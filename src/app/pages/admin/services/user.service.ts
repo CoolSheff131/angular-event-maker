@@ -10,61 +10,14 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  deleteUser(user: User) {
-    this.apiService
-      .deleteUser(user.id)
-      .pipe(tap(() => this.getAllUsers()))
-      .subscribe();
-  }
-  updateUserStudent(
-    id: string,
-    login: string,
-    password: string,
-    userName: string,
-    email: string,
-    group: Group
-  ) {
-    this.apiService
-      .updateUserStudent(id, {
-        login,
-        password,
-        email: email,
-        name: userName,
-        group: group,
-      })
-      .pipe(tap(() => this.getAllUsers()))
-      .subscribe();
-  }
-  createUserStudent(
-    userPasword: string,
-    login: string,
-    userName: string,
-    email: string,
-    group: Group
-  ) {
-    this.apiService
-      .createUserStudent({
-        id: '',
-        login: login,
-        password: userPasword,
-        name: userName,
-        email: email,
-        group: group,
-        role: 'student',
-      })
-      .pipe(tap(() => this.getAllUsers()))
-      .subscribe();
-  }
   private allStudents = new Subject<UserStudent[]>();
+  private authedUser = new Subject<User | undefined>();
+  private loginStatus = new Subject<
+    'waiting' | 'success' | 'error' | 'pending'
+  >();
 
   allStudents$ = this.allStudents.asObservable();
-
-  private authedUser = new Subject<User | undefined>();
-
   authedUser$ = this.authedUser.asObservable();
-
-  private loginStatus = new Subject<'success' | 'error' | 'pending'>();
-
   loginStatus$ = this.loginStatus.asObservable();
 
   constructor(private readonly apiService: ApiService) {
@@ -88,9 +41,56 @@ export class UserService {
   }
 
   unauthorizeUser() {
-    console.log('asd');
     this.apiService.unauthorize();
     this.authedUser.next(undefined);
+  }
+
+  deleteUser(user: User) {
+    this.apiService
+      .deleteUser(user.id)
+      .pipe(tap(() => this.getAllUsers()))
+      .subscribe();
+  }
+
+  updateUserStudent(
+    id: string,
+    login: string,
+    password: string,
+    userName: string,
+    email: string,
+    group: Group
+  ) {
+    this.apiService
+      .updateUserStudent(id, {
+        login,
+        password,
+        email: email,
+        name: userName,
+        group: group,
+      })
+      .pipe(tap(() => this.getAllUsers()))
+      .subscribe();
+  }
+
+  createUserStudent(
+    userPasword: string,
+    login: string,
+    userName: string,
+    email: string,
+    group: Group
+  ) {
+    this.apiService
+      .createUserStudent({
+        id: '',
+        login: login,
+        password: userPasword,
+        name: userName,
+        email: email,
+        group: group,
+        role: 'student',
+      })
+      .pipe(tap(() => this.getAllUsers()))
+      .subscribe();
   }
 
   login(login: string, password: string) {
@@ -101,7 +101,7 @@ export class UserService {
         this.loginStatus.next('success');
         this.authedUser.next(user);
       },
-      error: (user) => {
+      error: () => {
         this.loginStatus.next('error');
       },
     });

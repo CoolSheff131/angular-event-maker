@@ -29,6 +29,7 @@ export class AdminGroupsComponent {
     this.isEditing = true;
     this.groupIdEdit = group.id;
     this.groupForm.controls.groupName.setValue(group.name);
+    this.openAddDialog();
   }
   deleteGroup(group: Group) {
     this.groupService.deleteGroup(group);

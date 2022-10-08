@@ -12,6 +12,40 @@ import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  updateEventReview(
+    id: string,
+    eventReview: Partial<EventReview>,
+    images: File[]
+  ) {
+    const formData = new FormData();
+    images.forEach((file) => {
+      formData.append('images[]', file);
+    });
+    formData.append('reviewer', JSON.stringify(eventReview.reviewer));
+    formData.append('text', eventReview.text!);
+    return this.httpService.patch(
+      this.API_URL + `event-reviews/${id}`,
+      formData
+    );
+  }
+
+  deleteEventReview(id: string) {
+    return this.httpService.delete(this.API_URL + `event-reviews/${id}`);
+  }
+
+  updateEvent(id: string, event: Event, images: File[]) {
+    const formData = new FormData();
+    images.forEach((file) => {
+      formData.append('images[]', file);
+    });
+    formData.append('title', event.title);
+    formData.append('description', event.description);
+    formData.append('owner', JSON.stringify(event.owner));
+    formData.append('places', JSON.stringify(event.places));
+    formData.append('groups', JSON.stringify(event.groups));
+    formData.append('days', JSON.stringify(event.days));
+    return this.httpService.patch(this.API_URL + `event/${id}`, formData);
+  }
   updateAuditory(auditoryToEditId: string, auditory: Partial<Auditory>) {
     return this.httpService.patch(
       this.API_URL + `auditories/${auditoryToEditId}`,

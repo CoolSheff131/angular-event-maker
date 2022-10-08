@@ -18,8 +18,8 @@ export class AuditoryService {
       .subscribe();
   }
   private auditories = new Subject<Auditory[]>();
-
   auditories$ = this.auditories.asObservable();
+
   constructor(private readonly apiService: ApiService) {
     this.getAuditories();
   }
@@ -32,7 +32,7 @@ export class AuditoryService {
   }
 
   getAuditories() {
-    this.apiService.getGroups().subscribe({
+    this.apiService.getAuditories().subscribe({
       next: (groups) => {
         this.auditories.next(groups);
       },

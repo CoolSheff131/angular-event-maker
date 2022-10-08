@@ -1,13 +1,13 @@
 <header class="header">
     <a [routerLink]="'/'" class="header__title">
-        <h1>Автоматизированная система для проведения мероприятий</h1>
+        <h1>Автоматизированная система по организации мероприятий профкомом ИРНИТУ</h1>
     </a>
     <div class="user" (click)="onUserClick()">
 
         <button pButton type="button" [label]="authedUser!.name" class="p-button-text"
             *ngIf="isLogged; else login"></button>
         <ng-template #login>
-            <p-button label="Войти или зарегестрироваться"></p-button>
+            <p-button label="Войти или зарегестрироваться" p-tooltip="Заполните все поля"></p-button>
         </ng-template>
     </div>
 </header>
@@ -15,7 +15,6 @@
     <div *ngIf="isLogged; else loginForm" class="menu">
         <div *ngIf="authedUser?.role === 'admin'; else studentMenu">
             <div class="menu__title">
-                <!-- {{authedUser!.name}} -->
                 Администратор
             </div>
             <a [routerLink]="'/events'" pButton type="button" label="Мероприятия" class="p-button-text menu__item">
@@ -60,17 +59,19 @@
                     <span class="p-field p-fluid">
                         <label for="signInPassword"
                             [class.form__error-msg]="signInForm.controls.signInPassword.invalid && signInForm.controls.signInPassword.touched">Пароль</label>
-                        <input id="signInPassword" [class.ng-dirty]="signInForm.controls.signInPassword.touched"
-                            [class.ng-invalid]="
+                        <input p-tooltip="Заполните все поля" tooltipEvent="focus" id="signInPassword"
+                            [class.ng-dirty]="signInForm.controls.signInPassword.touched" [class.ng-invalid]="
                         signInForm.controls.signInPassword.invalid" name="signInPassword"
                             formControlName="signInPassword" type="password" pInputText />
                         <small
                             *ngIf="signInForm.controls.signInPassword.invalid && signInForm.controls.signInPassword.touched"
-                            id="signInLogin" class="form__error-msg">Введите логин</small>
+                            id="signInLogin" class="form__error-msg">Введите пароль</small>
                     </span>
-                    <p-button type="submit" label="Войти" [disabled]="signInForm.invalid && signInForm.touched">
+                    <p-button type="submit" label="Войти" p-tooltip="Заполните все поля" tooltipEvent="hover"
+                        [disabled]="signInForm.invalid && signInForm.touched">
                     </p-button>
-
+                    <small *ngIf="loginStatus ==='error'" id="signInLogin" class="form__error-msg">Неправильный логин
+                        или пароль</small>
                 </form>
             </p-tabPanel>
             <p-tabPanel header="Регистрация">
