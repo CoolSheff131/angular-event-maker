@@ -1,14 +1,7 @@
-import { getLocaleDateFormat } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import {
-  addDays,
-  differenceInDays,
-  getDate,
-  getHours,
-  getMinutes,
-} from 'date-fns';
+import { addDays, getHours, getMinutes } from 'date-fns';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
@@ -34,6 +27,7 @@ export class AdminEventsComponent {
   allAuditories: Auditory[] = [];
   allGroups: Group[] = [];
   allUsers: User[] = [];
+  idEditing = '';
 
   eventForm = new FormGroup({
     eventTitle: new FormControl<string | null>('', [Validators.required]),
@@ -46,15 +40,14 @@ export class AdminEventsComponent {
     eventDays: new FormArray<
       FormGroup<{
         auditory: FormControl<Auditory | null>;
-        startDate: FormControl<Date | null>;
+        date: FormControl<Date | null>;
       }>
-    >([]),
+    >([], [Validators.required]),
   });
 
-  eventRange: FormControl<[Date, Date | null] | null>;
+  eventRange: FormControl<Date[] | null>;
 
   previewImagesUrls: SafeUrl[] | undefined;
-  images: undefined | FileList;
 
   constructor(
     private readonly eventService: EventService,
@@ -91,10 +84,23 @@ export class AdminEventsComponent {
   deleteEvent(event: Event) {
     this.eventService.deleteEvent(event);
   }
+
   editEvent(event: Event) {
+    this.idEditing = event.id;
     this.isEditing = true;
     this.formDialog = true;
+    // this.eventForm.setValue({
+    //   eventDays: event.days,
+    //   eventDescription: event.description,
+    //   eventGroups: event.groups,
+    //   eventImages: event.images,
+    //   eventOwner: event.owner,
+    //   eventPlaces: event.places,
+    //   eventTags: event.tags,
+    //   eventTitle: event.title,
+    // });
   }
+
   getFormsControls(): FormArray {
     return this.eventForm.controls.eventDays as FormArray;
   }
@@ -119,15 +125,19 @@ export class AdminEventsComponent {
   }
 
   handleFileChange(event: any) {
-    this.images = event.target.files;
-    if (this.images) {
-      this.previewImagesUrls = Array.from(this.images).map((f) =>
-        this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
+    this.eventForm.controls.eventImages.setValue(
+      Array.from(event.target.files)
+    );
+    if (this.eventForm.controls.eventImages.value) {
+      this.previewImagesUrls = this.eventForm.controls.eventImages.value.map(
+        (f) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
       );
     }
   }
+
   onSubmitForm() {
     if (this.eventForm.invalid) {
+      console.log(this.eventForm);
       this.eventForm.markAllAsTouched();
       return;
     }
@@ -135,47 +145,62 @@ export class AdminEventsComponent {
     this.eventForm.controls.eventDays.value.forEach((value, i) => {
       days.push({
         id: '',
-        day: this.getDayFromStart(i),
+        date: value.date!,
         auditory: value.auditory!,
-        timeStart: `${getHours(value.startDate!)}:${getMinutes(
-          value.startDate!
-        )}`,
       });
     });
 
-    this.eventService.createEvent(
-      this.images!,
-      this.eventForm.controls.eventTitle.value!,
-      this.eventForm.controls.eventDescription.value!,
-      this.eventForm.controls.eventOwner.value!,
-      this.eventForm.controls.eventPlaces.value!,
-      this.eventForm.controls.eventGroups.value!,
-      days
-    );
+    const {
+      eventImages,
+      eventDescription,
+      eventGroups,
+      eventOwner,
+      eventPlaces,
+      eventTitle,
+      eventTags,
+    } = this.eventForm.value;
+
+    if (this.isEditing) {
+      this.eventService.updateEvent(
+        this.idEditing,
+        eventImages!,
+        eventTitle!,
+        eventDescription!,
+        eventOwner!,
+        eventPlaces!,
+        eventGroups!,
+        days,
+        eventTags!
+      );
+    } else {
+      this.eventService.createEvent(
+        eventImages!,
+        eventTitle!,
+        eventDescription!,
+        eventOwner!,
+        eventPlaces!,
+        eventGroups!,
+        days,
+        eventTags!
+      );
+    }
   }
 
   onDateRange() {
     if (this.eventRange.value === null) {
       return;
     }
-    const [dateStart, dateEnd] = this.eventRange.value;
+    this.eventForm.controls.eventDays.clear();
 
-    if (dateEnd) {
-      const dayCount = differenceInDays(dateEnd, dateStart);
-      for (let i = 0; i <= dayCount; i++) {
-        this.eventForm.controls.eventDays.push(
-          new FormGroup({
-            auditory: new FormControl<Auditory | null>(null, [
-              Validators.required,
-            ]),
-            startDate: new FormControl<Date | null>(null, [
-              Validators.required,
-            ]),
-          })
-        );
-      }
-    } else {
-      this.eventForm.controls.eventDays.clear();
-    }
+    this.eventRange.value.forEach((date) => {
+      this.eventForm.controls.eventDays.push(
+        new FormGroup({
+          auditory: new FormControl<Auditory | null>(null, [
+            Validators.required,
+          ]),
+          date: new FormControl<Date | null>(date, [Validators.required]),
+        })
+      );
+    });
   }
 }

@@ -43,6 +43,9 @@ import { AdminModule } from './pages/admin/admin.module';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { TooltipModule } from 'primeng/tooltip';
+
+import { ImageModule } from 'primeng/image';
+
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -92,6 +95,8 @@ const routes: Routes = [
     TooltipModule,
 
     AdminModule,
+
+    ImageModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

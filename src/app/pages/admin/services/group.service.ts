@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Subject, tap } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { ApiService } from '../../../api/api.service';
 import { Group } from '../../../api/interfaces/group.interface';
 
 @Injectable({ providedIn: 'root' })
 export class GroupService {
-  updateGroup(id: string, groupName: string) {
-    this.apiService
-      .updateGroup(id, { name: groupName })
-      .pipe(tap(() => this.getGroups()))
-      .subscribe();
-  }
-  private groups = new Subject<Group[]>();
+  private groups = new BehaviorSubject<Group[]>([]);
 
   groups$ = this.groups.asObservable();
 
@@ -37,6 +31,12 @@ export class GroupService {
   deleteGroup(group: Group) {
     this.apiService
       .deleteGroup(group.id)
+      .pipe(tap(() => this.getGroups()))
+      .subscribe();
+  }
+  updateGroup(id: string, groupName: string) {
+    this.apiService
+      .updateGroup(id, { name: groupName })
       .pipe(tap(() => this.getGroups()))
       .subscribe();
   }

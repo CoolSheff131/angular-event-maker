@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, tap } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { User } from 'src/app/api/interfaces/user.interface';
 import { ApiService } from '../../../api/api.service';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
@@ -8,7 +8,7 @@ import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class EventReviewService {
-  private eventReviews = new Subject<EventReview[]>();
+  private eventReviews = new BehaviorSubject<EventReview[]>([]);
 
   eventReviews$ = this.eventReviews.asObservable();
 

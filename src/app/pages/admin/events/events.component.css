@@ -12,6 +12,20 @@
   padding: 20px;
   padding-bottom: 40px;
 }
+
+.uploaded__images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.uploaded__image {
+  display: block;
+  max-height: 250px;
+  height: auto;
+  width: auto;
+}
+
 .form__error-msg {
   color: #e24c4c;
 }

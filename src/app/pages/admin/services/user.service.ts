@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, tap } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import { ApiService } from '../../../api/api.service';
 import {
@@ -10,8 +10,8 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private allStudents = new Subject<UserStudent[]>();
-  private authedUser = new Subject<User | undefined>();
+  private allStudents = new BehaviorSubject<UserStudent[]>([]);
+  private authedUser = new BehaviorSubject<User | undefined>(undefined);
   private loginStatus = new Subject<
     'waiting' | 'success' | 'error' | 'pending'
   >();

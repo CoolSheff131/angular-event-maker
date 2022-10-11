@@ -180,7 +180,8 @@ export class ApiService {
     owner: User,
     places: number,
     groups: Group[],
-    days: EventDay[]
+    days: EventDay[],
+    tags: EventTag[]
   ) {
     const formData = new FormData();
     images.forEach((file) => {
@@ -192,6 +193,7 @@ export class ApiService {
     formData.append('places', JSON.stringify(places));
     formData.append('groups', JSON.stringify(groups));
     formData.append('days', JSON.stringify(days));
+    formData.append('tags', JSON.stringify(tags));
 
     return this.httpService.post<Event>(this.API_URL + 'events', formData);
   }

@@ -54,7 +54,7 @@
 </div>
 
 <p-sidebar [(visible)]="formDialog" position="bottom" [fullScreen]="true">
-    <h1>{{isEditing? 'Редактирование студента': 'Добавление студента'}}</h1>
+    <h1>{{isEditing? 'Редактирование мероприятия': 'Добавление мероприятия'}}</h1>
     <form [formGroup]=" eventForm" novalidate (ngSubmit)="onSubmitForm()" class="form">
 
         <span class="p-field p-fluid">
@@ -93,14 +93,18 @@
             <small *ngIf="eventForm.controls.eventPlaces.invalid && eventForm.controls.eventPlaces.touched"
                 id="userGroupControl" class="form__error-msg">Введите количество мест</small>
         </span>
-
-        <p-dropdown [options]="allUsers" [class.ng-invalid]="
+        <span class="p-field p-fluid">
+            <label
+                [class.form__error-msg]="eventForm.controls.eventOwner.invalid && eventForm.controls.eventOwner.touched"
+                for="float-places">Выберите организатора мероприятия</label>
+            <p-dropdown [options]="allUsers" [class.ng-invalid]="
         eventForm.controls.eventOwner.invalid" optionLabel="name" formControlName="eventOwner"></p-dropdown>
+        </span>
 
         <span class="p-field p-fluid">
             <label
                 [class.form__error-msg]="eventForm.controls.eventGroups.invalid && eventForm.controls.eventGroups.touched"
-                for="float-groups">Выберите группы</label>
+                for="float-groups">Выберите учебные группы, для которых проводиться мероприятие</label>
             <p-multiSelect [class.ng-invalid]="
             eventForm.controls.eventGroups.invalid" name="eventGroups" formControlName="eventGroups"
                 [options]="allGroups" optionLabel="name" display="chip">
@@ -122,8 +126,8 @@
             <small *ngIf="eventForm.controls.eventTags.invalid && eventForm.controls.eventTags.touched"
                 id="userGroupControl" class="form__error-msg">Выберите теги</small>
         </span>
-        <div *ngIf="previewImagesUrls">
-            <img *ngFor="let img of previewImagesUrls" [src]="img">
+        <div *ngIf="previewImagesUrls" class="uploaded__images">
+            <img *ngFor="let img of previewImagesUrls" [src]="img" alt="Image" class="uploaded__image" />
         </div>
 
         <div class="file-upload">
@@ -131,17 +135,19 @@
             <p-button type="button" label="Загрузить изображения" (click)="fileUpload.click()"></p-button>
         </div>
 
-        <p-calendar selectionMode="range" name="eventDateRange" [formControl]="eventRange"
-            (ngModelChange)="onDateRange()">
-        </p-calendar>
+        <span class="p-field p-fluid">
+            <label for="float-groups">Укажите время с какое по какое будет проходить мероприятие</label>
+            <p-calendar selectionMode="multiple" name="eventDateRange" [formControl]="eventRange"
+                (ngModelChange)="onDateRange()">
+            </p-calendar>
+        </span>
 
         <div *ngIf=" eventForm.controls.eventDays.controls.length > 0" formArrayName="eventDays">
             <ng-container *ngFor="let dayGroup of eventForm.controls.eventDays.controls; let i = index">
 
                 <div class="form-field" [formGroup]="dayGroup">
-                    <span>Укажите время в {{getDayFormat(getDayFromStart(i))}}</span>
-                    <span>С</span>
-                    <p-calendar [timeOnly]="true" formControlName="startDate"></p-calendar>
+                    <span>Укажите время начала {{ dayGroup.value.date | date }}</span>
+                    <p-calendar [timeOnly]="true" formControlName="date"></p-calendar>
                     <span>Выберите аудитории</span>
                     <p-dropdown [options]="allAuditories" optionLabel="name" formControlName="auditory">
                     </p-dropdown>
@@ -149,8 +155,8 @@
             </ng-container>
         </div>
         <footer>
-            <button [disabled]="eventForm.invalid && eventForm.touched" pButton pRipple
-                [label]="isEditing? 'Сохранить': 'Добавить'" type="submit"></button>
+            <button [disabled]="false" pButton pRipple [label]="isEditing? 'Сохранить': 'Добавить'"
+                type="submit"></button>
 
             <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
                 (click)="closeDialog()"></button>
