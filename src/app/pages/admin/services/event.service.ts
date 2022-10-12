@@ -44,6 +44,13 @@ export class EventService {
       .subscribe();
   }
 
+  goingToEvent(event: Event, user: any) {
+    this.apiService
+      .goingToEvent(event, user)
+      .pipe(tap(() => this.getEvents()))
+      .subscribe();
+  }
+
   deleteEvent(event: Event) {
     this.apiService
       .deleteEvent(event.id)

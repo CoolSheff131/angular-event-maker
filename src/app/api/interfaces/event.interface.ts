@@ -15,7 +15,11 @@ export interface Event {
   tags: EventTag[];
   images: string[];
   days: EventDay[];
-  peopleWillCome?: User[];
-  peopleCame?: User[];
-  reviews?: EventReview[];
+
+  peopleWillCome: User[];
+  peopleCame: User[];
+  reviews: EventReview[];
+
+  createdAt: Date;
+  updatedAt: Date;
 }

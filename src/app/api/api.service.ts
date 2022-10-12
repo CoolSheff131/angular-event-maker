@@ -12,6 +12,12 @@ import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  goingToEvent(event: Event, user: any) {
+    return this.httpService.patch(
+      this.API_URL + `events/goingToEvent/${event.id}`,
+      user
+    );
+  }
   updateEventReview(
     id: string,
     eventReview: Partial<EventReview>,
@@ -33,20 +39,19 @@ export class ApiService {
     return this.httpService.delete(this.API_URL + `event-reviews/${id}`);
   }
 
-  updateEvent(id: string, event: Event, images: File[] | null) {
+  updateEvent(id: string, event: Partial<Event>, images: File[] | null) {
     const formData = new FormData();
     if (images !== null) {
       images.forEach((file) => {
         formData.append('images[]', file);
       });
     }
-    formData.append('title', event.title);
-    formData.append('description', event.description);
-    formData.append('owner', JSON.stringify(event.owner));
-    formData.append('places', JSON.stringify(event.places));
-    formData.append('groups', JSON.stringify(event.groups));
-    formData.append('days', JSON.stringify(event.days));
-    formData.append('tags', JSON.stringify(event.tags));
+
+    Object.entries(event).forEach(([key, value]) => {
+      if (value) {
+        formData.append(key, JSON.stringify(value));
+      }
+    });
 
     return this.httpService.patch(this.API_URL + `events/${id}`, formData);
   }
