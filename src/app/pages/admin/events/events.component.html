@@ -4,7 +4,6 @@
             <button pButton pRipple label="Добавить" (click)="openAddDialog()" icon="pi pi-plus"
                 class="p-button-success mr-2"></button>
         </ng-template>
-
     </p-toolbar>
 
     <p-table [value]="events" dataKey="id" [rowHover]="true">
@@ -19,23 +18,27 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="name">Название <p-sortIcon field="title"></p-sortIcon>
-                </th>
-                <th pSortableColumn="name">Описание <p-sortIcon field="description"></p-sortIcon>
-                </th>
-                <th pSortableColumn="name">Создатель
-                </th>
-                <th pSortableColumn="name">Кол-во мест
-                </th>
+                <th pSortableColumn="name">Название</th>
+                <th pSortableColumn="name">Описание</th>
+                <th pSortableColumn="name">Создатель</th>
+                <th pSortableColumn="name">Кол-во мест</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-event>
             <tr class="table-row">
-
-                <td>{{event.title}}</td>
-                <td>{{event.description}}</td>
-                <td>{{event.owner?.name}}</td>
-                <td>{{event.places}}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.owner?.name }}</td>
+                <td>{{ event.places }}</td>
+                <td>
+                    <img *ngFor="let img of event.images" [src]="img" alt="Image" class="uploaded__image" />
+                </td>
+                <td>
+                    <p-tag *ngFor="let tag of event.tags" [value]="tag.name"></p-tag>
+                </td>
+                <td>
+                    <p-tag *ngFor="let group of event.groups" [value]="group.name"></p-tag>
+                </td>
 
                 <td class="table-row__actions">
                     <button (click)="editEvent(event)" pButton pRipple icon="pi pi-pencil"
@@ -47,104 +50,116 @@
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="flex align-items-center justify-content-between">
-                Всего {{events.length}} мероприятий.
+                Всего {{ events.length }} мероприятий.
             </div>
         </ng-template>
     </p-table>
 </div>
 
 <p-sidebar [(visible)]="formDialog" position="bottom" [fullScreen]="true">
-    <h1>{{isEditing? 'Редактирование мероприятия': 'Добавление мероприятия'}}</h1>
-    <form [formGroup]=" eventForm" novalidate (ngSubmit)="onSubmitForm()" class="form">
-
+    <h1>
+        {{ isEditing ? "Редактирование мероприятия" : "Добавление мероприятия" }}
+    </h1>
+    <form [formGroup]="eventForm" novalidate (ngSubmit)="onSubmitForm()" class="form">
         <span class="p-field p-fluid">
-            <label
-                [class.form__error-msg]="eventForm.controls.eventTitle.invalid && eventForm.controls.eventTitle.touched"
-                for="eventTitle">Название мероприятия</label>
-            <input [class.ng-invalid]="
-            eventForm.controls.eventTitle.invalid" id="eventTitle" name="eventTitle" formControlName="eventTitle"
-                type="text" pInputText>
-            <small *ngIf="eventForm.controls.eventTitle.invalid && eventForm.controls.eventTitle.touched"
-                id="userGroupControl" class="form__error-msg">Введите название мероприятия</small>
+            <label [class.form__error-msg]="
+          eventForm.controls.eventTitle.invalid &&
+          eventForm.controls.eventTitle.touched
+        " for="eventTitle">Название мероприятия</label>
+            <input [class.ng-invalid]="eventForm.controls.eventTitle.invalid" id="eventTitle" name="eventTitle"
+                formControlName="eventTitle" type="text" pInputText />
+            <small *ngIf="
+          eventForm.controls.eventTitle.invalid &&
+          eventForm.controls.eventTitle.touched
+        " id="userGroupControl" class="form__error-msg">Введите название мероприятия</small>
         </span>
 
         <span class="p-field p-fluid">
-            <label
-                [class.form__error-msg]="eventForm.controls.eventDescription.invalid && eventForm.controls.eventDescription.touched"
-                for="float-textarea">Описание мероприятия</label>
-            <textarea [class.ng-invalid]="
-            eventForm.controls.eventDescription.invalid" id="float-textarea" name="eventDescription"
-                formControlName="eventDescription" pInputTextarea></textarea>
-            <small *ngIf="eventForm.controls.eventDescription.invalid && eventForm.controls.eventDescription.touched"
-                id="userGroupControl" class="form__error-msg">Введите описание мероприятия</small>
+            <label [class.form__error-msg]="
+          eventForm.controls.eventDescription.invalid &&
+          eventForm.controls.eventDescription.touched
+        " for="float-textarea">Описание мероприятия</label>
+            <textarea [class.ng-invalid]="eventForm.controls.eventDescription.invalid" id="float-textarea"
+                name="eventDescription" formControlName="eventDescription" pInputTextarea></textarea>
+            <small *ngIf="
+          eventForm.controls.eventDescription.invalid &&
+          eventForm.controls.eventDescription.touched
+        " id="userGroupControl" class="form__error-msg">Введите описание мероприятия</small>
         </span>
 
         <span class="p-field p-fluid">
-            <label
-                [class.form__error-msg]="eventForm.controls.eventPlaces.invalid && eventForm.controls.eventPlaces.touched"
-                for="float-places">Кол-во мест</label>
-            <p-inputNumber [class.ng-invalid]="
-            eventForm.controls.eventPlaces.invalid" formControlName="eventPlaces" name="eventPlaces" id="float-places"
-                [min]="0" [max]="100" [showButtons]="true" incrementButtonIcon="pi pi-plus"
-                decrementButtonIcon="pi pi-minus">
+            <label [class.form__error-msg]="
+          eventForm.controls.eventPlaces.invalid &&
+          eventForm.controls.eventPlaces.touched
+        " for="float-places">Кол-во мест</label>
+            <p-inputNumber [class.ng-invalid]="eventForm.controls.eventPlaces.invalid" formControlName="eventPlaces"
+                name="eventPlaces" id="float-places" [min]="0" [max]="100" [showButtons]="true"
+                incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus">
             </p-inputNumber>
 
-
-            <small *ngIf="eventForm.controls.eventPlaces.invalid && eventForm.controls.eventPlaces.touched"
-                id="userGroupControl" class="form__error-msg">Введите количество мест</small>
+            <small *ngIf="
+          eventForm.controls.eventPlaces.invalid &&
+          eventForm.controls.eventPlaces.touched
+        " id="userGroupControl" class="form__error-msg">Введите количество мест</small>
         </span>
         <span class="p-field p-fluid">
-            <label
-                [class.form__error-msg]="eventForm.controls.eventOwner.invalid && eventForm.controls.eventOwner.touched"
-                for="float-places">Выберите организатора мероприятия</label>
-            <p-dropdown [options]="allUsers" [class.ng-invalid]="
-        eventForm.controls.eventOwner.invalid" optionLabel="name" formControlName="eventOwner"></p-dropdown>
+            <label [class.form__error-msg]="
+          eventForm.controls.eventOwner.invalid &&
+          eventForm.controls.eventOwner.touched
+        " for="float-places">Выберите организатора мероприятия</label>
+            <p-dropdown [options]="allUsers" [class.ng-invalid]="eventForm.controls.eventOwner.invalid"
+                optionLabel="name" formControlName="eventOwner"></p-dropdown>
         </span>
 
         <span class="p-field p-fluid">
-            <label
-                [class.form__error-msg]="eventForm.controls.eventGroups.invalid && eventForm.controls.eventGroups.touched"
-                for="float-groups">Выберите учебные группы, для которых проводиться мероприятие</label>
-            <p-multiSelect [class.ng-invalid]="
-            eventForm.controls.eventGroups.invalid" name="eventGroups" formControlName="eventGroups"
-                [options]="allGroups" optionLabel="name" display="chip">
+            <label [class.form__error-msg]="
+          eventForm.controls.eventGroups.invalid &&
+          eventForm.controls.eventGroups.touched
+        " for="float-groups">Выберите учебные группы, для которых проводиться мероприятие</label>
+            <p-multiSelect [class.ng-invalid]="eventForm.controls.eventGroups.invalid" name="eventGroups"
+                formControlName="eventGroups" [options]="allGroups" optionLabel="name" display="chip">
             </p-multiSelect>
 
-            <small *ngIf="eventForm.controls.eventGroups.invalid && eventForm.controls.eventGroups.touched"
-                id="userGroupControl" class="form__error-msg">Выберите группы</small>
+            <small *ngIf="
+          eventForm.controls.eventGroups.invalid &&
+          eventForm.controls.eventGroups.touched
+        " id="userGroupControl" class="form__error-msg">Выберите группы</small>
         </span>
 
         <span class="p-field p-fluid">
-            <label
-                [class.form__error-msg]="eventForm.controls.eventTags.invalid && eventForm.controls.eventTags.touched"
-                for="float-groups">Укажите теги</label>
-            <p-multiSelect [class.ng-invalid]="
-            eventForm.controls.eventTags.invalid" name="eventTags" formControlName="eventTags" [options]="allEventTags"
-                optionLabel="name" display="chip">
+            <label [class.form__error-msg]="
+          eventForm.controls.eventTags.invalid &&
+          eventForm.controls.eventTags.touched
+        " for="float-groups">Укажите теги</label>
+            <p-multiSelect [class.ng-invalid]="eventForm.controls.eventTags.invalid" name="eventTags"
+                formControlName="eventTags" [options]="allEventTags" optionLabel="name" display="chip">
             </p-multiSelect>
 
-            <small *ngIf="eventForm.controls.eventTags.invalid && eventForm.controls.eventTags.touched"
-                id="userGroupControl" class="form__error-msg">Выберите теги</small>
+            <small *ngIf="
+          eventForm.controls.eventTags.invalid &&
+          eventForm.controls.eventTags.touched
+        " id="userGroupControl" class="form__error-msg">Выберите теги</small>
         </span>
         <div *ngIf="previewImagesUrls" class="uploaded__images">
             <img *ngFor="let img of previewImagesUrls" [src]="img" alt="Image" class="uploaded__image" />
         </div>
 
         <div class="file-upload">
-            <input type="file" class="file-input" multiple hidden (change)="handleFileChange($event)" #fileUpload>
+            <input type="file" class="file-input" multiple hidden (change)="handleFileChange($event)" #fileUpload />
             <p-button type="button" label="Загрузить изображения" (click)="fileUpload.click()"></p-button>
         </div>
 
         <span class="p-field p-fluid">
             <label for="float-groups">Укажите время с какое по какое будет проходить мероприятие</label>
-            <p-calendar selectionMode="multiple" name="eventDateRange" [formControl]="eventRange"
-                (ngModelChange)="onDateRange()">
+            <p-calendar selectionMode="multiple" name="eventDateRange" [formControl]="eventRange">
             </p-calendar>
         </span>
 
-        <div *ngIf=" eventForm.controls.eventDays.controls.length > 0" formArrayName="eventDays">
-            <ng-container *ngFor="let dayGroup of eventForm.controls.eventDays.controls; let i = index">
-
+        <div *ngIf="eventForm.controls.eventDays.controls.length > 0" formArrayName="eventDays">
+            <ng-container *ngFor="
+          let dayGroup of eventForm.controls.eventDays.controls;
+          let i = index
+        ">
                 <div class="form-field" [formGroup]="dayGroup">
                     <span>Укажите время начала {{ dayGroup.value.date | date }}</span>
                     <p-calendar [timeOnly]="true" formControlName="date"></p-calendar>
@@ -155,15 +170,11 @@
             </ng-container>
         </div>
         <footer>
-            <button [disabled]="false" pButton pRipple [label]="isEditing? 'Сохранить': 'Добавить'"
+            <button [disabled]="false" pButton pRipple [label]="isEditing ? 'Сохранить' : 'Добавить'"
                 type="submit"></button>
 
             <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
                 (click)="closeDialog()"></button>
         </footer>
     </form>
-
-
-
-
 </p-sidebar>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { addDays, getHours, getMinutes } from 'date-fns';
+import { filter, pipe } from 'rxjs';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
@@ -36,7 +37,7 @@ export class AdminEventsComponent {
     eventPlaces: new FormControl<number | null>(1, [Validators.required]),
     eventGroups: new FormControl<Group[] | null>(null, [Validators.required]),
     eventTags: new FormControl<EventTag[] | null>(null, [Validators.required]),
-    eventImages: new FormControl<File[] | null>(null, [Validators.required]),
+    eventImages: new FormControl<File[] | null>(null),
     eventDays: new FormArray<
       FormGroup<{
         auditory: FormControl<Auditory | null>;
@@ -79,6 +80,27 @@ export class AdminEventsComponent {
     this.eventRange = new FormControl<[Date, Date] | null>(null, [
       Validators.required,
     ]);
+
+    this.eventRange.valueChanges
+      .pipe(pipe(filter((value) => Boolean(value))))
+      .subscribe((dates) => {
+        if (dates === null) {
+          return;
+        }
+        this.eventForm.controls.eventDays.clear();
+
+        dates.forEach((date) => {
+          console.log('RESET');
+          this.eventForm.controls.eventDays.push(
+            new FormGroup({
+              auditory: new FormControl<Auditory | null>(null, [
+                Validators.required,
+              ]),
+              date: new FormControl<Date | null>(date, [Validators.required]),
+            })
+          );
+        });
+      });
   }
 
   deleteEvent(event: Event) {
@@ -89,16 +111,33 @@ export class AdminEventsComponent {
     this.idEditing = event.id;
     this.isEditing = true;
     this.formDialog = true;
-    // this.eventForm.setValue({
-    //   eventDays: event.days,
-    //   eventDescription: event.description,
-    //   eventGroups: event.groups,
-    //   eventImages: event.images,
-    //   eventOwner: event.owner,
-    //   eventPlaces: event.places,
-    //   eventTags: event.tags,
-    //   eventTitle: event.title,
-    // });
+    console.log(event);
+    this.eventForm.reset();
+    console.log('1');
+    this.previewImagesUrls = event.images;
+    this.eventForm.patchValue({
+      eventDays: [],
+      eventDescription: event.description,
+      eventGroups: event.groups,
+      eventOwner: event.owner,
+      eventPlaces: event.places,
+      eventTags: event.tags,
+      eventTitle: event.title,
+      eventImages: null,
+    });
+    console.log('2');
+
+    this.eventRange.setValue(event.days.map((d) => new Date(d.date)));
+    console.log('3');
+
+    this.eventForm.controls.eventDays.controls.forEach((control, index) => {
+      console.log(control.controls.date);
+      console.log(event.days[index].date);
+      console.log(control.controls.auditory);
+      console.log(event.days[index].auditory);
+      control.controls.auditory.patchValue(event.days[index].auditory);
+      control.controls.date.patchValue(new Date(event.days[index].date));
+    });
   }
 
   getFormsControls(): FormArray {
@@ -161,6 +200,7 @@ export class AdminEventsComponent {
     } = this.eventForm.value;
 
     if (this.isEditing) {
+      console.log(this.idEditing);
       this.eventService.updateEvent(
         this.idEditing,
         eventImages!,
@@ -184,23 +224,5 @@ export class AdminEventsComponent {
         eventTags!
       );
     }
-  }
-
-  onDateRange() {
-    if (this.eventRange.value === null) {
-      return;
-    }
-    this.eventForm.controls.eventDays.clear();
-
-    this.eventRange.value.forEach((date) => {
-      this.eventForm.controls.eventDays.push(
-        new FormGroup({
-          auditory: new FormControl<Auditory | null>(null, [
-            Validators.required,
-          ]),
-          date: new FormControl<Date | null>(date, [Validators.required]),
-        })
-      );
-    });
   }
 }

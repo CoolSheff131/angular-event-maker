@@ -33,18 +33,22 @@ export class ApiService {
     return this.httpService.delete(this.API_URL + `event-reviews/${id}`);
   }
 
-  updateEvent(id: string, event: Event, images: File[]) {
+  updateEvent(id: string, event: Event, images: File[] | null) {
     const formData = new FormData();
-    images.forEach((file) => {
-      formData.append('images[]', file);
-    });
+    if (images !== null) {
+      images.forEach((file) => {
+        formData.append('images[]', file);
+      });
+    }
     formData.append('title', event.title);
     formData.append('description', event.description);
     formData.append('owner', JSON.stringify(event.owner));
     formData.append('places', JSON.stringify(event.places));
     formData.append('groups', JSON.stringify(event.groups));
     formData.append('days', JSON.stringify(event.days));
-    return this.httpService.patch(this.API_URL + `event/${id}`, formData);
+    formData.append('tags', JSON.stringify(event.tags));
+
+    return this.httpService.patch(this.API_URL + `events/${id}`, formData);
   }
   updateAuditory(auditoryToEditId: string, auditory: Partial<Auditory>) {
     return this.httpService.patch(

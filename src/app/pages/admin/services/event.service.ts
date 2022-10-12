@@ -15,7 +15,7 @@ export class EventService {
 
   updateEvent(
     idEditing: string,
-    images: File[],
+    images: File[] | null,
     title: string,
     description: string,
     owner: User,
@@ -24,21 +24,24 @@ export class EventService {
     days: EventDay[],
     tags: EventTag[]
   ) {
-    this.apiService.updateEvent(
-      idEditing,
-      {
-        id: idEditing,
-        days,
-        groups,
-        places,
-        owner,
-        images: [],
-        tags,
-        description,
-        title,
-      },
-      images
-    );
+    this.apiService
+      .updateEvent(
+        idEditing,
+        {
+          id: idEditing,
+          days,
+          groups,
+          places,
+          owner,
+          images: [],
+          tags,
+          description,
+          title,
+        },
+        images
+      )
+      .pipe(tap(() => this.getEvents()))
+      .subscribe();
   }
 
   deleteEvent(event: Event) {
