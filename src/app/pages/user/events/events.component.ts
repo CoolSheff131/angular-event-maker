@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { User } from 'src/app/api/interfaces/user.interface';
-import { IsUserGoingToEvent } from 'src/app/utils/is-user-goind-to-event';
+import { isEventEnded } from 'src/app/utils/is-event-ended';
+import { IsUserGoingToEvent } from 'src/app/utils/is-user-going-to-event';
 import { EventService } from '../../admin/services/event.service';
 import { UserService } from '../../admin/services/user.service';
 
@@ -31,7 +32,7 @@ export class EventsComponent {
     if (!this.authedUser) {
       return;
     }
-
+    console.log(event);
     if (this.isAuthedUserGoingToEvent(event)) {
       this.eventService.notGoingToEvent(event, this.authedUser).subscribe();
     } else {

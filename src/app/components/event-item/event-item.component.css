@@ -1,0 +1,43 @@
+.event {
+  display: flex;
+  border-radius: 25px;
+  border: 1px solid var(--gray);
+  overflow: hidden;
+  max-height: 240px;
+}
+
+.event__content {
+  width: calc(100% - 240px);
+  flex-grow: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.event__preview-img-container {
+  height: 240px;
+  width: 240px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.event__preview-img {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.text_ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dates {
+  display: flex;
+  gap: 5px;
+}

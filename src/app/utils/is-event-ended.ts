@@ -8,5 +8,5 @@ import { Event } from '../api/interfaces/event.interface';
 export function isEventEnded(event: Event): boolean {
   const dates = event.days.map((d) => d.date);
   const today = new Date();
-  return dates.every((d) => d < today);
+  return dates.every((d) => new Date(d) < today);
 }

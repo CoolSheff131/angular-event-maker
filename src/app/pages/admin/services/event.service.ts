@@ -10,12 +10,30 @@ import { EventsComponent } from '../../user/events/events.component';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
-  getUserEvent(user: User) {
-    return this.apiService.getUserEvents(user);
-  }
   private events = new BehaviorSubject<Event[]>([]);
 
   events$ = this.events.asObservable();
+
+  notGoingToEvent(event: Event, user: User) {
+    return this.apiService
+      .notGoingToEvent(event, user)
+      .pipe(tap(() => this.getEvents()));
+  }
+
+  goingToEvent(event: Event, user: User) {
+    this.apiService
+      .goingToEvent(event, user)
+      .pipe(tap(() => this.getEvents()))
+      .subscribe();
+  }
+
+  getUserEvent(user: User) {
+    return this.apiService.getUserEvents(user);
+  }
+
+  constructor(private readonly apiService: ApiService) {
+    this.getEvents();
+  }
 
   updateEvent(
     idEditing: string,
@@ -48,28 +66,11 @@ export class EventService {
       .subscribe();
   }
 
-  notGoingToEvent(event: Event, user: User) {
-    return this.apiService
-      .notGoingToEvent(event, user)
-      .pipe(tap(() => this.getEvents()));
-  }
-
-  goingToEvent(event: Event, user: User) {
-    this.apiService
-      .goingToEvent(event, user)
-      .pipe(tap(() => this.getEvents()))
-      .subscribe();
-  }
-
   deleteEvent(event: Event) {
     this.apiService
       .deleteEvent(event.id)
       .pipe(tap(() => this.getEvents()))
       .subscribe();
-  }
-
-  constructor(private readonly apiService: ApiService) {
-    this.getEvents();
   }
 
   createEvent(

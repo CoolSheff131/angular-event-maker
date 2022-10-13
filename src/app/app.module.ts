@@ -45,7 +45,8 @@ import { MessageModule } from 'primeng/message';
 import { TooltipModule } from 'primeng/tooltip';
 import { ImageModule } from 'primeng/image';
 import { PersonalCabinetComponent } from './pages/user/personal-cabinet/personal-cabinet.component';
-
+import { EventItemComponent } from './components/event-item/event-item.component';
+import { ChartModule } from 'primeng/chart';
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -64,6 +65,7 @@ const routes: Routes = [
     EventsComponent,
     EventComponent,
     PersonalCabinetComponent,
+    EventItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,7 +101,7 @@ const routes: Routes = [
     MessagesModule,
     MessageModule,
     TooltipModule,
-
+    ChartModule,
     AdminModule,
 
     ImageModule,
