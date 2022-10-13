@@ -12,6 +12,12 @@ import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  notGoingToEvent(event: Event, user: User) {
+    return this.httpService.patch(
+      this.API_URL + `events/notGoingToEvent/${event.id}`,
+      user
+    );
+  }
   goingToEvent(event: Event, user: any) {
     return this.httpService.patch(
       this.API_URL + `events/goingToEvent/${event.id}`,

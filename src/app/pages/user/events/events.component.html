@@ -25,8 +25,8 @@
                 <p class="event__description">{{event.description}}</p>
             </main>
             <footer>
-                <p-button [disabled]="authedUser === undefined || event.places === event.peopleWillCome.length"
-                    (onClick)="goingToEvent(event)" label="Записаться" icon="pi pi-check"></p-button>
+                <p-button [disabled]="isButtonEventItemDisalbed(event)" (onClick)="handleButtonEventItemClick(event)"
+                    [label]="isAuthedUserGoingToEvent(event)? 'Отказаться': 'Записаться'" icon="pi pi-check"></p-button>
 
             </footer>
         </div>

@@ -6,6 +6,7 @@ import { Group } from 'src/app/api/interfaces/group.interface';
 import { User } from 'src/app/api/interfaces/user.interface';
 import { ApiService } from '../../../api/api.service';
 import { Event } from '../../../api/interfaces/event.interface';
+import { EventsComponent } from '../../user/events/events.component';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
@@ -44,7 +45,14 @@ export class EventService {
       .subscribe();
   }
 
-  goingToEvent(event: Event, user: any) {
+  notGoingToEvent(event: Event, user: User) {
+    this.apiService
+      .notGoingToEvent(event, user)
+      .pipe(tap(() => this.getEvents()))
+      .subscribe();
+  }
+
+  goingToEvent(event: Event, user: User) {
     this.apiService
       .goingToEvent(event, user)
       .pipe(tap(() => this.getEvents()))
