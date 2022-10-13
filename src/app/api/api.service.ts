@@ -12,6 +12,21 @@ import { User, UserCreate, UserStudent } from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  removeConfirmPresent(event: Event, user: User) {
+    return this.httpService.patch<Event>(
+      this.API_URL + `events/${event.id}/remove-confirm-present`,
+      user
+    );
+  }
+  confirmPresent(event: Event, user: User) {
+    return this.httpService.patch<Event>(
+      this.API_URL + `events/${event.id}/confirm-present`,
+      user
+    );
+  }
+  getEvent(id: string) {
+    return this.httpService.get<Event>(this.API_URL + `events/${id}`);
+  }
   getUserEvents(user: User) {
     return this.httpService.get<Event[]>(
       this.API_URL + `events/userEvents/${user.id}`
@@ -23,7 +38,7 @@ export class ApiService {
       user
     );
   }
-  goingToEvent(event: Event, user: any) {
+  goingToEvent(event: Event, user: User) {
     return this.httpService.patch(
       this.API_URL + `events/goingToEvent/${event.id}`,
       user

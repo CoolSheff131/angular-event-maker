@@ -36,7 +36,7 @@ export class EventsComponent {
     if (this.isAuthedUserGoingToEvent(event)) {
       this.eventService.notGoingToEvent(event, this.authedUser).subscribe();
     } else {
-      this.eventService.goingToEvent(event, this.authedUser);
+      this.eventService.goingToEvent(event, this.authedUser).subscribe();
     }
   }
 

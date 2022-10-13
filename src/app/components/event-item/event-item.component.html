@@ -4,9 +4,11 @@
     </div>
     <div class="event__content">
         <header>
-            <h1 class="text_ellipsis">
-                {{event.title}}
-            </h1>
+            <a [routerLink]="['/events', event.id]" label="Аудитории" class="p-button-text menu__item">
+                <h1 class="text_ellipsis">
+                    {{event.title}}
+                </h1>
+            </a>
             <p class="event__owner text_ellipsis">
                 {{event.owner.name}}
 

@@ -41,3 +41,9 @@
 .form__error-msg {
   color: #e24c4c;
 }
+
+.menu__list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

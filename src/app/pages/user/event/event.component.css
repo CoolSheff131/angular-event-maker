@@ -2,3 +2,16 @@
   width: 100px;
   height: 100px;
 }
+.event {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.images {
+  display: flex;
+  gap: 5px;
+}
+
+.image {
+  width: 250px;
+}

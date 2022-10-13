@@ -1,57 +1,64 @@
-<h1> {{ event.title }}</h1>
+<div *ngIf="event" class="event">
 
-<div>
-    <h1>Описание</h1>
-    <p> {{ event.description }}</p>
+    <h1> {{ event.title }}</h1>
+
+    <div>
+        <p> {{ event.description }}</p>
+    </div>
+
+
+    <div>
+        <span> </span>
+        <span *></span>
+
+
+        <p-accordion [multiple]="true">
+            <p-accordionTab
+                [header]="'Количество людей которые пойдут '+ event.peopleWillCome.length + ' из ' +event.places">
+                <div *ngFor="let user of event.peopleWillCome">
+                    {{ user.name }}
+                    <p-button *ngIf="true" [disabled]="isUserCameToEvent(user)" (onClick)="handleConfirmPresent(user)"
+                        label="Отметить присутствие">
+                    </p-button>
+                </div>
+            </p-accordionTab>
+            <p-accordionTab *ngIf="isEventEnded" [header]="'Количество людей которые пришли '+ event.peopleCame.length + ' из '
+                +event.places">
+                <div *ngFor="let user of event.peopleCame">
+                    {{ user.name }}
+                    <p-button *ngIf="true" (onClick)="removeConfirmPresent(user)" label="Отменить присутствие">
+                    </p-button>
+                </div>
+            </p-accordionTab>
+
+        </p-accordion>
+    </div>
+
+    <h1>Даты проведения</h1>
+    <div *ngFor="let day of event.days">
+        {{ day.date | date}}
+        В аудитории {{ day.auditory.name }}
+    </div>
+
+
+    <div>
+        <h1>Теги</h1>
+        <p-tag *ngFor="let tag of event.tags" [value]="tag.name"></p-tag>
+    </div>
+    <div>
+        <h1>Группы</h1>
+        <p-tag *ngFor="let group of event.groups" [value]="group.name"></p-tag>
+    </div>
+
+    <h1>Изображения</h1>
+    <div class="images">
+        <img *ngFor="let img of event.images" [src]="img" class="image">
+
+    </div>
+
+    <p-button *ngIf="!isEventEnded"
+        [pTooltip]="isButtonEventItemDisalbed()? 'Войдите, чтобы записаться на участие' : ''"
+        [disabled]="isButtonEventItemDisalbed()" (onClick)="handleButtonClick()"
+        [label]="isAuthedUserGoingToEvent(event)? 'Отказаться': 'Записаться'">
+    </p-button>
 </div>
-
-
-<div>
-    <span> Количество людей которые пойдут</span>
-    <p> {{ event.peopleWillCome }} из {{ event.places }}</p>
-    <p-progressBar [value]="getProgressPeople()" [showValue]="false"></p-progressBar>
-</div>
-
-
-
-<p-accordion>
-    <p-accordionTab [header]="getHeaderDates()">
-        <p-table [value]="event.days" responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>Дата начала</th>
-                    <th>Место проведения</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-day>
-                <tr>
-                    <td>{{day.timeStart}}</td>
-                    <td>{{day.auditory.name}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-accordionTab>
-</p-accordion>
-
-
-<div>
-    <h1>Теги</h1>
-    <p-tag *ngFor="let tag of event.tags" [value]="tag.name"></p-tag>
-</div>
-<div>
-    <h1>Для групп</h1>
-    <p-tag *ngFor="let group of event.groups" [value]="group.name"></p-tag>
-</div>
-
-<p-galleria [value]="event.images" [numVisible]="5">
-    <ng-template pTemplate="item" let-item>
-        <img [src]="item" [alt]="item" />
-    </ng-template>
-    <ng-template pTemplate="thumbnail" let-item>
-        <img class="galleria-thumbnail" [src]="item" [alt]="item" />
-
-    </ng-template>
-</p-galleria>
-
-
-<p-button type="submit" label="Записаться"></p-button>

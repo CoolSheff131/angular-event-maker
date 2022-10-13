@@ -10,6 +10,15 @@ import { EventsComponent } from '../../user/events/events.component';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
+  removeConfirmPresent(event: Event, user: User) {
+    return this.apiService.removeConfirmPresent(event, user);
+  }
+  confirmPresent(event: Event, user: User) {
+    return this.apiService.confirmPresent(event, user);
+  }
+  getEvent(id: string) {
+    return this.apiService.getEvent(id);
+  }
   private events = new BehaviorSubject<Event[]>([]);
 
   events$ = this.events.asObservable();
@@ -21,10 +30,9 @@ export class EventService {
   }
 
   goingToEvent(event: Event, user: User) {
-    this.apiService
+    return this.apiService
       .goingToEvent(event, user)
-      .pipe(tap(() => this.getEvents()))
-      .subscribe();
+      .pipe(tap(() => this.getEvents()));
   }
 
   getUserEvent(user: User) {
@@ -102,7 +110,6 @@ export class EventService {
     this.apiService.getEvents().subscribe({
       next: (events) => {
         this.events.next(events);
-        console.log(events);
       },
     });
   }
