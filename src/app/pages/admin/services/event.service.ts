@@ -10,6 +10,9 @@ import { EventsComponent } from '../../user/events/events.component';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
+  getUserEvent(user: User) {
+    return this.apiService.getUserEvents(user);
+  }
   private events = new BehaviorSubject<Event[]>([]);
 
   events$ = this.events.asObservable();
@@ -46,10 +49,9 @@ export class EventService {
   }
 
   notGoingToEvent(event: Event, user: User) {
-    this.apiService
+    return this.apiService
       .notGoingToEvent(event, user)
-      .pipe(tap(() => this.getEvents()))
-      .subscribe();
+      .pipe(tap(() => this.getEvents()));
   }
 
   goingToEvent(event: Event, user: User) {

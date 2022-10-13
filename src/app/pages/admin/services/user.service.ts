@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, tap } from 'rxjs';
+import { BehaviorSubject, filter, Subject, tap } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import { ApiService } from '../../../api/api.service';
 import {
@@ -17,7 +17,7 @@ export class UserService {
   >();
 
   allStudents$ = this.allStudents.asObservable();
-  authedUser$ = this.authedUser.asObservable();
+  authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
   loginStatus$ = this.loginStatus.asObservable();
 
   constructor(private readonly apiService: ApiService) {

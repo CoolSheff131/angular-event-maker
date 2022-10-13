@@ -44,6 +44,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { TooltipModule } from 'primeng/tooltip';
 import { ImageModule } from 'primeng/image';
+import { PersonalCabinetComponent } from './pages/user/personal-cabinet/personal-cabinet.component';
 
 const routes: Routes = [
   { path: '', component: EventsComponent },
@@ -54,10 +55,16 @@ const routes: Routes = [
   { path: 'auditories', component: AdminAuditoriesComponent },
   { path: 'groups', component: AdminGroupsComponent },
   { path: 'users', component: AdminUsersComponent },
+  { path: 'personal-cabinet', component: PersonalCabinetComponent },
 ];
 
 @NgModule({
-  declarations: [AppComponent, EventsComponent, EventComponent],
+  declarations: [
+    AppComponent,
+    EventsComponent,
+    EventComponent,
+    PersonalCabinetComponent,
+  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
