@@ -26,11 +26,15 @@ export class AdminUsersComponent implements OnInit {
       Validators.required,
     ]),
     userPasswordControl: new FormControl<string>('', [Validators.required]),
+    userRoleControl: new FormControl<UserRole | null>(null, [
+      Validators.required,
+    ]),
   });
   userIdEdit = '';
 
   users: UserStudent[] = [];
   groups: Group[] = [];
+  userRoles: UserRole[] = [];
 
   constructor(
     private readonly userService: UserService,
@@ -42,6 +46,9 @@ export class AdminUsersComponent implements OnInit {
     });
     groupService.groups$.subscribe((groups) => {
       this.groups = groups;
+    });
+    userService.userRoles$.subscribe((userRoles) => {
+      this.userRoles = userRoles;
     });
     groupService.getGroups();
   }
@@ -73,6 +80,8 @@ export class AdminUsersComponent implements OnInit {
     this.userForm.controls.userNameControl.setValue(user.name);
     this.userForm.controls.userEmailControl.setValue(user.email);
     this.userForm.controls.userGroupControl.setValue(user.group);
+    this.userForm.controls.userRoleControl.setValue(user.role);
+    this.userForm.controls.userPasswordControl.setValue(user.password!);
   }
 
   deleteUser(user: User) {
@@ -86,21 +95,23 @@ export class AdminUsersComponent implements OnInit {
     }
 
     if (this.isEditing) {
-      this.userService.updateUserStudent(
+      this.userService.updateUser(
         this.userIdEdit,
         this.userForm.controls.userLoginControl.value!,
         this.userForm.controls.userPasswordControl.value!,
         this.userForm.controls.userNameControl.value!,
         this.userForm.controls.userEmailControl.value!,
-        this.userForm.controls.userGroupControl.value!
+        this.userForm.controls.userGroupControl.value!,
+        this.userForm.controls.userRoleControl.value!
       );
     } else {
-      this.userService.createUserStudent(
+      this.userService.createUser(
         this.userForm.controls.userPasswordControl.value!,
         this.userForm.controls.userLoginControl.value!,
         this.userForm.controls.userNameControl.value!,
         this.userForm.controls.userEmailControl.value!,
-        this.userForm.controls.userGroupControl.value!
+        this.userForm.controls.userGroupControl.value!,
+        this.userForm.controls.userRoleControl.value!
       );
     }
   }

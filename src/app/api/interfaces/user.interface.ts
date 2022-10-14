@@ -1,6 +1,9 @@
 import { Group } from './group.interface';
 
-export type UserRole = 'student' | 'admin';
+export type UserRole = {
+  id: string;
+  name: string;
+};
 export interface User {
   id: string;
   login: string;
@@ -11,7 +14,7 @@ export interface User {
 
 export interface UserStudent extends User {
   group: Group;
-  role: 'student';
+
   password?: string;
 }
 

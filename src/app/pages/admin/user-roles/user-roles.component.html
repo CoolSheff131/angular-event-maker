@@ -1,0 +1,75 @@
+<div class="card">
+    <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Добавить" (click)="openAddDialog()" icon="pi pi-plus"
+                class="p-button-success mr-2"></button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+
+        </ng-template>
+    </p-toolbar>
+
+    <p-table [value]="userRoles" dataKey="id" [rowHover]="true">
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Управление ролями пользователя</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-userRole>
+            <tr class="table-row">
+
+                <td>{{userRole.name}}</td>
+
+                <td class="table-row__actions">
+                    <button (click)="deleteUserRole(userRole)" pButton pRipple icon="pi pi-pencil"
+                        class="p-button-rounded p-button-success mr-2"></button>
+                    <button (click)="deleteUserRole(userRole)" pButton pRipple icon="pi pi-trash"
+                        class="p-button-rounded p-button-warning"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                Всего {{userRoles.length}} ролей
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="isformGroupDialogOpen" [style]="{width: '450px'}"
+    [header]="isEditing? 'Редактирование роли пользователя': 'Добавление роли пользователя'" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <form [formGroup]="userRoleForm" novalidate (ngSubmit)="onSubmitForm()">
+            <span class="p-field p-fluid">
+                <label
+                    [class.form__error-msg]="userRoleForm.controls.userRoleName.invalid && userRoleForm.controls.userRoleName.touched"
+                    for="userRoleName">Название роли</label>
+                <input [class.ng-invalid]="
+                userRoleForm.controls.userRoleName.invalid" id="userEmailControl" id="userRoleName" name="userRoleName"
+                    formControlName="userRoleName" type="text" pInputText>
+                <small *ngIf="userRoleForm.controls.userRoleName.invalid && userRoleForm.controls.userRoleName.touched"
+                    id="userGroupControl" class="form__error-msg">Введите название роли</small>
+            </span>
+
+        </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
+            (click)="closeFormDialog()"></button>
+        <button type="submit" [disabled]="userRoleForm.invalid && userRoleForm.touched" pButton pRipple
+            [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" class="p-button-text"
+            (click)="onSubmitForm()"></button>
+    </ng-template>
+</p-dialog>

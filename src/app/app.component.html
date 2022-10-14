@@ -13,7 +13,7 @@
 </header>
 <p-sidebar [(visible)]="display" position="right">
     <div *ngIf="isLogged; else loginForm" class="menu">
-        <div *ngIf="authedUser?.role === 'admin'; else studentMenu" class="menu__list">
+        <div *ngIf="authedUser?.role?.name === 'Администратор'; else studentMenu" class="menu__list">
             <div class="menu__title">
                 Администратор
             </div>
@@ -34,6 +34,9 @@
             <a [routerLink]="'/groups'" pButton type="button" label="Группы" class="p-button-outlined menu__item">
             </a>
             <a [routerLink]="'/users'" pButton type="button" label="Пользователи" class="p-button-outlined menu__item">
+            </a>
+            <a [routerLink]="'/user-roles'" pButton type="button" label="Роли пользователей"
+                class="p-button-outlined menu__item">
             </a>
         </div>
         <ng-template #studentMenu>

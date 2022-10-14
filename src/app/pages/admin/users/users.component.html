@@ -32,6 +32,7 @@
                 <td>{{user.name}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.group?.name}}</td>
+                <td>{{user.role?.name}}</td>
 
                 <td class="table-row__actions">
                     <button (click)="editUser(user)" pButton pRipple icon="pi pi-pencil"
@@ -61,6 +62,17 @@
                     [options]="groups" formControlName="userGroupControl" optionLabel="name"></p-dropdown>
                 <small *ngIf="userForm.controls.userGroupControl.invalid && userForm.controls.userGroupControl.touched"
                     id="userGroupControl" class="form__error-msg">Выберите группу</small>
+            </span>
+
+            <span class="p-field p-fluid">
+                <label for="userRoleControl"
+                    [class.form__error-msg]="userForm.controls.userRoleControl.invalid && userForm.controls.userRoleControl.touched">Роль
+                    пользователя</label>
+                <p-dropdown [class.ng-invalid]="
+                userForm.controls.userRoleControl.invalid" id="userRoleControl" name="userRoleControl"
+                    [options]="userRoles" formControlName="userRoleControl" optionLabel="name"></p-dropdown>
+                <small *ngIf="userForm.controls.userRoleControl.invalid && userForm.controls.userRoleControl.touched"
+                    id="userRoleControl" class="form__error-msg">Выберите роль</small>
             </span>
 
             <span class="p-field p-fluid">

@@ -47,6 +47,7 @@ import { ImageModule } from 'primeng/image';
 import { PersonalCabinetComponent } from './pages/user/personal-cabinet/personal-cabinet.component';
 import { EventItemComponent } from './components/event-item/event-item.component';
 import { ChartModule } from 'primeng/chart';
+import { AdminUserRolesComponent } from './pages/admin/user-roles/user-roles.component';
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -56,6 +57,7 @@ const routes: Routes = [
   { path: 'auditories', component: AdminAuditoriesComponent },
   { path: 'groups', component: AdminGroupsComponent },
   { path: 'users', component: AdminUsersComponent },
+  { path: 'user-roles', component: AdminUserRolesComponent },
   { path: 'personal-cabinet', component: PersonalCabinetComponent },
 ];
 
@@ -66,6 +68,7 @@ const routes: Routes = [
     EventComponent,
     PersonalCabinetComponent,
     EventItemComponent,
+    AdminUserRolesComponent,
   ],
   imports: [
     BrowserModule,

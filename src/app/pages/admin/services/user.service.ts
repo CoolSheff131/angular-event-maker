@@ -10,15 +10,33 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  deleteUserRole(userRole: UserRole) {
+    this.apiService.deleteUserRole(userRole).subscribe(() => {
+      this.getAllUserRoles();
+    });
+  }
+  updateUserRole(userRoleIdEdit: string, newName: string) {
+    this.apiService.updateUserRole(userRoleIdEdit, newName).subscribe(() => {
+      this.getAllUserRoles();
+    });
+  }
+  createUserRole(name: string) {
+    this.apiService.createUserRole(name).subscribe(() => {
+      this.getAllUserRoles();
+    });
+  }
+
   private allStudents = new BehaviorSubject<UserStudent[]>([]);
   private authedUser = new BehaviorSubject<User | undefined>(undefined);
   private loginStatus = new Subject<
     'waiting' | 'success' | 'error' | 'pending'
   >();
+  private userRoles = new BehaviorSubject<UserRole[]>([]);
 
   allStudents$ = this.allStudents.asObservable();
   authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
   loginStatus$ = this.loginStatus.asObservable();
+  userRoles$ = this.userRoles.asObservable();
 
   constructor(private readonly apiService: ApiService) {
     apiService.tryAuthOnStart().subscribe({
@@ -29,7 +47,17 @@ export class UserService {
         this.unauthorizeUser();
       },
     });
+
+    this.getAllUserRoles();
     this.getAllUsers();
+  }
+
+  getAllUserRoles() {
+    this.apiService.getUserRoles().subscribe({
+      next: (userRoles) => {
+        this.userRoles.next(userRoles);
+      },
+    });
   }
 
   getAllUsers() {
@@ -52,42 +80,45 @@ export class UserService {
       .subscribe();
   }
 
-  updateUserStudent(
+  updateUser(
     id: string,
     login: string,
     password: string,
     userName: string,
     email: string,
-    group: Group
+    group: Group,
+    role: UserRole
   ) {
     this.apiService
-      .updateUserStudent(id, {
+      .updateUser(id, {
         login,
         password,
         email: email,
         name: userName,
         group: group,
+        role,
       })
       .pipe(tap(() => this.getAllUsers()))
       .subscribe();
   }
 
-  createUserStudent(
+  createUser(
     userPasword: string,
     login: string,
     userName: string,
     email: string,
-    group: Group
+    group: Group,
+    role: UserRole
   ) {
     this.apiService
-      .createUserStudent({
+      .createUser({
         id: '',
         login: login,
         password: userPasword,
         name: userName,
         email: email,
         group: group,
-        role: 'student',
+        role,
       })
       .pipe(tap(() => this.getAllUsers()))
       .subscribe();

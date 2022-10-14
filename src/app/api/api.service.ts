@@ -8,10 +8,32 @@ import { EventDay } from './interfaces/eventDay.interface';
 import { EventReview } from './interfaces/eventReview.interface';
 import { EventTag } from './interfaces/eventTag.interface';
 import { Group } from './interfaces/group.interface';
-import { User, UserCreate, UserStudent } from './interfaces/user.interface';
+import {
+  User,
+  UserCreate,
+  UserRole,
+  UserStudent,
+} from './interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+  deleteUserRole(userRole: UserRole) {
+    return this.httpService.delete(this.API_URL + `user-roles${userRole.id}`);
+  }
+  updateUserRole(userRoleIdEdit: string, newName: string) {
+    return this.httpService.patch(
+      this.API_URL + `user-roles/${userRoleIdEdit}`,
+      {
+        name: newName,
+      }
+    );
+  }
+  createUserRole(name: string) {
+    return this.httpService.post(this.API_URL + `user-roles`, { name });
+  }
+  getUserRoles() {
+    return this.httpService.get<UserRole[]>(this.API_URL + 'user-roles');
+  }
   removeConfirmPresent(event: Event, user: User) {
     return this.httpService.patch<Event>(
       this.API_URL + `events/${event.id}/remove-confirm-present`,
@@ -96,7 +118,7 @@ export class ApiService {
   deleteUser(id: string) {
     return this.httpService.delete(this.API_URL + `users/${id}`);
   }
-  updateUserStudent(id: string, userStudent: Partial<UserStudent>) {
+  updateUser(id: string, userStudent: Partial<UserStudent>) {
     return this.httpService.patch(this.API_URL + `users/${id}`, {
       ...userStudent,
     });
@@ -257,7 +279,7 @@ export class ApiService {
     });
   }
 
-  createUserStudent(user: UserCreate) {
+  createUser(user: UserCreate) {
     return this.httpService.post<User>(this.API_URL + 'users', { ...user });
   }
 }
