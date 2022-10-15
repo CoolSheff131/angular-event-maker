@@ -12,13 +12,22 @@ export class EventItemComponent {
   event!: Event;
 
   @Input()
-  buttonItemDisabled: boolean = false;
+  buttonGoingItemDisabled: boolean = false;
 
   @Input()
-  buttonItemLabel: string = '';
+  buttonNotGoingItemDisabled: boolean = false;
+
+  @Input()
+  buttonGoingItemLabel: string = '';
+
+  @Input()
+  buttonNotGoingItemLabel: string = '';
 
   @Output()
-  buttonClickEvent = new EventEmitter<Event>();
+  buttonGoingToEventClickEvent = new EventEmitter<Event>();
+
+  @Output()
+  buttonNotGoingToEventClickEvent = new EventEmitter<Event>();
 
   constructor() {}
 
@@ -26,9 +35,13 @@ export class EventItemComponent {
     return isEventEnded(this.event);
   }
 
-  handleButtonEventItemClick(event: Event) {
-    console.log(event);
-    this.buttonClickEvent.emit(event);
+  handleGoingButtonEventItemClick() {
+    this.buttonGoingToEventClickEvent.emit(this.event);
+  }
+
+  handleNotGoingButtonEventItemClick() {
+    console.log('ASDASFDKNA:PJSND:PASJEF');
+    this.buttonNotGoingToEventClickEvent.emit(this.event);
   }
 
   getDates(event: Event): Date[] {

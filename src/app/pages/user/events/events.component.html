@@ -2,7 +2,10 @@
     <h1>Все мероприятия</h1>
 </header>
 <div class="events">
-    <event-item *ngFor="let event of events" [event]="event" [buttonItemDisabled]="isButtonEventItemDisalbed(event)"
-        [buttonItemLabel]="isAuthedUserGoingToEvent(event)? 'Отказаться': 'Записаться'"
-        (buttonClickEvent)="handleButtonEventItemClick($event)" class="event"></event-item>
+    <event-item *ngFor="let event of events" [event]="event"
+        [buttonGoingItemDisabled]="isButtonGoingEventItemDisalbed(event)"
+        [buttonNotGoingItemDisabled]="isButtonNotGoingEventItemDisalbed(event)" [buttonGoingItemLabel]="'Записаться'"
+        [buttonNotGoingItemLabel]="'Отказаться'"
+        (buttonGoingToEventClickEvent)="handleButtonGoingEventItemClick($event)"
+        (buttonNotGoingToEventClickEvent)="handleButtonNotGoingEventItemClick($event)" class="event"></event-item>
 </div>

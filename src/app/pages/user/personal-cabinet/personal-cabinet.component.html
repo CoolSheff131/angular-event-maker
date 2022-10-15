@@ -8,8 +8,12 @@
     <h1>Мои мероприятия</h1>
     <div class="events">
 
-        <event-item *ngFor="let event of myEvents" [event]="event" [buttonItemLabel]="'Отказаться'"
-            (buttonClickEvent)="handleButtonEventItemClick($event)" class="event"></event-item>
+        <event-item *ngFor="let event of myEvents" [event]="event"
+            [buttonGoingItemDisabled]="isButtonGoingEventItemDisalbed(event)"
+            [buttonNotGoingItemDisabled]="isButtonNotGoingEventItemDisalbed(event)"
+            [buttonGoingItemLabel]="'Записаться'" [buttonNotGoingItemLabel]="'Отказаться'"
+            (buttonGoingToEventClickEvent)="handleButtonGoingEventItemClick($event)"
+            (buttonNotGoingToEventClickEvent)="handleButtonNotGoingEventItemClick($event)" class="event"></event-item>
 
     </div>
 

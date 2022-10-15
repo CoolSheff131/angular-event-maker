@@ -28,16 +28,19 @@ export class EventsComponent {
     });
   }
 
-  handleButtonEventItemClick(event: Event) {
+  handleButtonGoingEventItemClick(event: Event) {
     if (!this.authedUser) {
       return;
     }
-    console.log(event);
-    if (this.isAuthedUserGoingToEvent(event)) {
-      this.eventService.notGoingToEvent(event, this.authedUser).subscribe();
-    } else {
-      this.eventService.goingToEvent(event, this.authedUser).subscribe();
+    this.eventService.goingToEvent(event, this.authedUser).subscribe();
+  }
+
+  handleButtonNotGoingEventItemClick(event: Event) {
+    if (!this.authedUser) {
+      return;
     }
+
+    this.eventService.notGoingToEvent(event, this.authedUser).subscribe();
   }
 
   isAuthedUserGoingToEvent(event: Event): boolean {
@@ -48,11 +51,21 @@ export class EventsComponent {
     return IsUserGoingToEvent(this.authedUser, event);
   }
 
-  isButtonEventItemDisalbed(event: Event): boolean {
+  isButtonGoingEventItemDisalbed(event: Event): boolean {
     return (
       this.authedUser === undefined ||
-      (!this.isAuthedUserGoingToEvent(event) &&
-        event.places === event.peopleWillCome.length)
+      this.isAuthedUserGoingToEvent(event) ||
+      event.places === event.peopleWillCome.length
+    );
+  }
+
+  isButtonNotGoingEventItemDisalbed(event: Event): boolean {
+    console.log(event.title);
+    console.log(
+      this.authedUser === undefined || !this.isAuthedUserGoingToEvent(event)
+    );
+    return (
+      this.authedUser === undefined || !this.isAuthedUserGoingToEvent(event)
     );
   }
 }

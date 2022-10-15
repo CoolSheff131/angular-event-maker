@@ -30,8 +30,18 @@ export class PersonalCabinetComponent {
       });
   }
 
-  handleButtonEventItemClick(event: Event) {
+  isButtonGoingEventItemDisalbed(event: Event) {
+    return true;
+  }
+  isButtonNotGoingEventItemDisalbed(event: Event) {
+    return false;
+  }
+
+  handleButtonNotGoingEventItemClick(event: Event) {
+    console.log('ASD');
     if (this.authedUser) {
+      console.log('ASD');
+
       this.eventService
         .notGoingToEvent(event, this.authedUser)
         .pipe(mergeMap(() => this.eventService.getUserEvent(this.authedUser!)))
@@ -40,6 +50,7 @@ export class PersonalCabinetComponent {
         });
     }
   }
+  handleButtonGoingEventItemClick(event: Event) {}
 
   isEventEnded(event: Event) {
     return isEventEnded(event);

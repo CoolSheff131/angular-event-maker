@@ -34,10 +34,14 @@
             </div>
             <p class="event__description">{{event.description}}</p>
         </main>
-        <footer>
-            <p-button *ngIf="!isEventEnded" (onClick)="handleButtonEventItemClick(event)"
-                [disabled]="buttonItemDisabled" [label]="buttonItemLabel" icon="pi pi-check">
+        <footer *ngIf="!isEventEnded">
+            <p-button (onClick)="handleGoingButtonEventItemClick()" [disabled]="buttonGoingItemDisabled"
+                [label]="buttonGoingItemLabel">
             </p-button>
+
+            <button (click)="handleNotGoingButtonEventItemClick()" [disabled]="buttonNotGoingItemDisabled" pButton
+                [label]="buttonNotGoingItemLabel" class="p-button-danger">
+            </button>
 
         </footer>
     </div>
