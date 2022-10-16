@@ -33,7 +33,7 @@ export class UserService {
   >();
   private userRoles = new BehaviorSubject<UserRole[]>([]);
 
-  allStudents$ = this.allStudents.asObservable();
+  allUsers$ = this.allStudents.asObservable();
   authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
   loginStatus$ = this.loginStatus.asObservable();
   userRoles$ = this.userRoles.asObservable();

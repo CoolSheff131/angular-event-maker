@@ -66,17 +66,22 @@ export class ApiService {
       user
     );
   }
+
   updateEventReview(
     id: string,
     eventReview: Partial<EventReview>,
-    images: File[]
+    images: File[] | null
   ) {
     const formData = new FormData();
-    images.forEach((file) => {
-      formData.append('images[]', file);
-    });
+    if (images) {
+      images.forEach((file) => {
+        formData.append('images[]', file);
+      });
+    }
     formData.append('reviewer', JSON.stringify(eventReview.reviewer));
     formData.append('text', eventReview.text!);
+    formData.append('rate', JSON.stringify(eventReview.rate));
+    formData.append('event', JSON.stringify(eventReview.event));
     return this.httpService.patch(
       this.API_URL + `event-reviews/${id}`,
       formData
@@ -273,10 +278,28 @@ export class ApiService {
     });
   }
 
-  createEventReview(eventReview: any) {
-    return this.httpService.post<EventReview>(this.API_URL + 'event-reviews', {
-      ...eventReview,
-    });
+  createEventReview(
+    images: File[] | null,
+    rate: number,
+    text: string,
+    reviewer: User,
+    event: Event
+  ) {
+    const formData = new FormData();
+    if (images) {
+      images.forEach((file) => {
+        formData.append('images[]', file);
+      });
+    }
+    formData.append('text', text);
+    formData.append('reviewer', JSON.stringify(reviewer));
+    formData.append('rate', JSON.stringify(rate));
+    formData.append('event', JSON.stringify(event));
+
+    return this.httpService.post<EventReview>(
+      this.API_URL + 'event-reviews',
+      formData
+    );
   }
 
   createUser(user: UserCreate) {

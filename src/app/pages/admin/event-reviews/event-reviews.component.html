@@ -20,7 +20,13 @@
         <ng-template pTemplate="header">
             <tr>
 
-                <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
+                <th pSortableColumn="name">Текст <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">Обзорщик <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">Название мероприятия <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">Рейтинг <p-sortIcon field="name"></p-sortIcon>
                 </th>
             </tr>
         </ng-template>
@@ -28,10 +34,15 @@
             <tr class="table-row">
 
                 <td>{{eventReview.text}}</td>
+                <td>{{eventReview.reviewer.name}}</td>
+                <td>{{eventReview.event.title}}</td>
+                <td>{{eventReview.rate}}</td>
 
                 <td class="table-row__actions">
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"></button>
+                    <button (click)="editEventReview(eventReview)" pButton pRipple icon="pi pi-pencil"
+                        class="p-button-rounded p-button-success mr-2"></button>
+                    <button (click)="deleteEventReview(eventReview)" pButton pRipple icon="pi pi-trash"
+                        class="p-button-rounded p-button-warning"></button>
                 </td>
             </tr>
         </ng-template>
@@ -47,15 +58,47 @@
     [header]="isEditing?'Редактирование отзыва':'Добавить отзыв'" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
         <form [formGroup]="eventReviewForm">
-            <span class="p-float-label">
-                <input id="text" name="text" formControlName="text" type="text" pInputText>
-                <label for="text"></label>
-            </span>
-            <span class="p-float-label">
-                <input id="reviewer" name="reviewer" formControlName="reviewer" type="text" pInputText>
-                <label for="reviewer"></label>
+            <span class="p-field p-fluid">
+                <label [class.form__error-msg]="
+                eventReviewForm.controls.text.invalid &&
+                eventReviewForm.controls.text.touched
+        " for="float-places">Напишите текст обзора</label>
+                <input id="text" name="text" formControlName="text" type="text"
+                    [class.ng-invalid]="eventReviewForm.controls.text.invalid" pInputText>
             </span>
 
+            <div *ngIf="previewImagesUrls" class="uploaded__images">
+                <img *ngFor="let img of previewImagesUrls" [src]="img" alt="Image" class="uploaded__image" />
+            </div>
+            <div class="file-upload">
+                <input type="file" class="file-input" multiple hidden (change)="handleFileChange($event)" #fileUpload />
+                <p-button type="button" label="Загрузить изображения" (click)="fileUpload.click()"></p-button>
+            </div>
+
+            <span class="p-field p-fluid">
+                <label [class.form__error-msg]="
+                eventReviewForm.controls.reviewer.invalid &&
+                eventReviewForm.controls.reviewer.touched
+            " for="float-places">Выберите создателя обзора</label>
+                <p-dropdown [options]="users" [class.ng-invalid]="eventReviewForm.controls.reviewer.invalid"
+                    optionLabel="name" formControlName="reviewer"></p-dropdown>
+            </span>
+
+            <span class="p-field p-fluid">
+                <label [class.form__error-msg]="
+                eventReviewForm.controls.event.invalid &&
+                eventReviewForm.controls.event.touched
+            " for="float-places">Выберите мероприятие</label>
+                <p-dropdown [options]="events" [class.ng-invalid]="eventReviewForm.controls.event.invalid"
+                    [optionLabel]="'title'" formControlName="event"></p-dropdown>
+            </span>
+            <span class="p-field p-fluid">
+                <label [class.form__error-msg]="
+                eventReviewForm.controls.rate.invalid &&
+                eventReviewForm.controls.rate.touched
+            " for="float-places">Выберите рейтинг</label>
+                <p-rating [cancel]="false" formControlName="rate"></p-rating>
+            </span>
         </form>
 
 

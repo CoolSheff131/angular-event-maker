@@ -40,7 +40,7 @@ export class AdminUsersComponent implements OnInit {
     private readonly userService: UserService,
     private readonly groupService: GroupService
   ) {
-    userService.allStudents$.subscribe((users) => {
+    userService.allUsers$.subscribe((users) => {
       this.users = users;
       console.log(users);
     });
@@ -79,7 +79,9 @@ export class AdminUsersComponent implements OnInit {
     this.userForm.controls.userLoginControl.setValue(user.login);
     this.userForm.controls.userNameControl.setValue(user.name);
     this.userForm.controls.userEmailControl.setValue(user.email);
-    this.userForm.controls.userGroupControl.setValue(user.group);
+    this.userForm.controls.userGroupControl.setValue(
+      this.groups.find((g) => g.id === user.group.id)!
+    );
     this.userForm.controls.userRoleControl.setValue(user.role);
     this.userForm.controls.userPasswordControl.setValue(user.password!);
   }

@@ -63,7 +63,7 @@ export class AdminEventsComponent {
       this.events = events;
       console.log(events);
     });
-    userService.allStudents$.subscribe((users) => {
+    userService.allUsers$.subscribe((users) => {
       this.allUsers = users;
     });
     auditoryService.auditories$.subscribe((auditories) => {
@@ -111,31 +111,25 @@ export class AdminEventsComponent {
     this.idEditing = event.id;
     this.isEditing = true;
     this.formDialog = true;
-    console.log(event);
     this.eventForm.reset();
-    console.log('1');
     this.previewImagesUrls = event.images;
     this.eventForm.patchValue({
       eventDays: [],
       eventDescription: event.description,
       eventGroups: event.groups,
-      eventOwner: event.owner,
+      eventOwner: this.allUsers.find((u) => u.id === event.owner.id),
       eventPlaces: event.places,
       eventTags: event.tags,
       eventTitle: event.title,
       eventImages: null,
     });
-    console.log('2');
 
     this.eventRange.setValue(event.days.map((d) => new Date(d.date)));
-    console.log('3');
 
     this.eventForm.controls.eventDays.controls.forEach((control, index) => {
-      console.log(control.controls.date);
-      console.log(event.days[index].date);
-      console.log(control.controls.auditory);
-      console.log(event.days[index].auditory);
-      control.controls.auditory.patchValue(event.days[index].auditory);
+      control.controls.auditory.patchValue(
+        this.allAuditories.find((a) => a.id === event.days[index].auditory.id)!
+      );
       control.controls.date.patchValue(new Date(event.days[index].date));
     });
   }

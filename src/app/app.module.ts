@@ -48,6 +48,7 @@ import { PersonalCabinetComponent } from './pages/user/personal-cabinet/personal
 import { EventItemComponent } from './components/event-item/event-item.component';
 import { ChartModule } from 'primeng/chart';
 import { AdminUserRolesComponent } from './pages/admin/user-roles/user-roles.component';
+
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -106,6 +107,7 @@ const routes: Routes = [
     TooltipModule,
     ChartModule,
     AdminModule,
+    RatingModule,
 
     ImageModule,
   ],

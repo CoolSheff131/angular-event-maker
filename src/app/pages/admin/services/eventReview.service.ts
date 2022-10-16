@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, tap } from 'rxjs';
+import { Event } from 'src/app/api/interfaces/event.interface';
 import { User } from 'src/app/api/interfaces/user.interface';
 import { ApiService } from '../../../api/api.service';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
@@ -19,16 +20,29 @@ export class EventReviewService {
     this.getEventReviews();
   }
 
-  createEventReview(value: string) {
+  createEventReview(
+    images: File[],
+    rate: number,
+    text: string,
+    reviewer: User,
+    event: Event
+  ) {
     this.apiService
-      .createEventReview({ text: '', id: '', images: [] })
+      .createEventReview(images, rate, text, reviewer, event)
       .pipe(tap(() => this.getEventReviews()))
       .subscribe();
   }
 
-  updateEventReview(id: string, reviewer: User, text: string, images: File[]) {
+  updateEventReview(
+    id: string,
+    reviewer: User,
+    text: string,
+    images: File[],
+    rate: number,
+    event: Event
+  ) {
     this.apiService
-      .updateEventReview(id, { reviewer, text }, images)
+      .updateEventReview(id, { reviewer, text, rate, event }, images)
       .pipe(tap(() => this.getEventReviews()))
       .subscribe();
   }
