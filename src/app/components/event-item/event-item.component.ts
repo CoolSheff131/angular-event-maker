@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { switchMap } from 'rxjs';
 import { Event } from 'src/app/api/interfaces/event.interface';
+import { User } from 'src/app/api/interfaces/user.interface';
+import { EventService } from 'src/app/pages/admin/services/event.service';
 import { isEventEnded } from 'src/app/utils/is-event-ended';
+import { isUserCameToEvent } from 'src/app/utils/is-user-came-to-event';
 
 @Component({
   selector: 'event-item',
@@ -29,7 +33,7 @@ export class EventItemComponent {
   @Output()
   buttonNotGoingToEventClickEvent = new EventEmitter<Event>();
 
-  constructor() {}
+  constructor(private eventService: EventService) {}
 
   get isEventEnded() {
     return isEventEnded(this.event);
@@ -46,5 +50,36 @@ export class EventItemComponent {
 
   getDates(event: Event): Date[] {
     return event.days.map((d) => d.date);
+  }
+
+  isUserCameToEvent(user: User) {
+    return isUserCameToEvent(this.event!, user);
+  }
+
+  handleConfirmPresent(user: User) {
+    this.eventService
+      .confirmPresent(this.event!, user)
+      .pipe(
+        switchMap(() => {
+          return this.eventService.getEvent(this.event.id);
+        })
+      )
+      .subscribe((event) => {
+        console.log(event);
+        this.event = event;
+      });
+  }
+  removeConfirmPresent(user: User) {
+    this.eventService
+      .removeConfirmPresent(this.event!, user)
+      .pipe(
+        switchMap(() => {
+          return this.eventService.getEvent(this.event.id);
+        })
+      )
+      .subscribe((event) => {
+        console.log(event);
+        this.event = event;
+      });
   }
 }

@@ -39,8 +39,49 @@
   text-overflow: ellipsis;
 }
 
+.groups {
+  display: flex;
+  flex-direction: column;
+}
+
+.groups__header {
+  display: flex;
+  align-items: center;
+}
+
+.groups__list {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.hashtags {
+  display: flex;
+  flex-direction: column;
+}
+
+.hashtags__header {
+  display: flex;
+  align-items: center;
+}
+
+.hashtags__list {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
 .dates {
   display: flex;
   flex-direction: column;
   gap: 0px;
+}
+
+.dates__header {
+  display: flex;
+  align-items: center;
+}
+
+.accordion__user-item {
+  display: flex;
+  align-items: center;
 }

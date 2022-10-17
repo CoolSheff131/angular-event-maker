@@ -4,29 +4,52 @@
     </div>
     <div class="event__content">
         <header>
-            <a [routerLink]="['/events', event.id]" label="Аудитории" class="p-button-text menu__item">
-                <h1 class="text_ellipsis">
-                    {{event.title}}
-                </h1>
-            </a>
+            <!-- <a [routerLink]="['/events', event.id]" label="Аудитории" class="p-button-text menu__item"> -->
+            <h1 class="text_ellipsis" (click)="op.toggle($event)">
+                {{event.title}}
+            </h1>
+            <!-- </a> -->
             <p class="event__owner text_ellipsis">
-                {{event.owner.name}}
-
+                <i class="pi pi-star-fill"></i>
+                <span>
+                    {{event.owner.name}}
+                </span>
             </p>
             <p>
-                {{event.peopleWillCome.length}} / {{event.places}}
+                <i class="pi pi-user"></i> {{event.peopleWillCome.length}} / {{event.places}}
             </p>
             <p *ngIf="isEventEnded">
-                {{event.peopleCame.length}} / {{event.places}}
+                <i class="pi pi-user-plus"></i> {{event.peopleCame.length}} / {{event.places}}
             </p>
         </header>
         <main>
             <div>
-                <p-tag *ngFor="let tag of event.tags" [value]="tag.name"></p-tag>
+                <div class="hashtags">
+                    <div class="hashtags__header">
+                        <i class="pi pi-hashtag"></i>
+                        <span>Хештеги:</span>
+                    </div>
+                    <div class="hashtags__list">
+                        <p-tag *ngFor=" let tag of event.tags" [value]="tag.name"></p-tag>
 
-                <p-tag *ngFor="let group of event.groups" [value]="group.name"></p-tag>
+                    </div>
+                </div>
+                <div class="groups">
+                    <div class="groups__header">
+                        <i class="pi pi-users"></i>
+                        <span>Группы:</span>
+                    </div>
+                    <div class="groups__list">
+
+                        <p-tag *ngFor="let group of event.groups" [value]="group.name"></p-tag>
+                    </div>
+                </div>
             </div>
             <div class="dates">
+                <div class="dates__header">
+                    <i class="pi pi-calendar"></i>
+                    <span>Даты проведения:</span>
+                </div>
                 <div *ngFor="let dateEvent of getDates(event)">
                     {{ dateEvent | date}}
                 </div>
@@ -34,15 +57,46 @@
             </div>
             <p class="event__description">{{event.description}}</p>
         </main>
-        <footer *ngIf="!isEventEnded">
-            <p-button (onClick)="handleGoingButtonEventItemClick()" [disabled]="buttonGoingItemDisabled"
-                [label]="buttonGoingItemLabel">
-            </p-button>
+        <footer>
+            <div *ngIf="!isEventEnded; else endedMessage">
 
-            <button (click)="handleNotGoingButtonEventItemClick()" [disabled]="buttonNotGoingItemDisabled" pButton
-                [label]="buttonNotGoingItemLabel" class="p-button-danger">
-            </button>
 
+                <p-button (onClick)="handleGoingButtonEventItemClick()" [disabled]="buttonGoingItemDisabled"
+                    [label]="buttonGoingItemLabel">
+                </p-button>
+
+                <button (click)="handleNotGoingButtonEventItemClick()" [disabled]="buttonNotGoingItemDisabled" pButton
+                    [label]="buttonNotGoingItemLabel" class="p-button-danger">
+                </button>
+            </div>
+            <ng-template #endedMessage>
+                <p-message severity="info" text="Мероприятие закончилось"></p-message>
+
+            </ng-template>
         </footer>
     </div>
 </div>
+
+<p-overlayPanel #op [showCloseIcon]="true">
+
+    <h1> {{'Участники: '+ event.peopleWillCome.length + ' из ' +event.places}}</h1>
+    <div *ngFor="let user of event.peopleWillCome" class="accordion__user-item">
+        <span> {{ user.name }}</span>
+        <p-button *ngIf="true" [disabled]="isUserCameToEvent(user)" (onClick)="handleConfirmPresent(user)"
+            label="Отметить присутствие">
+        </p-button>
+    </div>
+
+    <div *ngIf="isEventEnded">
+        <h1>
+            {{'Пришли: '+ event.peopleCame.length + ' из ' +event.places}}
+        </h1>
+        <div *ngFor="let user of event.peopleCame" class="accordion__user-item">
+            <span> {{ user.name }}</span>
+            <p-button *ngIf="true" (onClick)="removeConfirmPresent(user)" label="Отменить присутствие">
+            </p-button>
+        </div>
+    </div>
+
+
+</p-overlayPanel>

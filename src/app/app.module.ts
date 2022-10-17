@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -48,7 +48,10 @@ import { PersonalCabinetComponent } from './pages/user/personal-cabinet/personal
 import { EventItemComponent } from './components/event-item/event-item.component';
 import { ChartModule } from 'primeng/chart';
 import { AdminUserRolesComponent } from './pages/admin/user-roles/user-roles.component';
-
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import localeRu from '@angular/common/locales/ru';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localeRu, 'ru');
 const routes: Routes = [
   { path: '', component: EventsComponent },
   { path: 'events/:id', component: EventComponent },
@@ -108,10 +111,11 @@ const routes: Routes = [
     ChartModule,
     AdminModule,
     RatingModule,
+    OverlayPanelModule,
 
     ImageModule,
   ],
-  providers: [],
+  providers: [{ provide: LOCALE_ID, useValue: 'ru' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

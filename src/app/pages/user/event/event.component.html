@@ -1,20 +1,12 @@
 <div *ngIf="event" class="event">
-
     <h1> {{ event.title }}</h1>
-
     <div>
         <p> {{ event.description }}</p>
     </div>
 
-
     <div>
-        <span> </span>
-        <span *></span>
-
-
         <p-accordion [multiple]="true">
-            <p-accordionTab
-                [header]="'Количество людей которые пойдут '+ event.peopleWillCome.length + ' из ' +event.places">
+            <p-accordionTab [header]="'Участники: '+ event.peopleWillCome.length + ' из ' +event.places">
                 <div *ngFor="let user of event.peopleWillCome">
                     {{ user.name }}
                     <p-button *ngIf="true" [disabled]="isUserCameToEvent(user)" (onClick)="handleConfirmPresent(user)"
@@ -22,7 +14,7 @@
                     </p-button>
                 </div>
             </p-accordionTab>
-            <p-accordionTab *ngIf="isEventEnded" [header]="'Количество людей которые пришли '+ event.peopleCame.length + ' из '
+            <p-accordionTab *ngIf="isEventEnded" [header]="'Отмечены: '+ event.peopleCame.length + ' из '
                 +event.places">
                 <div *ngFor="let user of event.peopleCame">
                     {{ user.name }}
@@ -30,7 +22,6 @@
                     </p-button>
                 </div>
             </p-accordionTab>
-
         </p-accordion>
     </div>
 
