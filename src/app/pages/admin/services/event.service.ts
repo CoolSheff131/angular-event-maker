@@ -52,7 +52,9 @@ export class EventService {
     places: number,
     groups: Group[],
     days: EventDay[],
-    tags: EventTag[]
+    tags: EventTag[],
+    peopleCame: User[],
+    peopleWillCome: User[]
   ) {
     this.apiService
       .updateEvent(
@@ -67,6 +69,8 @@ export class EventService {
           tags,
           description,
           title,
+          peopleCame,
+          peopleWillCome,
         },
         images
       )
@@ -89,7 +93,9 @@ export class EventService {
     places: number,
     groups: Group[],
     days: EventDay[],
-    tags: EventTag[]
+    tags: EventTag[],
+    peopleCame: User[],
+    peopleWillCome: User[]
   ) {
     this.apiService
       .createEvent(
@@ -100,7 +106,9 @@ export class EventService {
         places,
         groups,
         days,
-        tags
+        tags,
+        peopleCame,
+        peopleWillCome
       )
       .pipe(tap(() => this.getEvents()))
       .subscribe();

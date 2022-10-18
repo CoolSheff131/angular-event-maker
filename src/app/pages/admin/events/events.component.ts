@@ -37,6 +37,8 @@ export class AdminEventsComponent {
     eventPlaces: new FormControl<number | null>(1, [Validators.required]),
     eventGroups: new FormControl<Group[] | null>(null, [Validators.required]),
     eventTags: new FormControl<EventTag[] | null>(null, [Validators.required]),
+    eventPeopleWillCome: new FormControl<User[] | null>(null),
+    eventPeopleCame: new FormControl<User[] | null>(null),
     eventImages: new FormControl<File[] | null>(null),
     eventDays: new FormArray<
       FormGroup<{
@@ -61,14 +63,12 @@ export class AdminEventsComponent {
   ) {
     eventService.events$.subscribe((events) => {
       this.events = events;
-      console.log(events);
     });
     userService.allUsers$.subscribe((users) => {
       this.allUsers = users;
     });
     auditoryService.auditories$.subscribe((auditories) => {
       this.allAuditories = auditories;
-      console.log(auditories);
     });
     eventTagsService.eventTags$.subscribe((eventTags) => {
       this.allEventTags = eventTags;
@@ -119,9 +119,17 @@ export class AdminEventsComponent {
       eventGroups: event.groups,
       eventOwner: this.allUsers.find((u) => u.id === event.owner.id),
       eventPlaces: event.places,
-      eventTags: event.tags,
+      eventTags: event.tags.map(
+        (t) => this.allEventTags.find((allT) => allT.id === t.id)!
+      ),
       eventTitle: event.title,
       eventImages: null,
+      eventPeopleWillCome: event.peopleWillCome.map(
+        (u) => this.allUsers.find((allU) => allU.id === u.id)!
+      ),
+      eventPeopleCame: event.peopleCame.map(
+        (u) => this.allUsers.find((allU) => allU.id === u.id)!
+      ),
     });
 
     this.eventRange.setValue(event.days.map((d) => new Date(d.date)));
@@ -151,10 +159,6 @@ export class AdminEventsComponent {
     const date = addDays(dateStart, dayNumber);
 
     return date;
-  }
-
-  getDayFormat(day: Date) {
-    return `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
   }
 
   handleFileChange(event: any) {
@@ -191,10 +195,11 @@ export class AdminEventsComponent {
       eventPlaces,
       eventTitle,
       eventTags,
+      eventPeopleCame,
+      eventPeopleWillCome,
     } = this.eventForm.value;
 
     if (this.isEditing) {
-      console.log(this.idEditing);
       this.eventService.updateEvent(
         this.idEditing,
         eventImages!,
@@ -204,7 +209,9 @@ export class AdminEventsComponent {
         eventPlaces!,
         eventGroups!,
         days,
-        eventTags!
+        eventTags!,
+        eventPeopleCame!,
+        eventPeopleWillCome!
       );
     } else {
       this.eventService.createEvent(
@@ -215,7 +222,10 @@ export class AdminEventsComponent {
         eventPlaces!,
         eventGroups!,
         days,
-        eventTags!
+        eventTags!,
+
+        eventPeopleCame!,
+        eventPeopleWillCome!
       );
     }
   }

@@ -169,6 +169,38 @@
                 </div>
             </ng-container>
         </div>
+
+        <span class="p-field p-fluid">
+            <label [class.form__error-msg]="
+          eventForm.controls.eventPeopleWillCome.invalid &&
+          eventForm.controls.eventPeopleWillCome.touched
+        " for="float-groups">Выберите участников</label>
+            <p-multiSelect [class.ng-invalid]="eventForm.controls.eventPeopleWillCome.invalid"
+                name="eventPeopleWillCome" formControlName="eventPeopleWillCome" [options]="allUsers" optionLabel="name"
+                display="chip">
+            </p-multiSelect>
+
+            <small *ngIf="
+          eventForm.controls.eventPeopleWillCome.invalid &&
+          eventForm.controls.eventPeopleWillCome.touched
+        " id="userGroupControl" class="form__error-msg">Выберите участников</small>
+        </span>
+
+        <span class="p-field p-fluid">
+            <label [class.form__error-msg]="
+          eventForm.controls.eventPeopleCame.invalid &&
+          eventForm.controls.eventPeopleCame.touched
+        " for="float-groups">Выберите участников, которые пришли</label>
+            <p-multiSelect [class.ng-invalid]="eventForm.controls.eventPeopleCame.invalid" name="eventPeopleCame"
+                formControlName="eventPeopleCame" [options]="allUsers" optionLabel="name" display="chip">
+            </p-multiSelect>
+
+            <small *ngIf="
+          eventForm.controls.eventPeopleCame.invalid &&
+          eventForm.controls.eventPeopleCame.touched
+        " id="userGroupControl" class="form__error-msg">Выберите участников</small>
+        </span>
+
         <footer>
             <button [disabled]="false" pButton pRipple [label]="isEditing ? 'Сохранить' : 'Добавить'"
                 type="submit"></button>

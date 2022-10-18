@@ -243,7 +243,9 @@ export class ApiService {
     places: number,
     groups: Group[],
     days: EventDay[],
-    tags: EventTag[]
+    tags: EventTag[],
+    peopleCame: User[],
+    peopleWillCome: User[]
   ) {
     const formData = new FormData();
     images.forEach((file) => {
@@ -256,6 +258,8 @@ export class ApiService {
     formData.append('groups', JSON.stringify(groups));
     formData.append('days', JSON.stringify(days));
     formData.append('tags', JSON.stringify(tags));
+    formData.append('peopleCame', JSON.stringify(peopleCame));
+    formData.append('peopleWillCome', JSON.stringify(peopleWillCome));
 
     return this.httpService.post<Event>(this.API_URL + 'events', formData);
   }
