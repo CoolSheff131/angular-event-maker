@@ -95,7 +95,7 @@ export class AdminEventReviewsComponent {
     }
   }
 
-  onSubmitAuditory() {
+  onSubmitEventReview() {
     console.log(this.eventReviewForm);
     if (this.eventReviewForm.invalid) {
       this.eventReviewForm.markAllAsTouched();
@@ -119,6 +119,5 @@ export class AdminEventReviewsComponent {
         this.eventReviewForm.controls.event.value!
       );
     }
-    // this.auditoryService.createAuditory(this.auditoryName.value);
   }
 }

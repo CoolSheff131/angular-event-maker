@@ -98,5 +98,9 @@
         </div>
     </div>
 
+    <div *ngIf="canUserWriteReview">
+        <app-event-review-form [event]="event" [eventReview]="userEventReview"></app-event-review-form>
+    </div>
+
 
 </p-overlayPanel>

@@ -7,5 +7,7 @@
         [buttonNotGoingItemDisabled]="isButtonNotGoingEventItemDisalbed(event)" [buttonGoingItemLabel]="'Записаться'"
         [buttonNotGoingItemLabel]="'Отказаться'"
         (buttonGoingToEventClickEvent)="handleButtonGoingEventItemClick($event)"
-        (buttonNotGoingToEventClickEvent)="handleButtonNotGoingEventItemClick($event)" class="event"></event-item>
+        (buttonNotGoingToEventClickEvent)="handleButtonNotGoingEventItemClick($event)" class="event"
+        (buttonRemoveConfirmPresentClickEvent)="handleRemoveConfirmPresent($event, event)"
+        (buttonConfirmPresentClickEvent)="handleConfirmPresent($event, event)"></event-item>
 </div>

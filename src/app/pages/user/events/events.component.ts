@@ -60,12 +60,15 @@ export class EventsComponent {
   }
 
   isButtonNotGoingEventItemDisalbed(event: Event): boolean {
-    console.log(event.title);
-    console.log(
-      this.authedUser === undefined || !this.isAuthedUserGoingToEvent(event)
-    );
     return (
       this.authedUser === undefined || !this.isAuthedUserGoingToEvent(event)
     );
+  }
+
+  handleConfirmPresent(user: User, event: Event) {
+    this.eventService.confirmPresent(event, user).subscribe();
+  }
+  handleRemoveConfirmPresent(user: User, event: Event) {
+    this.eventService.removeConfirmPresent(event, user).subscribe();
   }
 }

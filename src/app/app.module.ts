@@ -51,6 +51,7 @@ import { AdminUserRolesComponent } from './pages/admin/user-roles/user-roles.com
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
+import { EventReviewFormComponent } from './components/event-review-form/event-review-form.component';
 registerLocaleData(localeRu, 'ru');
 const routes: Routes = [
   { path: '', component: EventsComponent },
@@ -73,6 +74,7 @@ const routes: Routes = [
     PersonalCabinetComponent,
     EventItemComponent,
     AdminUserRolesComponent,
+    EventReviewFormComponent,
   ],
   imports: [
     BrowserModule,

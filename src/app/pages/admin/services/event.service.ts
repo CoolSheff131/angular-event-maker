@@ -11,10 +11,14 @@ import { EventsComponent } from '../../user/events/events.component';
 @Injectable({ providedIn: 'root' })
 export class EventService {
   removeConfirmPresent(event: Event, user: User) {
-    return this.apiService.removeConfirmPresent(event, user);
+    return this.apiService
+      .removeConfirmPresent(event, user)
+      .pipe(tap(() => this.getEvents()));
   }
   confirmPresent(event: Event, user: User) {
-    return this.apiService.confirmPresent(event, user);
+    return this.apiService
+      .confirmPresent(event, user)
+      .pipe(tap(() => this.getEvents()));
   }
   getEvent(id: string) {
     return this.apiService.getEvent(id);

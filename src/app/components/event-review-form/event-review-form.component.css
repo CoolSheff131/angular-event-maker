@@ -1,0 +1,12 @@
+.uploaded__images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.uploaded__image {
+  display: block;
+  max-height: 250px;
+  height: auto;
+  width: auto;
+}

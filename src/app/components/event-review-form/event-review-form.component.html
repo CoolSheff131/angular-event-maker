@@ -1,0 +1,30 @@
+<form [formGroup]="eventReviewForm">
+    <h1>{{isEditing? 'Редактирование':'Создание'}} обзора</h1>
+    <span class="p-field p-fluid">
+        <label [class.form__error-msg]="
+        eventReviewForm.controls.text.invalid &&
+        eventReviewForm.controls.text.touched
+" for="float-places">Напишите текст обзора</label>
+        <input id="text" name="text" formControlName="text" type="text"
+            [class.ng-invalid]="eventReviewForm.controls.text.invalid" pInputText>
+    </span>
+
+    <div *ngIf="previewImagesUrls" class="uploaded__images">
+        <img *ngFor="let img of previewImagesUrls" [src]="img" alt="Image" class="uploaded__image" />
+    </div>
+    <div class="file-upload">
+        <input type="file" class="file-input" multiple hidden (change)="handleFileChange($event)" #fileUpload />
+        <p-button type="button" label="Загрузить изображения" (click)="fileUpload.click()"></p-button>
+    </div>
+
+    <span class="p-field p-fluid">
+        <label [class.form__error-msg]="
+        eventReviewForm.controls.rate.invalid &&
+        eventReviewForm.controls.rate.touched
+    " for="float-places">Выберите рейтинг</label>
+        <p-rating [cancel]="false" formControlName="rate"></p-rating>
+    </span>
+
+    <button type="submit" pButton pRipple [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check"
+        class="p-button-text" (click)="onSubmitEventReview()"></button>
+</form>
