@@ -15,10 +15,12 @@ import {
   UserStudent,
 } from './interfaces/user.interface';
 
+export type ResponceStatus = 'pending' | 'success' | 'error' | 'none';
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   deleteUserRole(userRole: UserRole) {
-    return this.httpService.delete(this.API_URL + `user-roles${userRole.id}`);
+    return this.httpService.delete(this.API_URL + `user-roles/${userRole.id}`);
   }
   updateUserRole(userRoleIdEdit: string, newName: string) {
     return this.httpService.patch(

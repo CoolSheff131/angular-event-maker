@@ -30,7 +30,7 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RatingModule } from 'primeng/rating';
 import { AdminUsersComponent } from './pages/admin/users/users.component';
@@ -52,6 +52,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
 import { EventReviewFormComponent } from './components/event-review-form/event-review-form.component';
+
 registerLocaleData(localeRu, 'ru');
 const routes: Routes = [
   { path: '', component: EventsComponent },
@@ -117,7 +118,11 @@ const routes: Routes = [
 
     ImageModule,
   ],
-  providers: [{ provide: LOCALE_ID, useValue: 'ru' }],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'ru' },
+    MessageService,
+    ConfirmationService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

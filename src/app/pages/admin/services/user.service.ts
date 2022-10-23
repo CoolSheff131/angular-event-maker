@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, Subject, tap } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
-import { ApiService } from '../../../api/api.service';
+import { ApiService, ResponceStatus } from '../../../api/api.service';
 import {
   User,
   UserRole,
@@ -10,19 +10,46 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  private deleteUserRoleResponce = new BehaviorSubject<ResponceStatus>('none');
+  private createUserRoleResponce = new BehaviorSubject<ResponceStatus>('none');
+  private updateUserRolesResponce = new BehaviorSubject<ResponceStatus>('none');
+  private getAllUserRolesResponce = new BehaviorSubject<ResponceStatus>('none');
+
   deleteUserRole(userRole: UserRole) {
-    this.apiService.deleteUserRole(userRole).subscribe(() => {
-      this.getAllUserRoles();
+    this.deleteUserRoleResponce.next('pending');
+
+    this.apiService.deleteUserRole(userRole).subscribe({
+      error: () => {
+        this.deleteUserRoleResponce.next('error');
+      },
+      next: () => {
+        this.getAllUserRoles();
+        this.deleteUserRoleResponce.next('success');
+      },
     });
   }
   updateUserRole(userRoleIdEdit: string, newName: string) {
-    this.apiService.updateUserRole(userRoleIdEdit, newName).subscribe(() => {
-      this.getAllUserRoles();
+    this.updateUserRolesResponce.next('pending');
+    this.apiService.updateUserRole(userRoleIdEdit, newName).subscribe({
+      error: () => {
+        this.updateUserRolesResponce.next('error');
+      },
+      next: () => {
+        this.getAllUserRoles();
+        this.updateUserRolesResponce.next('success');
+      },
     });
   }
   createUserRole(name: string) {
-    this.apiService.createUserRole(name).subscribe(() => {
-      this.getAllUserRoles();
+    this.createUserRoleResponce.next('pending');
+    this.apiService.createUserRole(name).subscribe({
+      error: () => {
+        this.createUserRoleResponce.next('error');
+      },
+      next: () => {
+        this.getAllUserRoles();
+        this.createUserRoleResponce.next('success');
+      },
     });
   }
 
@@ -37,6 +64,10 @@ export class UserService {
   authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
   loginStatus$ = this.loginStatus.asObservable();
   userRoles$ = this.userRoles.asObservable();
+  deleteUserRoleResponce$ = this.deleteUserRoleResponce.asObservable();
+  createUserRoleResponce$ = this.createUserRoleResponce.asObservable();
+  getAllUserRolesResponce$ = this.getAllUserRolesResponce.asObservable();
+  updateUserRolesResponce$ = this.updateUserRolesResponce.asObservable();
 
   constructor(private readonly apiService: ApiService) {
     apiService.tryAuthOnStart().subscribe({
@@ -53,9 +84,14 @@ export class UserService {
   }
 
   getAllUserRoles() {
+    this.getAllUserRolesResponce.next('pending');
     this.apiService.getUserRoles().subscribe({
       next: (userRoles) => {
         this.userRoles.next(userRoles);
+        this.getAllUserRolesResponce.next('success');
+      },
+      error: () => {
+        this.getAllUserRolesResponce.next('error');
       },
     });
   }

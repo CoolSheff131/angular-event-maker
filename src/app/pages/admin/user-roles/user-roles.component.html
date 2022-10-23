@@ -19,7 +19,7 @@
                 <td>{{userRole.name}}</td>
 
                 <td class="table-row__actions">
-                    <button (click)="deleteUserRole(userRole)" pButton pRipple icon="pi pi-pencil"
+                    <button (click)="editUserRole(userRole)" pButton pRipple icon="pi pi-pencil"
                         class="p-button-rounded p-button-success mr-2"></button>
                     <button (click)="deleteUserRole(userRole)" pButton pRipple icon="pi pi-trash"
                         class="p-button-rounded p-button-warning"></button>
@@ -53,10 +53,15 @@
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
-            (click)="closeFormDialog()"></button>
-        <button type="submit" [disabled]="userRoleForm.invalid && userRoleForm.touched" pButton pRipple
-            [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" class="p-button-text"
+        <button pButton pRipple
+            [disabled]="(createUserRoleResponce$ | async) === 'pending'|| (updateUserRoleResponce$ | async) === 'pending'"
+            label="Отмена" icon="pi pi-times" class="p-button-text" (click)="closeFormDialog()"></button>
+        <button type="submit"
+            [disabled]="(createUserRoleResponce$ | async) === 'pending' || (updateUserRoleResponce$ | async) === 'pending' || userRoleForm.invalid && userRoleForm.touched"
+            pButton pRipple [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" class="p-button-text"
             (click)="onSubmitForm()"></button>
     </ng-template>
 </p-dialog>
+<p-toast></p-toast>
+
+<p-confirmDialog header="Удаление данных о роли пользователя" icon="pi pi-exclamation-triangle"></p-confirmDialog>
