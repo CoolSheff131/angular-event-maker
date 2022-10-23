@@ -18,6 +18,7 @@ export class AppComponent {
   loginStatus: 'waiting' | 'success' | 'error' | 'pending' = 'waiting';
 
   display = false;
+  authForm = false;
 
   signInForm = new FormGroup({
     signInLogin: new FormControl<string>('', [Validators.required]),
@@ -33,6 +34,10 @@ export class AppComponent {
       Validators.required,
     ]),
   });
+
+  openAuth() {
+    this.authForm = true;
+  }
 
   groups: Group[] = [];
 
