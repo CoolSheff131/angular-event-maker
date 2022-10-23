@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { skipWhile, take } from 'rxjs';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventReview } from 'src/app/api/interfaces/eventReview.interface';
 import { User } from 'src/app/api/interfaces/user.interface';
@@ -32,13 +34,24 @@ export class AdminEventReviewsComponent {
   });
   previewImagesUrls: SafeUrl[] | undefined;
 
+  deleteEventReviewResponce$ =
+    this.eventReviewsService.deleteEventReviewResponce$;
+  createEventReviewResponce$ =
+    this.eventReviewsService.createEventReviewResponce$;
+  updateEventReviewResponce$ =
+    this.eventReviewsService.updateEventReviewResponce$;
+  getAllEventReviewsResponce$ =
+    this.eventReviewsService.getAllEventReviewsResponce$;
+
   eventReviews: EventReview[] = [];
 
   constructor(
     private readonly eventReviewsService: EventReviewService,
     private readonly eventService: EventService,
     private readonly userService: UserService,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {
     eventService.events$.subscribe((events) => {
       this.events = events;
@@ -75,7 +88,26 @@ export class AdminEventReviewsComponent {
   }
 
   deleteEventReview(eventReview: EventReview) {
-    this.eventReviewsService.deleteEventReview(eventReview.id);
+    this.confirmationService.confirm({
+      message: 'Вы действительно хотите данные об обзоре мероприятия?',
+      accept: () => {
+        this.eventReviewsService.deleteEventReview(eventReview.id);
+
+        this.deleteEventReviewResponce$
+          .pipe(
+            skipWhile((responce) => responce === 'pending'),
+            take(1)
+          )
+          .subscribe((responce) => {
+            if (responce === 'success') {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Данные об обзоре мероприятия удалены',
+              });
+            }
+          });
+      },
+    });
   }
 
   closeAddDialog() {
@@ -109,6 +141,21 @@ export class AdminEventReviewsComponent {
         rate!,
         event!
       );
+      this.updateEventReviewResponce$
+        .pipe(
+          skipWhile((responce) => responce === 'pending'),
+          take(1)
+        )
+        .subscribe((responce) => {
+          console.log(responce);
+          if (responce === 'success') {
+            this.isFormDialogOpen = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Данные об обзоре мероприятия обновлены',
+            });
+          }
+        });
     } else {
       this.eventReviewsService.createEventReview(
         images!,
@@ -117,6 +164,20 @@ export class AdminEventReviewsComponent {
         reviewer!,
         event!
       );
+      this.createEventReviewResponce$
+        .pipe(
+          skipWhile((responce) => responce === 'pending'),
+          take(1)
+        )
+        .subscribe((responce) => {
+          if (responce === 'success') {
+            this.isFormDialogOpen = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Данные об обзоре мероприятия добавлены',
+            });
+          }
+        });
     }
   }
 }

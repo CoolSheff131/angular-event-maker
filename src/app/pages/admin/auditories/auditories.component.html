@@ -20,8 +20,10 @@
                 <td>{{auditory.name}}</td>
 
                 <td class="table-row__actions">
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"></button>
+                    <button (click)="editAuditory(auditory)" pButton pRipple icon="pi pi-pencil"
+                        class="p-button-rounded p-button-success mr-2"></button>
+                    <button (click)="deleteAuditory(auditory)" pButton pRipple icon="pi pi-trash"
+                        class="p-button-rounded p-button-warning"></button>
                 </td>
             </tr>
         </ng-template>
@@ -56,3 +58,7 @@
             (click)="onSubmitAuditory()"></button>
     </ng-template>
 </p-dialog>
+
+<p-toast></p-toast>
+
+<p-confirmDialog header="Удаление данных об аудитории" icon="pi pi-exclamation-triangle"></p-confirmDialog>

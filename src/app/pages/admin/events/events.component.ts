@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { addDays, getHours, getMinutes } from 'date-fns';
-import { filter, pipe } from 'rxjs';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { filter, pipe, skipWhile, take } from 'rxjs';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
@@ -48,6 +49,14 @@ export class AdminEventsComponent {
     >([], [Validators.required]),
   });
 
+  getAllEventsResponce$ = this.eventService.getAllEventsResponce$;
+
+  deleteEventResponce$ = this.eventService.deleteEventResponce$;
+
+  updateEventResponce$ = this.eventService.updateEventResponce$;
+
+  createEventResponce$ = this.eventService.createEventResponce$;
+
   eventRange: FormControl<Date[] | null>;
 
   previewImagesUrls: SafeUrl[] | undefined;
@@ -58,6 +67,8 @@ export class AdminEventsComponent {
     private readonly auditoryService: AuditoryService,
     private readonly eventTagsService: EventTagService,
     private readonly groupsService: GroupService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
 
     private domSanitizer: DomSanitizer
   ) {
@@ -103,7 +114,26 @@ export class AdminEventsComponent {
   }
 
   deleteEvent(event: Event) {
-    this.eventService.deleteEvent(event);
+    this.confirmationService.confirm({
+      message: 'Вы действительно хотите данные о мероприятии?',
+      accept: () => {
+        this.eventService.deleteEvent(event);
+
+        this.deleteEventResponce$
+          .pipe(
+            skipWhile((responce) => responce === 'pending'),
+            take(1)
+          )
+          .subscribe((responce) => {
+            if (responce === 'success') {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Данные о мероприятии удалены',
+              });
+            }
+          });
+      },
+    });
   }
 
   editEvent(event: Event) {
@@ -153,20 +183,11 @@ export class AdminEventsComponent {
     this.formDialog = false;
   }
 
-  getDayFromStart(dayNumber: number): Date {
-    const [dateStart] = this.eventRange.value!;
-    const date = addDays(dateStart, dayNumber);
-
-    return date;
-  }
-
   handleFileChange(event: any) {
-    this.eventForm.controls.eventImages.setValue(
-      Array.from(event.target.files)
-    );
-    if (this.eventForm.controls.eventImages.value) {
-      this.previewImagesUrls = this.eventForm.controls.eventImages.value.map(
-        (f) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
+    this.eventForm.patchValue({ eventImages: Array.from(event.target.files) });
+    if (this.eventForm.value.eventImages) {
+      this.previewImagesUrls = this.eventForm.value.eventImages.map((f) =>
+        this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
       );
     }
   }
@@ -212,6 +233,21 @@ export class AdminEventsComponent {
         eventPeopleCame!,
         eventPeopleWillCome!
       );
+      this.updateEventResponce$
+        .pipe(
+          skipWhile((responce) => responce === 'pending'),
+          take(1)
+        )
+        .subscribe((responce) => {
+          console.log(responce);
+          if (responce === 'success') {
+            this.formDialog = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Данные о мероприятии добавлены',
+            });
+          }
+        });
     } else {
       this.eventService.createEvent(
         eventImages!,
@@ -226,6 +262,22 @@ export class AdminEventsComponent {
         eventPeopleCame!,
         eventPeopleWillCome!
       );
+      this.createEventResponce$
+        .pipe(
+          skipWhile((responce) => responce === 'pending'),
+          take(1)
+        )
+        .subscribe((responce) => {
+          console.log(responce);
+
+          if (responce === 'success') {
+            this.formDialog = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Данные о мероприятии обновлены',
+            });
+          }
+        });
     }
   }
 }

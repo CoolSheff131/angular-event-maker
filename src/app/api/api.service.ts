@@ -253,8 +253,8 @@ export class ApiService {
     images.forEach((file) => {
       formData.append('images[]', file);
     });
-    formData.append('title', title);
-    formData.append('description', description);
+    formData.append('title', JSON.stringify(title));
+    formData.append('description', JSON.stringify(description));
     formData.append('owner', JSON.stringify(owner));
     formData.append('places', JSON.stringify(places));
     formData.append('groups', JSON.stringify(groups));

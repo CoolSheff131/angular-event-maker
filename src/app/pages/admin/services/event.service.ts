@@ -4,12 +4,22 @@ import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import { User } from 'src/app/api/interfaces/user.interface';
-import { ApiService } from '../../../api/api.service';
+import { ApiService, ResponceStatus } from '../../../api/api.service';
 import { Event } from '../../../api/interfaces/event.interface';
 import { EventsComponent } from '../../user/events/events.component';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
+  private deleteEventResponce = new BehaviorSubject<ResponceStatus>('none');
+  private createEventResponce = new BehaviorSubject<ResponceStatus>('none');
+  private updateEventResponce = new BehaviorSubject<ResponceStatus>('none');
+  private getAllEventsResponce = new BehaviorSubject<ResponceStatus>('none');
+
+  deleteEventResponce$ = this.deleteEventResponce.asObservable();
+  createEventResponce$ = this.createEventResponce.asObservable();
+  updateEventResponce$ = this.updateEventResponce.asObservable();
+  getAllEventsResponce$ = this.getAllEventsResponce.asObservable();
+
   removeConfirmPresent(event: Event, user: User) {
     return this.apiService
       .removeConfirmPresent(event, user)
@@ -60,6 +70,7 @@ export class EventService {
     peopleCame: User[],
     peopleWillCome: User[]
   ) {
+    this.updateEventResponce.next('pending');
     this.apiService
       .updateEvent(
         idEditing,
@@ -79,14 +90,29 @@ export class EventService {
         images
       )
       .pipe(tap(() => this.getEvents()))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.updateEventResponce.next('success');
+        },
+        error: () => {
+          this.updateEventResponce.next('error');
+        },
+      });
   }
 
   deleteEvent(event: Event) {
+    this.deleteEventResponce.next('pending');
     this.apiService
       .deleteEvent(event.id)
       .pipe(tap(() => this.getEvents()))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.deleteEventResponce.next('success');
+        },
+        error: () => {
+          this.deleteEventResponce.next('error');
+        },
+      });
   }
 
   createEvent(
@@ -101,6 +127,7 @@ export class EventService {
     peopleCame: User[],
     peopleWillCome: User[]
   ) {
+    this.createEventResponce.next('pending');
     this.apiService
       .createEvent(
         images,
@@ -115,13 +142,26 @@ export class EventService {
         peopleWillCome
       )
       .pipe(tap(() => this.getEvents()))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.createEventResponce.next('success');
+        },
+        error: () => {
+          this.createEventResponce.next('error');
+        },
+      });
   }
 
   getEvents() {
+    this.getAllEventsResponce.next('pending');
     this.apiService.getEvents().subscribe({
       next: (events) => {
+        this.getAllEventsResponce.next('success');
+
         this.events.next(events);
+      },
+      error: () => {
+        this.getAllEventsResponce.next('error');
       },
     });
   }
