@@ -29,3 +29,11 @@
 .form__error-msg {
   color: #e24c4c;
 }
+
+.number-field {
+  width: 150px;
+}
+
+.footer {
+  display: flex;
+}
