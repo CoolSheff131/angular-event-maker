@@ -45,19 +45,12 @@ export class AdminEventTagsComponent {
       this.eventTagForm.markAllAsTouched();
       return;
     }
-
+    const { eventTagName } = this.eventTagForm.value;
     if (this.isEditing) {
-      console.log('aASD');
-      this.eventTagService.updateEventTag(
-        this.eventTagIdEdit,
-        this.eventTagForm.controls.eventTagName.value!
-      );
+      this.eventTagService.updateEventTag(this.eventTagIdEdit, eventTagName!);
       this.isEditing = false;
     } else {
-      console.log('creaate');
-      this.eventTagService.createEventTag(
-        this.eventTagForm.controls.eventTagName.value!
-      );
+      this.eventTagService.createEventTag(eventTagName!);
     }
   }
 
@@ -65,7 +58,7 @@ export class AdminEventTagsComponent {
     this.openFormDialog();
     this.isEditing = true;
     this.eventTagIdEdit = eventTag.id;
-    this.eventTagForm.controls.eventTagName.setValue(eventTag.name);
+    this.eventTagForm.patchValue({ eventTagName: eventTag.name });
   }
   deleteEventTag(group: EventTag) {
     this.eventTagService.deleteEventTag(group);

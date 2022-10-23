@@ -43,15 +43,11 @@ export class AdminAuditoriesComponent {
       this.auditoryForm.markAllAsTouched();
       return;
     }
+    const { auditoryName } = this.auditoryForm.value;
     if (this.isEditing) {
-      this.auditoryService.updateAuditory(
-        this.auditoryToEditId,
-        this.auditoryForm.controls.auditoryName.value!
-      );
+      this.auditoryService.updateAuditory(this.auditoryToEditId, auditoryName!);
     } else {
-      this.auditoryService.createAuditory(
-        this.auditoryForm.controls.auditoryName.value!
-      );
+      this.auditoryService.createAuditory(auditoryName!);
     }
   }
 
@@ -59,6 +55,9 @@ export class AdminAuditoriesComponent {
     this.auditoryToEditId = auditory.id;
     this.isEditing = false;
     this.openFormDialog();
+    this.auditoryForm.patchValue({
+      auditoryName: auditory.name,
+    });
   }
 
   deleteAuditory(auditory: Auditory) {

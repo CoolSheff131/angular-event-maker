@@ -28,7 +28,7 @@ export class AdminUserRolesComponent {
   editGroup(group: Group) {
     this.isEditing = true;
     this.userRoleIdEdit = group.id;
-    this.userRoleForm.controls.userRoleName.setValue(group.name);
+    this.userRoleForm.patchValue({ userRoleName: group.name });
     this.openAddDialog();
   }
   deleteUserRole(userRole: UserRole) {
@@ -48,15 +48,11 @@ export class AdminUserRolesComponent {
       this.userRoleForm.markAllAsTouched();
       return;
     }
+    const { userRoleName } = this.userRoleForm.value;
     if (this.isEditing) {
-      this.userService.updateUserRole(
-        this.userRoleIdEdit,
-        this.userRoleForm.controls.userRoleName.value!
-      );
+      this.userService.updateUserRole(this.userRoleIdEdit, userRoleName!);
     } else {
-      this.userService.createUserRole(
-        this.userRoleForm.controls.userRoleName.value!
-      );
+      this.userService.createUserRole(userRoleName!);
     }
   }
 }

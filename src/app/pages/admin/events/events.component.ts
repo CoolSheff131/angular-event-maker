@@ -90,7 +90,6 @@ export class AdminEventsComponent {
         this.eventForm.controls.eventDays.clear();
 
         dates.forEach((date) => {
-          console.log('RESET');
           this.eventForm.controls.eventDays.push(
             new FormGroup({
               auditory: new FormControl<Auditory | null>(null, [

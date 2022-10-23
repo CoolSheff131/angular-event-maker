@@ -64,7 +64,6 @@ export class AdminEventReviewsComponent {
     this.previewImagesUrls = eventReview.images;
 
     this.eventReviewForm.reset();
-    console.log(eventReview);
     this.eventReviewForm.patchValue({
       images: null,
       rate: eventReview.rate,
@@ -73,7 +72,6 @@ export class AdminEventReviewsComponent {
       event: this.events.find((e) => e.id === eventReview.event.id),
     });
     this.eventReviewForm.markAllAsTouched();
-    console.log(this.eventReviewForm.controls.reviewer.value);
   }
 
   deleteEventReview(eventReview: EventReview) {
@@ -101,22 +99,23 @@ export class AdminEventReviewsComponent {
       this.eventReviewForm.markAllAsTouched();
       return;
     }
+    const { reviewer, text, images, rate, event } = this.eventReviewForm.value;
     if (this.isEditing) {
       this.eventReviewsService.updateEventReview(
         this.idEditing,
-        this.eventReviewForm.controls.reviewer.value!,
-        this.eventReviewForm.controls.text.value!,
-        this.eventReviewForm.controls.images.value!,
-        this.eventReviewForm.controls.rate.value!,
-        this.eventReviewForm.controls.event.value!
+        reviewer!,
+        text!,
+        images!,
+        rate!,
+        event!
       );
     } else {
       this.eventReviewsService.createEventReview(
-        this.eventReviewForm.controls.images.value!,
-        this.eventReviewForm.controls.rate.value!,
-        this.eventReviewForm.controls.text.value!,
-        this.eventReviewForm.controls.reviewer.value!,
-        this.eventReviewForm.controls.event.value!
+        images!,
+        rate!,
+        text!,
+        reviewer!,
+        event!
       );
     }
   }

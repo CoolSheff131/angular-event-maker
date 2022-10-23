@@ -21,14 +21,13 @@ export class AdminGroupsComponent {
   constructor(private readonly groupService: GroupService) {
     groupService.groups$.subscribe((groups) => {
       this.groups = groups;
-      console.log(groups);
     });
   }
 
   editGroup(group: Group) {
     this.isEditing = true;
     this.groupIdEdit = group.id;
-    this.groupForm.controls.groupName.setValue(group.name);
+    this.groupForm.patchValue({ groupName: group.name });
     this.openAddDialog();
   }
   deleteGroup(group: Group) {
@@ -48,13 +47,11 @@ export class AdminGroupsComponent {
       this.groupForm.markAllAsTouched();
       return;
     }
+    const { groupName } = this.groupForm.value;
     if (this.isEditing) {
-      this.groupService.updateGroup(
-        this.groupIdEdit,
-        this.groupForm.controls.groupName.value!
-      );
+      this.groupService.updateGroup(this.groupIdEdit, groupName!);
     } else {
-      this.groupService.createGroup(this.groupForm.controls.groupName.value!);
+      this.groupService.createGroup(groupName!);
     }
   }
 }
