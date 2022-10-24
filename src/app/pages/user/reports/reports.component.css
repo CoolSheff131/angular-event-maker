@@ -1,0 +1,13 @@
+.chart-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.chart {
+  min-width: 500px;
+}
+
+.chart-wrapper__content {
+  display: flex;
+  justify-content: space-between;
+}

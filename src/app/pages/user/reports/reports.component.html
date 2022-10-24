@@ -1,1 +1,25 @@
-<p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+<div class="chart-wrapper">
+    <h1>Посещаемость мероприятий</h1>
+    <main class="chart-wrapper__content">
+        <div class="chart">
+            <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <td>Название мероприятия</td>
+                    <td>Участники</td>
+                    <td>Пришло</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let event of events">
+                    <td>{{event.title}}</td>
+                    <td>{{event.peopleWillCome.length}}</td>
+                    <td>{{event.peopleCame.length}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+</div>

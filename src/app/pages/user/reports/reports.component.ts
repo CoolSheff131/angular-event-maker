@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { format } from 'date-fns';
+import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventService } from '../../admin/services/event.service';
 
 @Component({
@@ -10,11 +11,13 @@ export class ReportsComponent {
   basicData: any;
 
   basicOptions: any;
+  events: Event[] = [];
 
   constructor(private readonly eventService: EventService) {}
 
   ngOnInit() {
     this.eventService.events$.subscribe((events) => {
+      this.events = events;
       const labels = events.map((e) => e.title);
       const peopleCame = events.map((e) => e.peopleCame.length);
       const peopleWillCome = events.map((e) => e.peopleWillCome.length);
@@ -40,14 +43,14 @@ export class ReportsComponent {
       plugins: {
         legend: {
           labels: {
-            color: '#ebedef',
+            color: 'black',
           },
         },
       },
       scales: {
         x: {
           ticks: {
-            color: '#ebedef',
+            color: 'black',
           },
           grid: {
             color: 'rgba(255,255,255,0.2)',
@@ -55,7 +58,7 @@ export class ReportsComponent {
         },
         y: {
           ticks: {
-            color: '#ebedef',
+            color: 'black',
           },
           grid: {
             color: 'rgba(255,255,255,0.2)',
