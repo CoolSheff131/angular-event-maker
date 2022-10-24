@@ -60,11 +60,12 @@
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <button [disabled]="form.disabled" pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
-            (click)="closeFormDialog()"></button>
-        <button [disabled]="form.disabled || form.invalid && form.touched" type="submit" pButton pRipple
-            [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" class="p-button-text"
-            (click)="onSubmitAuditory()"></button>
+
+        <button type="submit" [disabled]="form.disabled || form.invalid && form.touched" pButton pRipple
+            [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" (click)="onSubmitAuditory()"></button>
+
+        <button type="button" [disabled]="form.disabled" pButton pRipple label="Отмена" icon="pi pi-times"
+            class="p-button-text" (click)="closeFormDialog()"></button>
     </ng-template>
 </p-dialog>
 

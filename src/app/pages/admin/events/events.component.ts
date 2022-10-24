@@ -197,6 +197,8 @@ export class AdminEventsComponent {
   }
 
   closeDialog() {
+    console.log('LAKHSGFAHSG');
+
     this.formDialog = false;
   }
 

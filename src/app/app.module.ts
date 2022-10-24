@@ -53,6 +53,7 @@ import localeRu from '@angular/common/locales/ru';
 import { registerLocaleData } from '@angular/common';
 import { EventReviewFormComponent } from './components/event-review-form/event-review-form.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ReportsComponent } from './pages/user/reports/reports.component';
 registerLocaleData(localeRu, 'ru');
 const routes: Routes = [
   { path: '', component: EventsComponent },
@@ -65,6 +66,7 @@ const routes: Routes = [
   { path: 'users', component: AdminUsersComponent },
   { path: 'user-roles', component: AdminUserRolesComponent },
   { path: 'personal-cabinet', component: PersonalCabinetComponent },
+  { path: 'reports', component: ReportsComponent },
 ];
 
 @NgModule({
@@ -76,6 +78,7 @@ const routes: Routes = [
     EventItemComponent,
     AdminUserRolesComponent,
     EventReviewFormComponent,
+    ReportsComponent,
   ],
   imports: [
     BrowserModule,

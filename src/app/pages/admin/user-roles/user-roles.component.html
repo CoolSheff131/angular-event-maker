@@ -58,11 +58,12 @@
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple [disabled]="form.disabled" label="Отмена" icon="pi pi-times" class="p-button-text"
-            (click)="closeFormDialog()"></button>
+
         <button type="submit" [disabled]="form.disabled || form.invalid && form.touched" pButton pRipple
-            [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" class="p-button-text"
-            (click)="onSubmitForm()"></button>
+            [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" (click)="onSubmitForm()"></button>
+
+        <button type="button" pButton pRipple [disabled]="form.disabled" label="Отмена" icon="pi pi-times"
+            class="p-button-text" (click)="closeFormDialog()"></button>
     </ng-template>
 </p-dialog>
 <p-toast></p-toast>

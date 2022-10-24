@@ -196,12 +196,11 @@
 
         <footer class="footer">
 
-            <button [disabled]="form.disabled" pButton pRipple [label]="isEditing ? 'Сохранить' : 'Добавить'"
-                type="submit"></button>
+            <button type="submit" [disabled]="form.disabled" pButton pRipple
+                [label]="isEditing ? 'Сохранить' : 'Добавить'"></button>
 
-            <button [disabled]="form.disabled" pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
-                (click)="closeDialog()"></button>
-
+            <button type="button" [disabled]="form.disabled" pButton pRipple label="Отмена" icon="pi pi-times"
+                class="p-button-text" (click)="closeDialog()"></button>
         </footer>
 
     </form>
