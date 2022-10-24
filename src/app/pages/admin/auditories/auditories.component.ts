@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { skipWhile, take } from 'rxjs';
+import {
+  distinctUntilChanged,
+  map,
+  merge,
+  Observable,
+  skipWhile,
+  take,
+} from 'rxjs';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
 import { AuditoryService } from '../services/auditory.service';
 
@@ -15,7 +22,7 @@ export class AdminAuditoriesComponent {
   isEditing = false;
   auditoryToEditId = '';
 
-  auditoryForm = new FormGroup({
+  form = new FormGroup({
     auditoryName: new FormControl<string>('', [Validators.required]),
   });
   auditories: Auditory[] = [];
@@ -33,10 +40,23 @@ export class AdminAuditoriesComponent {
     auditoryService.auditories$.subscribe((auditories) => {
       this.auditories = auditories;
     });
+
+    merge(this.createAuditoryResponce$, this.updateAuditoryResponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      });
   }
 
   openFormDialogToAdd() {
-    this.auditoryForm.reset();
+    this.form.reset();
     this.isEditing = false;
     this.openFormDialog();
   }
@@ -50,11 +70,11 @@ export class AdminAuditoriesComponent {
   }
 
   onSubmitAuditory() {
-    if (this.auditoryForm.invalid) {
-      this.auditoryForm.markAllAsTouched();
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
-    const { auditoryName } = this.auditoryForm.value;
+    const { auditoryName } = this.form.value;
     if (this.isEditing) {
       this.auditoryService.updateAuditory(this.auditoryToEditId, auditoryName!);
       this.updateAuditoryResponce$
@@ -95,7 +115,7 @@ export class AdminAuditoriesComponent {
     this.auditoryToEditId = auditory.id;
     this.isEditing = true;
     this.openFormDialog();
-    this.auditoryForm.patchValue({
+    this.form.patchValue({
       auditoryName: auditory.name,
     });
   }

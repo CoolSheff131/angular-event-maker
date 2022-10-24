@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { skipWhile, take } from 'rxjs';
+import { distinctUntilChanged, map, merge, skipWhile, take } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import { GroupService } from 'src/app/pages/admin/services/group.service';
 
@@ -14,7 +14,7 @@ export class AdminGroupsComponent {
   isEditing = false;
 
   groupIdEdit = '0';
-  groupForm = new FormGroup({
+  form = new FormGroup({
     groupName: new FormControl<string>('', [Validators.required]),
   });
 
@@ -34,12 +34,25 @@ export class AdminGroupsComponent {
     groupService.groups$.subscribe((groups) => {
       this.groups = groups;
     });
+
+    merge(this.createGroupResponce$, this.updateGroupResponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      });
   }
 
   editGroup(group: Group) {
     this.isEditing = true;
     this.groupIdEdit = group.id;
-    this.groupForm.patchValue({ groupName: group.name });
+    this.form.patchValue({ groupName: group.name });
     this.openAddDialog();
   }
   deleteGroup(group: Group) {
@@ -74,11 +87,11 @@ export class AdminGroupsComponent {
   }
 
   onSubmitForm() {
-    if (this.groupForm.invalid) {
-      this.groupForm.markAllAsTouched();
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
-    const { groupName } = this.groupForm.value;
+    const { groupName } = this.form.value;
     if (this.isEditing) {
       this.groupService.updateGroup(this.groupIdEdit, groupName!);
       this.updateGroupResponce$

@@ -4,57 +4,63 @@
     <button pButton pRipple label="Добавить" (click)="openAddDialog()" icon="pi pi-plus"
         class="p-button-success mr-2"></button>
 
+    <div *ngIf="(getAllEventReviewsResponce$ | async) === 'pending'; else table" class="spinner-container">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    <ng-template #table>
+        <p-table [value]="eventReviews" dataKey="id" [rowHover]="true">
 
-    <p-table [value]="eventReviews" dataKey="id" [rowHover]="true">
+            <ng-template pTemplate="header">
+                <tr>
 
-        <ng-template pTemplate="header">
-            <tr>
+                    <th pSortableColumn="name">Текст <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="name">Обзорщик <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="name">Название мероприятия <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="name">Рейтинг <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-eventReview>
+                <tr class="table-row">
 
-                <th pSortableColumn="name">Текст <p-sortIcon field="name"></p-sortIcon>
-                </th>
-                <th pSortableColumn="name">Обзорщик <p-sortIcon field="name"></p-sortIcon>
-                </th>
-                <th pSortableColumn="name">Название мероприятия <p-sortIcon field="name"></p-sortIcon>
-                </th>
-                <th pSortableColumn="name">Рейтинг <p-sortIcon field="name"></p-sortIcon>
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-eventReview>
-            <tr class="table-row">
+                    <td>{{eventReview.text}}</td>
+                    <td>{{eventReview.reviewer.name}}</td>
+                    <td>{{eventReview.event.title}}</td>
+                    <td>{{eventReview.rate}}</td>
 
-                <td>{{eventReview.text}}</td>
-                <td>{{eventReview.reviewer.name}}</td>
-                <td>{{eventReview.event.title}}</td>
-                <td>{{eventReview.rate}}</td>
+                    <td class="table-row__actions">
+                        <button (click)="editEventReview(eventReview)" pButton pRipple icon="pi pi-pencil"
+                            class="p-button-rounded p-button-success mr-2"></button>
+                        <button (click)="deleteEventReview(eventReview)" pButton pRipple icon="pi pi-trash"
+                            class="p-button-rounded p-button-warning"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    Всего {{eventReviews.length}} обзоров
+                </div>
+            </ng-template>
+        </p-table>
 
-                <td class="table-row__actions">
-                    <button (click)="editEventReview(eventReview)" pButton pRipple icon="pi pi-pencil"
-                        class="p-button-rounded p-button-success mr-2"></button>
-                    <button (click)="deleteEventReview(eventReview)" pButton pRipple icon="pi pi-trash"
-                        class="p-button-rounded p-button-warning"></button>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                Всего {{eventReviews.length}} обзоров
-            </div>
-        </ng-template>
-    </p-table>
+    </ng-template>
 </div>
 
 <p-dialog [(visible)]="isFormDialogOpen" [style]="{width: '450px'}"
-    [header]="isEditing?'Редактирование отзыва':'Добавить отзыв'" [modal]="true" styleClass="p-fluid">
+    [header]="isEditing?'Редактирование отзыва':'Добавить отзыв'" [modal]="true" styleClass="p-fluid"
+    [closable]="false">
     <ng-template pTemplate="content">
-        <form [formGroup]="eventReviewForm">
+        <form [formGroup]="form">
             <span class="p-field p-fluid">
                 <label [class.form__error-msg]="
-                eventReviewForm.controls.text.invalid &&
-                eventReviewForm.controls.text.touched
+                form.controls.text.invalid &&
+                form.controls.text.touched
         " for="float-places">Напишите текст обзора</label>
                 <input id="text" name="text" formControlName="text" type="text"
-                    [class.ng-invalid]="eventReviewForm.controls.text.invalid" pInputText>
+                    [class.ng-invalid]="form.controls.text.invalid" pInputText>
             </span>
 
             <div *ngIf="previewImagesUrls" class="uploaded__images">
@@ -67,25 +73,25 @@
 
             <span class="p-field p-fluid">
                 <label [class.form__error-msg]="
-                eventReviewForm.controls.reviewer.invalid &&
-                eventReviewForm.controls.reviewer.touched
+                form.controls.reviewer.invalid &&
+                form.controls.reviewer.touched
             " for="float-places">Выберите создателя обзора</label>
-                <p-dropdown [options]="users" [class.ng-invalid]="eventReviewForm.controls.reviewer.invalid"
-                    optionLabel="name" formControlName="reviewer"></p-dropdown>
+                <p-dropdown [options]="users" [class.ng-invalid]="form.controls.reviewer.invalid" optionLabel="name"
+                    formControlName="reviewer"></p-dropdown>
             </span>
 
             <span class="p-field p-fluid">
                 <label [class.form__error-msg]="
-                eventReviewForm.controls.event.invalid &&
-                eventReviewForm.controls.event.touched
+                form.controls.event.invalid &&
+                form.controls.event.touched
             " for="float-places">Выберите мероприятие</label>
-                <p-dropdown [options]="events" [class.ng-invalid]="eventReviewForm.controls.event.invalid"
-                    [optionLabel]="'title'" formControlName="event"></p-dropdown>
+                <p-dropdown [options]="events" [class.ng-invalid]="form.controls.event.invalid" [optionLabel]="'title'"
+                    formControlName="event"></p-dropdown>
             </span>
             <span class="p-field p-fluid">
                 <label [class.form__error-msg]="
-                eventReviewForm.controls.rate.invalid &&
-                eventReviewForm.controls.rate.touched
+                form.controls.rate.invalid &&
+                form.controls.rate.touched
             " for="float-places">Выберите рейтинг</label>
                 <p-rating [cancel]="false" formControlName="rate"></p-rating>
             </span>
@@ -95,10 +101,10 @@
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
+        <button [disabled]="form.disabled" pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
             (click)="closeAddDialog()"></button>
-        <button type="submit" pButton pRipple [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check"
-            class="p-button-text" (click)="onSubmitEventReview()"></button>
+        <button [disabled]="form.disabled" type="submit" pButton pRipple [label]="isEditing?'Сохранить':'Добавить'"
+            icon="pi pi-check" class="p-button-text" (click)="onSubmitEventReview()"></button>
     </ng-template>
 </p-dialog>
 

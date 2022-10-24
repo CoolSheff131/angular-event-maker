@@ -33,6 +33,7 @@ import { AdminEventTagsComponent } from './event-tags/event-tags.component';
 import { AdminEventsComponent } from './events/events.component';
 import { AdminGroupsComponent } from './groups/groups.component';
 import { AdminUsersComponent } from './users/users.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { AdminUsersComponent } from './users/users.component';
     ConfirmDialogModule,
     RadioButtonModule,
     RatingModule,
+    ProgressSpinnerModule,
   ],
 })
 export class AdminModule {}

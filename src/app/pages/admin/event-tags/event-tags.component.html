@@ -4,46 +4,51 @@
     <button pButton pRipple label="Добавить" (click)="openFormDialogToAdd()" icon="pi pi-plus"
         class="p-button-success mr-2"></button>
 
+    <div *ngIf="(getAllEventsTagResponce$ | async) === 'pending'; else table" class="spinner-container">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    <ng-template #table>
+        <p-table [value]="eventTags" dataKey="id" [rowHover]="true">
 
-    <p-table [value]="eventTags" dataKey="id" [rowHover]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-eventTag>
+                <tr class="table-row">
+                    <td>{{eventTag.name}}</td>
+                    <td class="table-row__actions">
+                        <button (click)="editEventTag(eventTag)" pButton pRipple icon="pi pi-pencil"
+                            class="p-button-rounded p-button-success mr-2"></button>
+                        <button (click)="deleteEventTag(eventTag)" pButton pRipple icon="pi pi-trash"
+                            class="p-button-rounded p-button-warning"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    Всего {{eventTags.length}} тегов.
+                </div>
+            </ng-template>
+        </p-table>
 
-        <ng-template pTemplate="header">
-            <tr>
-                <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-eventTag>
-            <tr class="table-row">
-                <td>{{eventTag.name}}</td>
-                <td class="table-row__actions">
-                    <button (click)="editEventTag(eventTag)" pButton pRipple icon="pi pi-pencil"
-                        class="p-button-rounded p-button-success mr-2"></button>
-                    <button (click)="deleteEventTag(eventTag)" pButton pRipple icon="pi pi-trash"
-                        class="p-button-rounded p-button-warning"></button>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                Всего {{eventTags.length}} тегов.
-            </div>
-        </ng-template>
-    </p-table>
+    </ng-template>
 </div>
 
 <p-dialog [(visible)]="isFormDialogOpen" [style]="{width: '450px'}"
-    [header]="isEditing?'Редактировать тег':'Добавить тег'" [modal]="true" styleClass="p-fluid">
+    [header]="isEditing?'Редактировать тег':'Добавить тег'" [modal]="true" styleClass="p-fluid" [closable]="false">
     <ng-template pTemplate="content">
-        <form [formGroup]="eventTagForm" novalidate (ngSubmit)="onSubmitEventTagForm()">
+        <form [formGroup]="form" novalidate (ngSubmit)="onSubmitEventTagForm()">
             <span class="p-field p-fluid">
                 <label
-                    [class.form__error-msg]="eventTagForm.controls.eventTagName.invalid && eventTagForm.controls.eventTagName.touched"
+                    [class.form__error-msg]="form.controls.eventTagName.invalid && form.controls.eventTagName.touched"
                     for="eventTagNameAdd">Название тега</label>
                 <input [class.ng-invalid]="
-                eventTagForm.controls.eventTagName.invalid" id="eventTagNameAdd" name="eventTagNameAdd"
+                form.controls.eventTagName.invalid" id="eventTagNameAdd" name="eventTagNameAdd"
                     formControlName="eventTagName" type="text" pInputText>
-                <small *ngIf="eventTagForm.controls.eventTagName.invalid && eventTagForm.controls.eventTagName.touched"
+                <small *ngIf="form.controls.eventTagName.invalid && form.controls.eventTagName.touched"
                     id="userGroupControl" class="form__error-msg">Введите название тега</small>
             </span>
         </form>
@@ -53,7 +58,7 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
             (click)="closeFormDialog()"></button>
-        <button type="submit" [disabled]="eventTagForm.invalid && eventTagForm.touched" pButton pRipple
+        <button type="submit" [disabled]="form.invalid && form.touched" pButton pRipple
             [label]="isEditing?'Сохранить' :'Добавить' " icon="pi pi-check" class="p-button-text"
             (click)="onSubmitEventTagForm()"></button>
     </ng-template>

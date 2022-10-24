@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { skipWhile, take } from 'rxjs';
+import { distinctUntilChanged, map, merge, skipWhile, take } from 'rxjs';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventReview } from 'src/app/api/interfaces/eventReview.interface';
 import { User } from 'src/app/api/interfaces/user.interface';
@@ -25,7 +25,7 @@ export class AdminEventReviewsComponent {
   users: User[] = [];
   events: Event[] = [];
 
-  eventReviewForm = new FormGroup({
+  form = new FormGroup({
     reviewer: new FormControl<User | null>(null, [Validators.required]),
     text: new FormControl('', [Validators.required]),
     images: new FormControl<File[] | null>(null),
@@ -62,12 +62,25 @@ export class AdminEventReviewsComponent {
     eventReviewsService.eventReviews$.subscribe((eventReviews) => {
       this.eventReviews = eventReviews;
     });
+
+    merge(this.createEventReviewResponce$, this.updateEventReviewResponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      });
   }
 
   openAddDialog() {
     this.isFormDialogOpen = true;
     this.isEditing = false;
-    this.eventReviewForm.reset();
+    this.form.reset();
   }
 
   editEventReview(eventReview: EventReview) {
@@ -76,15 +89,15 @@ export class AdminEventReviewsComponent {
     this.idEditing = eventReview.id;
     this.previewImagesUrls = eventReview.images;
 
-    this.eventReviewForm.reset();
-    this.eventReviewForm.patchValue({
+    this.form.reset();
+    this.form.patchValue({
       images: null,
       rate: eventReview.rate,
       text: eventReview.text,
       reviewer: this.users.find((u) => u.id === eventReview.reviewer.id),
       event: this.events.find((e) => e.id === eventReview.event.id),
     });
-    this.eventReviewForm.markAllAsTouched();
+    this.form.markAllAsTouched();
   }
 
   deleteEventReview(eventReview: EventReview) {
@@ -115,23 +128,21 @@ export class AdminEventReviewsComponent {
   }
 
   handleFileChange(event: any) {
-    this.eventReviewForm.controls.images.setValue(
-      Array.from(event.target.files)
-    );
-    if (this.eventReviewForm.controls.images.value) {
-      this.previewImagesUrls = this.eventReviewForm.controls.images.value.map(
-        (f) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
+    this.form.controls.images.setValue(Array.from(event.target.files));
+    if (this.form.controls.images.value) {
+      this.previewImagesUrls = this.form.controls.images.value.map((f) =>
+        this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
       );
     }
   }
 
   onSubmitEventReview() {
-    console.log(this.eventReviewForm);
-    if (this.eventReviewForm.invalid) {
-      this.eventReviewForm.markAllAsTouched();
+    console.log(this.form);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
-    const { reviewer, text, images, rate, event } = this.eventReviewForm.value;
+    const { reviewer, text, images, rate, event } = this.form.value;
     if (this.isEditing) {
       this.eventReviewsService.updateEventReview(
         this.idEditing,

@@ -10,10 +10,60 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private deleteUserRoleResponce = new BehaviorSubject<ResponceStatus>('none');
-  private createUserRoleResponce = new BehaviorSubject<ResponceStatus>('none');
-  private updateUserRolesResponce = new BehaviorSubject<ResponceStatus>('none');
-  private getAllUserRolesResponce = new BehaviorSubject<ResponceStatus>('none');
+  private deleteUserRoleResponce = new Subject<ResponceStatus>();
+  private createUserRoleResponce = new Subject<ResponceStatus>();
+  private updateUserRolesResponce = new Subject<ResponceStatus>();
+  private getAllUserRolesResponce = new Subject<ResponceStatus>();
+  deleteUserRoleResponce$ = this.deleteUserRoleResponce.asObservable();
+  createUserRoleResponce$ = this.createUserRoleResponce.asObservable();
+  getAllUserRolesResponce$ = this.getAllUserRolesResponce.asObservable();
+  updateUserRolesResponce$ = this.updateUserRolesResponce.asObservable();
+
+  private deleteUserResponce = new Subject<ResponceStatus>();
+  private createUserResponce = new Subject<ResponceStatus>();
+  private updateUserResponce = new Subject<ResponceStatus>();
+  private getAllUsersResponce = new Subject<ResponceStatus>();
+  deleteUserResponce$ = this.deleteUserResponce.asObservable();
+  createUserResponce$ = this.createUserResponce.asObservable();
+  getAllUsersResponce$ = this.getAllUsersResponce.asObservable();
+  updateUserResponce$ = this.updateUserResponce.asObservable();
+
+  private allStudents = new BehaviorSubject<UserStudent[]>([]);
+  private authedUser = new BehaviorSubject<User | undefined>(undefined);
+  private loginStatus = new Subject<ResponceStatus>();
+  private userRoles = new BehaviorSubject<UserRole[]>([]);
+
+  allUsers$ = this.allStudents.asObservable();
+  authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
+  loginStatus$ = this.loginStatus.asObservable();
+  userRoles$ = this.userRoles.asObservable();
+
+  constructor(private readonly apiService: ApiService) {
+    apiService.tryAuthOnStart().subscribe({
+      next: (user) => {
+        this.authedUser.next(user);
+      },
+      error: (err) => {
+        this.unauthorizeUser();
+      },
+    });
+
+    this.getAllUserRoles();
+    this.getAllUsers();
+  }
+
+  getAllUserRoles() {
+    this.getAllUserRolesResponce.next('pending');
+    this.apiService.getUserRoles().subscribe({
+      next: (userRoles) => {
+        this.userRoles.next(userRoles);
+        this.getAllUserRolesResponce.next('success');
+      },
+      error: () => {
+        this.getAllUserRolesResponce.next('error');
+      },
+    });
+  }
 
   deleteUserRole(userRole: UserRole) {
     this.deleteUserRoleResponce.next('pending');
@@ -53,67 +103,32 @@ export class UserService {
     });
   }
 
-  private allStudents = new BehaviorSubject<UserStudent[]>([]);
-  private authedUser = new BehaviorSubject<User | undefined>(undefined);
-  private loginStatus = new Subject<
-    'waiting' | 'success' | 'error' | 'pending'
-  >();
-  private userRoles = new BehaviorSubject<UserRole[]>([]);
-
-  allUsers$ = this.allStudents.asObservable();
-  authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
-  loginStatus$ = this.loginStatus.asObservable();
-  userRoles$ = this.userRoles.asObservable();
-  deleteUserRoleResponce$ = this.deleteUserRoleResponce.asObservable();
-  createUserRoleResponce$ = this.createUserRoleResponce.asObservable();
-  getAllUserRolesResponce$ = this.getAllUserRolesResponce.asObservable();
-  updateUserRolesResponce$ = this.updateUserRolesResponce.asObservable();
-
-  constructor(private readonly apiService: ApiService) {
-    apiService.tryAuthOnStart().subscribe({
-      next: (user) => {
-        this.authedUser.next(user);
-      },
-      error: (err) => {
-        this.unauthorizeUser();
-      },
-    });
-
-    this.getAllUserRoles();
-    this.getAllUsers();
-  }
-
-  getAllUserRoles() {
-    this.getAllUserRolesResponce.next('pending');
-    this.apiService.getUserRoles().subscribe({
-      next: (userRoles) => {
-        this.userRoles.next(userRoles);
-        this.getAllUserRolesResponce.next('success');
-      },
-      error: () => {
-        this.getAllUserRolesResponce.next('error');
-      },
-    });
-  }
-
   getAllUsers() {
+    this.getAllUsersResponce.next('pending');
     this.apiService.getUsers().subscribe({
       next: (users) => {
         this.allStudents.next(users);
+        this.getAllUsersResponce.next('success');
+      },
+      error: () => {
+        this.getAllUsersResponce.next('error');
       },
     });
   }
 
-  unauthorizeUser() {
-    this.apiService.unauthorize();
-    this.authedUser.next(undefined);
-  }
-
   deleteUser(user: User) {
+    this.deleteUserResponce.next('pending');
     this.apiService
       .deleteUser(user.id)
       .pipe(tap(() => this.getAllUsers()))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.deleteUserResponce.next('success');
+        },
+        error: () => {
+          this.deleteUserResponce.next('error');
+        },
+      });
   }
 
   updateUser(
@@ -125,6 +140,7 @@ export class UserService {
     group: Group,
     role: UserRole
   ) {
+    this.updateUserResponce.next('pending');
     this.apiService
       .updateUser(id, {
         login,
@@ -135,7 +151,14 @@ export class UserService {
         role,
       })
       .pipe(tap(() => this.getAllUsers()))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.updateUserResponce.next('success');
+        },
+        error: () => {
+          this.updateUserResponce.next('error');
+        },
+      });
   }
 
   createUser(
@@ -146,6 +169,7 @@ export class UserService {
     group: Group,
     role: UserRole
   ) {
+    this.createUserResponce.next('pending');
     this.apiService
       .createUser({
         id: '',
@@ -157,7 +181,19 @@ export class UserService {
         role,
       })
       .pipe(tap(() => this.getAllUsers()))
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.createUserResponce.next('success');
+        },
+        error: () => {
+          this.createUserResponce.next('error');
+        },
+      });
+  }
+
+  unauthorizeUser() {
+    this.apiService.unauthorize();
+    this.authedUser.next(undefined);
   }
 
   login(login: string, password: string) {

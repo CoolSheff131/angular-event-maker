@@ -3,7 +3,14 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { addDays, getHours, getMinutes } from 'date-fns';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { filter, pipe, skipWhile, take } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  merge,
+  pipe,
+  skipWhile,
+  take,
+} from 'rxjs';
 import { Event } from 'src/app/api/interfaces/event.interface';
 import { EventDay } from 'src/app/api/interfaces/eventDay.interface';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
@@ -31,7 +38,7 @@ export class AdminEventsComponent {
   allUsers: User[] = [];
   idEditing = '';
 
-  eventForm = new FormGroup({
+  form = new FormGroup({
     eventTitle: new FormControl<string | null>('', [Validators.required]),
     eventDescription: new FormControl<string | null>('', [Validators.required]),
     eventOwner: new FormControl<User | null>(null, [Validators.required]),
@@ -98,10 +105,10 @@ export class AdminEventsComponent {
         if (dates === null) {
           return;
         }
-        this.eventForm.controls.eventDays.clear();
+        this.form.controls.eventDays.clear();
 
         dates.forEach((date) => {
-          this.eventForm.controls.eventDays.push(
+          this.form.controls.eventDays.push(
             new FormGroup({
               auditory: new FormControl<Auditory | null>(null, [
                 Validators.required,
@@ -110,6 +117,16 @@ export class AdminEventsComponent {
             })
           );
         });
+      });
+
+    merge(this.createEventResponce$, this.updateEventResponce$)
+      .pipe(distinctUntilChanged())
+      .subscribe((status) => {
+        if (status === 'pending') {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
       });
   }
 
@@ -140,9 +157,9 @@ export class AdminEventsComponent {
     this.idEditing = event.id;
     this.isEditing = true;
     this.formDialog = true;
-    this.eventForm.reset();
+    this.form.reset();
     this.previewImagesUrls = event.images;
-    this.eventForm.patchValue({
+    this.form.patchValue({
       eventDays: [],
       eventDescription: event.description,
       eventGroups: event.groups,
@@ -163,7 +180,7 @@ export class AdminEventsComponent {
 
     this.eventRange.setValue(event.days.map((d) => new Date(d.date)));
 
-    this.eventForm.controls.eventDays.controls.forEach((control, index) => {
+    this.form.controls.eventDays.controls.forEach((control, index) => {
       control.controls.auditory.patchValue(
         this.allAuditories.find((a) => a.id === event.days[index].auditory.id)!
       );
@@ -172,7 +189,7 @@ export class AdminEventsComponent {
   }
 
   getFormsControls(): FormArray {
-    return this.eventForm.controls.eventDays as FormArray;
+    return this.form.controls.eventDays as FormArray;
   }
 
   openAddDialog() {
@@ -184,22 +201,22 @@ export class AdminEventsComponent {
   }
 
   handleFileChange(event: any) {
-    this.eventForm.patchValue({ eventImages: Array.from(event.target.files) });
-    if (this.eventForm.value.eventImages) {
-      this.previewImagesUrls = this.eventForm.value.eventImages.map((f) =>
+    this.form.patchValue({ eventImages: Array.from(event.target.files) });
+    if (this.form.value.eventImages) {
+      this.previewImagesUrls = this.form.value.eventImages.map((f) =>
         this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(f))
       );
     }
   }
 
   onSubmitForm() {
-    if (this.eventForm.invalid) {
-      console.log(this.eventForm);
-      this.eventForm.markAllAsTouched();
+    if (this.form.invalid) {
+      console.log(this.form);
+      this.form.markAllAsTouched();
       return;
     }
     const days: EventDay[] = [];
-    this.eventForm.controls.eventDays.value.forEach((value, i) => {
+    this.form.controls.eventDays.value.forEach((value, i) => {
       days.push({
         id: '',
         date: value.date!,
@@ -217,7 +234,7 @@ export class AdminEventsComponent {
       eventTags,
       eventPeopleCame,
       eventPeopleWillCome,
-    } = this.eventForm.value;
+    } = this.form.value;
 
     if (this.isEditing) {
       this.eventService.updateEvent(

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { skipWhile, take } from 'rxjs';
+import { distinctUntilChanged, map, merge, skipWhile, take } from 'rxjs';
 import { EventTag } from 'src/app/api/interfaces/eventTag.interface';
 import { EventTagService } from 'src/app/pages/admin/services/eventTag.service';
 import { Auditory } from '../../../api/interfaces/auditory.interface';
@@ -17,7 +17,7 @@ export class AdminEventTagsComponent {
   isEditing = false;
   eventTagIdEdit = '';
 
-  eventTagForm = new FormGroup({
+  form = new FormGroup({
     eventTagName: new FormControl<string>('', [Validators.required]),
   });
 
@@ -36,11 +36,24 @@ export class AdminEventTagsComponent {
     eventTagService.eventTags$.subscribe((auditories) => {
       this.eventTags = auditories;
     });
+
+    merge(this.createEventTagResponce$, this.updateEventTagResponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      });
   }
 
   openFormDialogToAdd() {
     this.isEditing = false;
-    this.eventTagForm.reset();
+    this.form.reset();
     this.openFormDialog();
   }
   openFormDialog() {
@@ -52,11 +65,11 @@ export class AdminEventTagsComponent {
   }
 
   onSubmitEventTagForm() {
-    if (this.eventTagForm.invalid) {
-      this.eventTagForm.markAllAsTouched();
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
-    const { eventTagName } = this.eventTagForm.value;
+    const { eventTagName } = this.form.value;
     if (this.isEditing) {
       this.eventTagService.updateEventTag(this.eventTagIdEdit, eventTagName!);
       this.isEditing = false;
@@ -98,7 +111,7 @@ export class AdminEventTagsComponent {
     this.openFormDialog();
     this.isEditing = true;
     this.eventTagIdEdit = eventTag.id;
-    this.eventTagForm.patchValue({ eventTagName: eventTag.name });
+    this.form.patchValue({ eventTagName: eventTag.name });
   }
   deleteEventTag(group: EventTag) {
     this.confirmationService.confirm({

@@ -8,3 +8,8 @@
 .form__error-msg {
   color: #e24c4c;
 }
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

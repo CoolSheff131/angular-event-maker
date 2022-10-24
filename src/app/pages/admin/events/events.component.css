@@ -37,3 +37,9 @@
 .footer {
   display: flex;
 }
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -5,12 +5,10 @@ import { Auditory } from '../../../api/interfaces/auditory.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AuditoryService {
-  private deleteAuditoryResponce = new BehaviorSubject<ResponceStatus>('none');
-  private createAuditoryResponce = new BehaviorSubject<ResponceStatus>('none');
-  private updateAuditoryResponce = new BehaviorSubject<ResponceStatus>('none');
-  private getAllAuditoriesResponce = new BehaviorSubject<ResponceStatus>(
-    'none'
-  );
+  private deleteAuditoryResponce = new Subject<ResponceStatus>();
+  private createAuditoryResponce = new Subject<ResponceStatus>();
+  private updateAuditoryResponce = new Subject<ResponceStatus>();
+  private getAllAuditoriesResponce = new Subject<ResponceStatus>();
 
   deleteAuditoryResponce$ = this.deleteAuditoryResponce.asObservable();
   createAuditoryResponce$ = this.createAuditoryResponce.asObservable();

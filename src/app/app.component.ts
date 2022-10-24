@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PrimeNGConfig } from 'primeng/api';
 import { Observable } from 'rxjs';
-import { ApiService } from './api/api.service';
+import { ApiService, ResponceStatus } from './api/api.service';
 import { Group } from './api/interfaces/group.interface';
 import { User } from './api/interfaces/user.interface';
 import { GroupService } from './pages/admin/services/group.service';
@@ -15,7 +15,7 @@ import { UserService } from './pages/admin/services/user.service';
 })
 export class AppComponent {
   title = 'event-maker';
-  loginStatus: 'waiting' | 'success' | 'error' | 'pending' = 'waiting';
+  loginStatus: ResponceStatus = 'none';
 
   display = false;
   authForm = false;

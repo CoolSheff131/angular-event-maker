@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { skipWhile, take } from 'rxjs';
+import { distinctUntilChanged, map, merge, skipWhile, take } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import { UserRole } from 'src/app/api/interfaces/user.interface';
 import { UserService } from '../services/user.service';
@@ -15,22 +15,14 @@ export class AdminUserRolesComponent {
   isEditing = false;
 
   userRoleIdEdit = '0';
-  userRoleForm = new FormGroup({
+  form = new FormGroup({
     userRoleName: new FormControl<string>('', [Validators.required]),
   });
 
-  get deleteUserRoleResponce$() {
-    return this.userService.deleteUserRoleResponce$;
-  }
-  get updateUserRoleResponce$() {
-    return this.userService.updateUserRolesResponce$;
-  }
-  get createUserRoleResponce$() {
-    return this.userService.createUserRoleResponce$;
-  }
-  get getAllUserRolesResponce$() {
-    return this.userService.getAllUserRolesResponce$;
-  }
+  deleteUserRoleResponce$ = this.userService.deleteUserRoleResponce$;
+  updateUserRoleResponce$ = this.userService.updateUserRolesResponce$;
+  createUserRoleResponce$ = this.userService.createUserRoleResponce$;
+  getAllUserRolesResponce$ = this.userService.getAllUserRolesResponce$;
 
   userRoles: UserRole[] = [];
 
@@ -42,12 +34,24 @@ export class AdminUserRolesComponent {
     userService.userRoles$.subscribe((userRoles) => {
       this.userRoles = userRoles;
     });
+    merge(this.createUserRoleResponce$, this.updateUserRoleResponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      });
   }
 
   editUserRole(userRole: UserRole) {
     this.isEditing = true;
     this.userRoleIdEdit = userRole.id;
-    this.userRoleForm.patchValue({ userRoleName: userRole.name });
+    this.form.patchValue({ userRoleName: userRole.name });
     this.openAddDialog();
   }
   deleteUserRole(userRole: UserRole) {
@@ -81,11 +85,11 @@ export class AdminUserRolesComponent {
   }
 
   onSubmitForm() {
-    if (this.userRoleForm.invalid) {
-      this.userRoleForm.markAllAsTouched();
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
-    const { userRoleName } = this.userRoleForm.value;
+    const { userRoleName } = this.form.value;
     if (this.isEditing) {
       this.userService.updateUserRole(this.userRoleIdEdit, userRoleName!);
       this.updateUserRoleResponce$

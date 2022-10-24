@@ -4,56 +4,65 @@
     <button pButton pRipple label="Добавить" (click)="openFormDialogToAdd()" icon="pi pi-plus"
         class="p-button-success mr-2"></button>
 
+    <div *ngIf="(getAllAuditoriesResponce$ | async) === 'pending'; else table" class="spinner-container">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    <ng-template #table>
+        <p-table [value]="auditories" dataKey="id" [rowHover]="true">
+            <ng-template pTemplate="header">
+                <tr>
 
-    <p-table [value]="auditories" dataKey="id" [rowHover]="true">
+                    <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-auditory>
+                <tr class="table-row">
 
-        <ng-template pTemplate="header">
-            <tr>
+                    <td>{{auditory.name}}</td>
 
-                <th pSortableColumn="name">Название <p-sortIcon field="name"></p-sortIcon>
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-auditory>
-            <tr class="table-row">
+                    <td class="table-row__actions">
+                        <button (click)="editAuditory(auditory)" pButton pRipple icon="pi pi-pencil"
+                            class="p-button-rounded p-button-success mr-2"></button>
+                        <button [disabled]="(deleteAuditoryResponce$| async)==='pending' "
+                            (click)="deleteAuditory(auditory)" pButton pRipple icon="pi pi-trash"
+                            class="p-button-rounded p-button-warning"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    Всего {{auditories.length}} аудиторий
+                </div>
+            </ng-template>
+        </p-table>
+    </ng-template>
 
-                <td>{{auditory.name}}</td>
-
-                <td class="table-row__actions">
-                    <button (click)="editAuditory(auditory)" pButton pRipple icon="pi pi-pencil"
-                        class="p-button-rounded p-button-success mr-2"></button>
-                    <button (click)="deleteAuditory(auditory)" pButton pRipple icon="pi pi-trash"
-                        class="p-button-rounded p-button-warning"></button>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                Всего {{auditories.length}} аудиторий
-            </div>
-        </ng-template>
-    </p-table>
 </div>
 
 <p-dialog [(visible)]="isFormAuditoryOpen" [style]="{width: '450px'}"
-    [header]="isEditing?'Редактирование аудитории':'Добавление аудитории'" [modal]="true" styleClass="p-fluid">
+    [header]="isEditing?'Редактирование аудитории':'Добавление аудитории'" [modal]="true" styleClass="p-fluid"
+    [closable]="false">
     <ng-template pTemplate="content">
-        <form [formGroup]="auditoryForm">
+        <form [formGroup]="form">
             <span class="p-field p-fluid">
                 <label
-                    [class.form__error-msg]="auditoryForm.controls.auditoryName.invalid && auditoryForm.controls.auditoryName.touched"
+                    [class.form__error-msg]="form.controls.auditoryName.invalid && form.controls.auditoryName.touched"
                     for="auditoryName">Название аудитории</label>
-                <input id="auditoryName" name="auditoryName" formControlName="auditoryName" type="text" pInputText>
-                <small *ngIf="auditoryForm.controls.auditoryName.invalid && auditoryForm.controls.auditoryName.touched"
+                <input pInputText id="auditoryName" name="auditoryName" formControlName="auditoryName" type="text">
+
+
+
+                <small *ngIf="form.controls.auditoryName.invalid && form.controls.auditoryName.touched"
                     id="userGroupControl" class="form__error-msg">Введите название тега</small>
             </span>
         </form>
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
+        <button [disabled]="form.disabled" pButton pRipple label="Отмена" icon="pi pi-times" class="p-button-text"
             (click)="closeFormDialog()"></button>
-        <button [disabled]="auditoryForm.invalid && auditoryForm.touched" type="submit" pButton pRipple
+        <button [disabled]="form.disabled || form.invalid && form.touched" type="submit" pButton pRipple
             [label]="isEditing?'Сохранить':'Добавить'" icon="pi pi-check" class="p-button-text"
             (click)="onSubmitAuditory()"></button>
     </ng-template>

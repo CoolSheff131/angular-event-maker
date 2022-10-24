@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { distinctUntilChanged, map, merge } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import {
   User,
@@ -18,7 +19,7 @@ export class AdminUsersComponent implements OnInit {
   isFormDialogOpen = false;
   isEditing = false;
 
-  userForm = new FormGroup({
+  form = new FormGroup({
     userLoginControl: new FormControl<string>('', [Validators.required]),
     userNameControl: new FormControl<string>('', [Validators.required]),
     userEmailControl: new FormControl<string>('', [Validators.required]),
@@ -35,6 +36,10 @@ export class AdminUsersComponent implements OnInit {
   users: UserStudent[] = [];
   groups: Group[] = [];
   userRoles: UserRole[] = [];
+  deleteUserResponce$ = this.userService.deleteUserResponce$;
+  updateUserResponce$ = this.userService.updateUserResponce$;
+  createUserResponce$ = this.userService.createUserResponce$;
+  getAllUsersResponce$ = this.userService.getAllUsersResponce$;
 
   constructor(
     private readonly userService: UserService,
@@ -51,6 +56,19 @@ export class AdminUsersComponent implements OnInit {
       this.userRoles = userRoles;
     });
     groupService.getGroups();
+
+    merge(this.createUserResponce$, this.updateUserResponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      });
   }
   ngOnInit(): void {
     this.userService.getAllUsers();
@@ -64,7 +82,7 @@ export class AdminUsersComponent implements OnInit {
   }
 
   initForm() {
-    this.userForm.reset();
+    this.form.reset();
   }
 
   closeFormDialog() {
@@ -76,7 +94,7 @@ export class AdminUsersComponent implements OnInit {
     this.userIdEdit = user.id;
     this.isEditing = true;
     this.isFormDialogOpen = true;
-    this.userForm.patchValue({
+    this.form.patchValue({
       userLoginControl: user.login,
       userNameControl: user.name,
       userEmailControl: user.email,
@@ -90,9 +108,9 @@ export class AdminUsersComponent implements OnInit {
     this.userService.deleteUser(user);
   }
 
-  onSubmitUserForm() {
-    if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched();
+  onSubmitForm() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
     const {
@@ -102,7 +120,7 @@ export class AdminUsersComponent implements OnInit {
       userEmailControl,
       userGroupControl,
       userRoleControl,
-    } = this.userForm.value;
+    } = this.form.value;
     if (this.isEditing) {
       this.userService.updateUser(
         this.userIdEdit,
