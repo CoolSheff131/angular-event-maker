@@ -28,14 +28,19 @@ export class UserService {
   getAllUsersResponce$ = this.getAllUsersResponce.asObservable();
   updateUserResponce$ = this.updateUserResponce.asObservable();
 
+  private unauthorizeUserReponce = new Subject<ResponceStatus>();
+  private loginReponce = new Subject<ResponceStatus>();
+  private registerReponce = new Subject<ResponceStatus>();
+  unauthorizeUserReponce$ = this.unauthorizeUserReponce.asObservable();
+  loginReponce$ = this.loginReponce.asObservable();
+  registerReponce$ = this.registerReponce.asObservable();
+
   private allStudents = new BehaviorSubject<UserStudent[]>([]);
   private authedUser = new BehaviorSubject<User | undefined>(undefined);
-  private loginStatus = new Subject<ResponceStatus>();
   private userRoles = new BehaviorSubject<UserRole[]>([]);
 
   allUsers$ = this.allStudents.asObservable();
-  authedUser$ = this.authedUser.asObservable().pipe(filter(Boolean));
-  loginStatus$ = this.loginStatus.asObservable();
+  authedUser$ = this.authedUser.asObservable();
   userRoles$ = this.userRoles.asObservable();
 
   constructor(private readonly apiService: ApiService) {
@@ -192,20 +197,22 @@ export class UserService {
   }
 
   unauthorizeUser() {
+    this.unauthorizeUserReponce.next('pending');
     this.apiService.unauthorize();
     this.authedUser.next(undefined);
+    this.unauthorizeUserReponce.next('success');
   }
 
   login(login: string, password: string) {
-    this.loginStatus.next('pending');
+    this.loginReponce.next('pending');
 
     this.apiService.login(login, password).subscribe({
       next: (user) => {
-        this.loginStatus.next('success');
+        this.loginReponce.next('success');
         this.authedUser.next(user);
       },
       error: () => {
-        this.loginStatus.next('error');
+        this.loginReponce.next('error');
       },
     });
   }
@@ -217,15 +224,15 @@ export class UserService {
     email: string,
     password: string
   ) {
-    this.loginStatus.next('pending');
+    this.registerReponce.next('pending');
 
     this.apiService.register(login, group, name, email, password).subscribe({
       next: (authData) => {
         this.authedUser.next(authData);
-        this.loginStatus.next('success');
+        this.registerReponce.next('success');
       },
       error: (err) => {
-        this.loginStatus.next('error');
+        this.registerReponce.next('error');
       },
     });
   }

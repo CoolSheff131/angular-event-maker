@@ -1,7 +1,18 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { PrimeNGConfig } from 'primeng/api';
-import { Observable } from 'rxjs';
+import {
+  ConfirmationService,
+  MessageService,
+  PrimeNGConfig,
+} from 'primeng/api';
+import {
+  distinctUntilChanged,
+  map,
+  merge,
+  Observable,
+  skipWhile,
+  take,
+} from 'rxjs';
 import { ApiService, ResponceStatus } from './api/api.service';
 import { Group } from './api/interfaces/group.interface';
 import { User } from './api/interfaces/user.interface';
@@ -26,13 +37,11 @@ export class AppComponent {
   });
 
   signUpForm = new FormGroup({
-    signUpLogin: new FormControl<string>('', [Validators.required]),
-    signUpEmail: new FormControl<string>('', [Validators.required]),
-    signUpPassword: new FormControl<string>('', [Validators.required]),
-    signUpName: new FormControl<string>('', [Validators.required]),
-    userGroupControl: new FormControl<Group | null>(null, [
-      Validators.required,
-    ]),
+    login: new FormControl<string>('', [Validators.required]),
+    email: new FormControl<string>('', [Validators.required]),
+    password: new FormControl<string>('', [Validators.required]),
+    name: new FormControl<string>('', [Validators.required]),
+    group: new FormControl<Group | null>(null, [Validators.required]),
   });
 
   openAuth() {
@@ -47,13 +56,14 @@ export class AppComponent {
     private readonly primengConfig: PrimeNGConfig,
     private readonly userService: UserService,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly groupService: GroupService
+    private readonly groupService: GroupService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService
   ) {
     userService.authedUser$.subscribe((user) => {
-      console.log(user);
       this.authedUser = user;
     });
-    userService.loginStatus$.subscribe((status) => {
+    userService.loginReponce$.subscribe((status) => {
       this.loginStatus = status;
     });
     groupService.groups$.subscribe((groups) => {
@@ -61,11 +71,35 @@ export class AppComponent {
     });
 
     groupService.getGroups();
+
+    merge(this.userService.registerReponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.signUpForm.disable();
+        } else {
+          this.signUpForm.enable();
+        }
+      });
+    merge(this.userService.loginReponce$)
+      .pipe(
+        distinctUntilChanged(),
+        map((status) => status === 'pending')
+      )
+      .subscribe((isDisabled) => {
+        if (isDisabled) {
+          this.signInForm.disable();
+        } else {
+          this.signInForm.enable();
+        }
+      });
   }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
-    console.log(this.authedUser);
   }
 
   get isLogged() {
@@ -81,6 +115,20 @@ export class AppComponent {
     const login = this.signInForm.controls.signInLogin.value!;
     const password = this.signInForm.controls.signInPassword.value!;
     this.userService.login(login, password);
+    this.userService.loginReponce$
+      .pipe(
+        skipWhile((responce) => responce === 'pending'),
+        take(1)
+      )
+      .subscribe((responce) => {
+        if (responce === 'success') {
+          this.authForm = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Вы вошли в систему',
+          });
+        }
+      });
   }
 
   ngAfterViewChecked(): void {
@@ -93,19 +141,49 @@ export class AppComponent {
       return;
     }
 
-    const login = this.signUpForm.controls.signUpLogin.value!;
-    const password = this.signUpForm.controls.signUpPassword.value!;
-    const email = this.signUpForm.controls.signUpEmail.value!;
-    const name = this.signUpForm.controls.signUpName.value!;
-    const group = this.signUpForm.controls.userGroupControl.value!;
-    this.userService.register(login, group, name, email, password);
-  }
+    const {
+      login: signUpLogin,
+      email: signUpEmail,
+      name: signUpName,
+      password: signUpPassword,
+      group: userGroupControl,
+    } = this.signUpForm.value;
 
-  onUserClick() {
-    this.display = true;
+    this.userService.register(
+      signUpLogin!,
+      userGroupControl!,
+      signUpName!,
+      signUpEmail!,
+      signUpPassword!
+    );
+
+    this.userService.registerReponce$
+      .pipe(
+        skipWhile((responce) => responce === 'pending'),
+        take(1)
+      )
+      .subscribe((responce) => {
+        if (responce === 'success') {
+          this.authForm = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Вы зарегестрировались в системе',
+          });
+        }
+      });
   }
 
   unauthorize() {
-    this.userService.unauthorizeUser();
+    this.confirmationService.confirm({
+      message: 'Вы действительно хотите выйти из аккаунта?',
+      accept: () => {
+        this.userService.unauthorizeUser();
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Вы вышли из аккаунта',
+        });
+      },
+    });
   }
 }

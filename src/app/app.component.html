@@ -88,7 +88,7 @@
                         id="signInLogin" class="form__error-msg">Введите пароль</small>
                 </span>
                 <p-button type="submit" label="Войти" p-tooltip="Заполните все поля" tooltipEvent="hover"
-                    [disabled]="signInForm.invalid && signInForm.touched">
+                    [disabled]="signInForm.disabled || signInForm.invalid && signInForm.touched">
                 </p-button>
                 <small *ngIf="loginStatus ==='error'" id="signInLogin" class="form__error-msg">Неправильный логин
                     или пароль</small>
@@ -97,62 +97,62 @@
         <p-tabPanel header="Регистрация">
             <form [formGroup]="signUpForm" novalidate (ngSubmit)="onSubmitSignUp()" class="form">
                 <span class="p-field p-fluid">
-                    <label for="userGroupControl"
-                        [class.form__error-msg]="signUpForm.controls.userGroupControl.invalid && signUpForm.controls.userGroupControl.touched">Группа
+                    <label for="group"
+                        [class.form__error-msg]="signUpForm.controls.group.invalid && signUpForm.controls.group.touched">Группа
                         студента</label>
-                    <p-dropdown id="userGroupControl" name="userGroupControl" [options]="groups"
-                        formControlName="userGroupControl" optionLabel="name"
-                        [class.ng-dirty]="signUpForm.controls.userGroupControl.touched" [class.ng-invalid]="
-                    signUpForm.controls.userGroupControl.invalid"></p-dropdown>
-                    <small
-                        *ngIf="signUpForm.controls.userGroupControl.invalid && signUpForm.controls.userGroupControl.touched"
+                    <p-dropdown id="group" name="group" [options]="groups" formControlName="group" optionLabel="name"
+                        [class.ng-dirty]="signUpForm.controls.group.touched" [class.ng-invalid]="
+                    signUpForm.controls.group.invalid"></p-dropdown>
+                    <small *ngIf="signUpForm.controls.group.invalid && signUpForm.controls.group.touched"
                         id="signInLogin" class="form__error-msg">Выбирите группу</small>
                 </span>
                 <span class="p-field p-fluid">
-                    <label for="signUpLogin"
-                        [class.form__error-msg]="signUpForm.controls.signUpLogin.invalid && signUpForm.controls.signUpLogin.touched">Логин</label>
-                    <input id="signUpLogin" name="signUpLogin" formControlName="signUpLogin" type="text" pInputText
-                        [class.ng-dirty]="signUpForm.controls.signUpLogin.touched" [class.ng-invalid]="
-                    signUpForm.controls.signUpLogin.invalid">
-                    <small *ngIf="signUpForm.controls.signUpLogin.invalid && signUpForm.controls.signUpLogin.touched"
+                    <label for="login"
+                        [class.form__error-msg]="signUpForm.controls.login.invalid && signUpForm.controls.login.touched">Логин</label>
+                    <input id="login" name="login" formControlName="login" type="text" pInputText
+                        [class.ng-dirty]="signUpForm.controls.login.touched" [class.ng-invalid]="
+                    signUpForm.controls.login.invalid">
+                    <small *ngIf="signUpForm.controls.login.invalid && signUpForm.controls.login.touched"
                         id="signInLogin" class="form__error-msg">Введите логин</small>
                 </span>
                 <span class="p-field p-fluid">
-                    <label for="signUpName"
-                        [class.form__error-msg]="signUpForm.controls.signUpName.invalid && signUpForm.controls.signUpName.touched">Имя</label>
-                    <input id="signUpName" name="signUpName" formControlName="signUpName" type="text" pInputText
-                        [class.ng-dirty]="signUpForm.controls.signUpName.touched" [class.ng-invalid]="
-                    signUpForm.controls.signUpName.invalid">
-                    <small *ngIf="signUpForm.controls.signUpName.invalid && signUpForm.controls.signUpName.touched"
-                        id="signInLogin" class="form__error-msg">Введите имя</small>
+                    <label for="name"
+                        [class.form__error-msg]="signUpForm.controls.name.invalid && signUpForm.controls.name.touched">Имя</label>
+                    <input id="name" name="name" formControlName="name" type="text" pInputText
+                        [class.ng-dirty]="signUpForm.controls.name.touched" [class.ng-invalid]="
+                    signUpForm.controls.name.invalid">
+                    <small *ngIf="signUpForm.controls.name.invalid && signUpForm.controls.name.touched" id="signInLogin"
+                        class="form__error-msg">Введите имя</small>
                 </span>
                 <span class="p-field p-fluid">
-                    <label for="signUpEmail"
-                        [class.form__error-msg]="signUpForm.controls.signUpEmail.invalid && signUpForm.controls.signUpEmail.touched">эл.
+                    <label for="email"
+                        [class.form__error-msg]="signUpForm.controls.email.invalid && signUpForm.controls.email.touched">эл.
                         почта</label>
-                    <input id="signUpEmail" name="signUpEmail" formControlName="signUpEmail" type="text" pInputText
-                        [class.ng-dirty]="signUpForm.controls.signUpEmail.touched" [class.ng-invalid]="
-                    signUpForm.controls.signUpEmail.invalid">
-                    <small *ngIf="signUpForm.controls.signUpEmail.invalid && signUpForm.controls.signUpEmail.touched"
+                    <input id="email" name="email" formControlName="email" type="text" pInputText
+                        [class.ng-dirty]="signUpForm.controls.email.touched" [class.ng-invalid]="
+                    signUpForm.controls.email.invalid">
+                    <small *ngIf="signUpForm.controls.email.invalid && signUpForm.controls.email.touched"
                         id="signInLogin" class="form__error-msg">Введите электронную почту</small>
                 </span>
                 <span class="p-field p-fluid">
                     <label
-                        [class.form__error-msg]="signUpForm.controls.signUpPassword.invalid && signUpForm.controls.signUpPassword.touched"
-                        for="signUpPassword">Пароль</label>
-                    <p-password id="signUpPassword" [class.ng-dirty]="signUpForm.controls.signUpPassword.touched"
+                        [class.form__error-msg]="signUpForm.controls.password.invalid && signUpForm.controls.password.touched"
+                        for="password">Пароль</label>
+                    <p-password id="password" [class.ng-dirty]="signUpForm.controls.password.touched"
                         [class.ng-invalid]="
-                        signUpForm.controls.signUpPassword.invalid" name=" signUpPassword"
-                        formControlName="signUpPassword">
+                        signUpForm.controls.password.invalid" name=" password" formControlName="password">
                     </p-password>
-                    <small
-                        *ngIf="signUpForm.controls.signUpPassword.invalid && signUpForm.controls.signUpPassword.touched"
+                    <small *ngIf="signUpForm.controls.password.invalid && signUpForm.controls.password.touched"
                         id="signInLogin" class="form__error-msg">Введите пароль</small>
                 </span>
                 <p-button type="submit" label="Зарегестрироваться"
-                    [disabled]="signUpForm.invalid && signUpForm.touched"></p-button>
+                    [disabled]="signUpForm.disabled ||signUpForm.invalid && signUpForm.touched"></p-button>
 
             </form>
         </p-tabPanel>
     </p-tabView>
 </p-dialog>
+
+<p-toast></p-toast>
+
+<p-confirmDialog header="Выход из аккаунта" icon="pi pi-exclamation-triangle"></p-confirmDialog>

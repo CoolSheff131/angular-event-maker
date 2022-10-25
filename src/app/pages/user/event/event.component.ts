@@ -36,7 +36,6 @@ export class EventComponent {
         })
       )
       .subscribe((event) => {
-        console.log(event);
         this.event = event;
       });
   }
@@ -66,7 +65,6 @@ export class EventComponent {
           })
         )
         .subscribe((event) => {
-          console.log(event);
           this.event = event;
         });
     } else {
@@ -78,7 +76,6 @@ export class EventComponent {
           })
         )
         .subscribe((event) => {
-          console.log(event);
           this.event = event;
         });
     }
@@ -117,7 +114,6 @@ export class EventComponent {
         })
       )
       .subscribe((event) => {
-        console.log(event);
         this.event = event;
       });
   }
@@ -130,7 +126,6 @@ export class EventComponent {
         })
       )
       .subscribe((event) => {
-        console.log(event);
         this.event = event;
       });
   }

@@ -83,7 +83,6 @@ export class AdminAuditoriesComponent {
           take(1)
         )
         .subscribe((responce) => {
-          console.log(responce);
           if (responce === 'success') {
             this.isFormAuditoryOpen = false;
             this.messageService.add({

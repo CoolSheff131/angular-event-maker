@@ -79,7 +79,6 @@ export class AdminEventTagsComponent {
           take(1)
         )
         .subscribe((responce) => {
-          console.log(responce);
           if (responce === 'success') {
             this.isFormDialogOpen = false;
             this.messageService.add({

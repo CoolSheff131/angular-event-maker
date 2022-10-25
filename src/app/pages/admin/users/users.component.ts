@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { distinctUntilChanged, map, merge } from 'rxjs';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { distinctUntilChanged, map, merge, skipWhile, take } from 'rxjs';
 import { Group } from 'src/app/api/interfaces/group.interface';
 import {
   User,
@@ -43,11 +44,12 @@ export class AdminUsersComponent implements OnInit {
 
   constructor(
     private readonly userService: UserService,
-    private readonly groupService: GroupService
+    private readonly groupService: GroupService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService
   ) {
     userService.allUsers$.subscribe((users) => {
       this.users = users;
-      console.log(users);
     });
     groupService.groups$.subscribe((groups) => {
       this.groups = groups;
@@ -105,7 +107,25 @@ export class AdminUsersComponent implements OnInit {
   }
 
   deleteUser(user: User) {
-    this.userService.deleteUser(user);
+    this.confirmationService.confirm({
+      message: 'Вы действительно хотите данные о пользователе?',
+      accept: () => {
+        this.userService.deleteUser(user);
+        this.deleteUserResponce$
+          .pipe(
+            skipWhile((responce) => responce === 'pending'),
+            take(1)
+          )
+          .subscribe((responce) => {
+            if (responce === 'success') {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Данные о пользователе удалены',
+              });
+            }
+          });
+      },
+    });
   }
 
   onSubmitForm() {
@@ -131,6 +151,20 @@ export class AdminUsersComponent implements OnInit {
         userGroupControl!,
         userRoleControl!
       );
+      this.updateUserResponce$
+        .pipe(
+          skipWhile((responce) => responce === 'pending'),
+          take(1)
+        )
+        .subscribe((responce) => {
+          if (responce === 'success') {
+            this.isFormDialogOpen = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Данные о пользователе обновлены',
+            });
+          }
+        });
     } else {
       this.userService.createUser(
         userPasswordControl!,
@@ -140,6 +174,20 @@ export class AdminUsersComponent implements OnInit {
         userGroupControl!,
         userRoleControl!
       );
+      this.createUserResponce$
+        .pipe(
+          skipWhile((responce) => responce === 'pending'),
+          take(1)
+        )
+        .subscribe((responce) => {
+          if (responce === 'success') {
+            this.isFormDialogOpen = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Данные о пользователе добавлены',
+            });
+          }
+        });
     }
   }
 }

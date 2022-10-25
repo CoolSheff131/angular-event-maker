@@ -76,7 +76,6 @@ export class EventItemComponent {
     this.buttonConfirmPresentClickEvent.emit(user);
   }
   removeConfirmPresent(user: User) {
-    console.log(user);
     this.buttonRemoveConfirmPresentClickEvent.emit(user);
   }
 
@@ -90,8 +89,6 @@ export class EventItemComponent {
     if (!this.authedUser) {
       return undefined;
     }
-    console.log(this.authedUser, this.event);
-    console.log(findUserEventReview(this.authedUser, this.event));
     return findUserEventReview(this.authedUser, this.event);
   }
 }

@@ -197,8 +197,6 @@ export class AdminEventsComponent {
   }
 
   closeDialog() {
-    console.log('LAKHSGFAHSG');
-
     this.formDialog = false;
   }
 
@@ -213,7 +211,6 @@ export class AdminEventsComponent {
 
   onSubmitForm() {
     if (this.form.invalid) {
-      console.log(this.form);
       this.form.markAllAsTouched();
       return;
     }
@@ -258,7 +255,6 @@ export class AdminEventsComponent {
           take(1)
         )
         .subscribe((responce) => {
-          console.log(responce);
           if (responce === 'success') {
             this.formDialog = false;
             this.messageService.add({
@@ -287,8 +283,6 @@ export class AdminEventsComponent {
           take(1)
         )
         .subscribe((responce) => {
-          console.log(responce);
-
           if (responce === 'success') {
             this.formDialog = false;
             this.messageService.add({

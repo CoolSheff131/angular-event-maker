@@ -38,7 +38,6 @@ export class EventReviewFormComponent implements AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
-    console.log(this.eventReview);
     if (this.eventReview) {
       this.eventReviewForm.setValue({
         text: this.eventReview.text,

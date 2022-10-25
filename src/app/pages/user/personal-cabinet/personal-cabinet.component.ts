@@ -22,7 +22,7 @@ export class PersonalCabinetComponent {
       .pipe(
         switchMap((authedUser) => {
           this.authedUser = authedUser;
-          return this.eventService.getUserEvent(authedUser);
+          return this.eventService.getUserEvent(authedUser!);
         })
       )
       .subscribe((events) => {
@@ -38,10 +38,7 @@ export class PersonalCabinetComponent {
   }
 
   handleButtonNotGoingEventItemClick(event: Event) {
-    console.log('ASD');
     if (this.authedUser) {
-      console.log('ASD');
-
       this.eventService
         .notGoingToEvent(event, this.authedUser)
         .pipe(mergeMap(() => this.eventService.getUserEvent(this.authedUser!)))

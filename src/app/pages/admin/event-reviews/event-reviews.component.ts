@@ -137,7 +137,6 @@ export class AdminEventReviewsComponent {
   }
 
   onSubmitEventReview() {
-    console.log(this.form);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -158,7 +157,6 @@ export class AdminEventReviewsComponent {
           take(1)
         )
         .subscribe((responce) => {
-          console.log(responce);
           if (responce === 'success') {
             this.isFormDialogOpen = false;
             this.messageService.add({

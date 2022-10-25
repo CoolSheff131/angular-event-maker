@@ -100,7 +100,6 @@ export class AdminGroupsComponent {
           take(1)
         )
         .subscribe((responce) => {
-          console.log(responce);
           if (responce === 'success') {
             this.isformGroupDialogOpen = false;
             this.messageService.add({

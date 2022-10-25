@@ -266,7 +266,6 @@ export class ApiService {
     return this.httpService.post<Event>(this.API_URL + 'events', formData);
   }
   createAuditory(auditory: Auditory) {
-    console.log(auditory);
     return this.httpService.post<Auditory>(this.API_URL + 'auditories', {
       ...auditory,
     });
