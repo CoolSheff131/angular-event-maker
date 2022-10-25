@@ -10,13 +10,15 @@
                     <td>Название мероприятия</td>
                     <td>Участники</td>
                     <td>Пришло</td>
+                    <td>Средняя оценка</td>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let event of events">
                     <td>{{event.title}}</td>
                     <td>{{event.peopleWillCome.length}}</td>
-                    <td>{{event.peopleCame.length}}</td>
+                    <td>{{ event.peopleCame.length}}</td>
+                    <td>{{ getAverageRate(event)}}</td>
                 </tr>
             </tbody>
         </table>
