@@ -11,3 +11,16 @@
   display: flex;
   justify-content: space-between;
 }
+
+.table__header {
+  font-weight: 700;
+}
+
+.cell-number {
+  text-align: right;
+}
+
+td {
+  border: 1px solid black;
+  margin: 0;
+}
