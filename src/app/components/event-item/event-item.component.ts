@@ -64,10 +64,6 @@ export class EventItemComponent {
     this.buttonNotGoingToEventClickEvent.emit(this.event);
   }
 
-  getDates(event: Event): Date[] {
-    return event.days.map((d) => d.date);
-  }
-
   isUserCameToEvent(user: User) {
     return isUserCameToEvent(this.event!, user);
   }

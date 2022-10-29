@@ -15,16 +15,15 @@ export class ReportsComponent {
 
   constructor(private readonly eventService: EventService) {}
 
-  getAverageRate(event: Event): string {
-    if (event.reviews.length === 0) {
-      return '--';
-    } else {
-      return (
-        '' +
-        event.reviews.reduce((all, r) => (all += r.rate), 0) /
-          event.reviews.length
-      );
-    }
+  isEventHasReview(event: Event) {
+    return event.reviews.length !== 0;
+  }
+
+  getAverageRate(event: Event): number {
+    return (
+      event.reviews.reduce((all, r) => (all += r.rate), 0) /
+      event.reviews.length
+    );
   }
   ngOnInit() {
     this.eventService.events$.subscribe((events) => {

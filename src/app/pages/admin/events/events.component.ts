@@ -194,6 +194,8 @@ export class AdminEventsComponent {
 
   openAddDialog() {
     this.formDialog = true;
+    this.isEditing = false;
+    this.form.reset();
   }
 
   closeDialog() {

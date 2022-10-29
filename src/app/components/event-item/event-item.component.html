@@ -50,8 +50,8 @@
                     <i class="pi pi-calendar"></i>
                     <span>Даты проведения:</span>
                 </div>
-                <div *ngFor="let dateEvent of getDates(event)">
-                    {{ dateEvent | date}}
+                <div *ngFor="let dateEvent of event.days">
+                    {{ dateEvent.date | date}} {{ dateEvent.auditory.name}}
                 </div>
 
             </div>

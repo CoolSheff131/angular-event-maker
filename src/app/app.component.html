@@ -16,7 +16,7 @@
 
         <div *ngIf="authedUser?.role?.name === 'Администратор'; else studentMenu" class="menu__list">
             <div class="menu__title">
-                Администратор
+                {{authedUser?.role?.name}}
             </div>
             <a [routerLink]="'/personal-cabinet'" pButton type="button" label="Личный кабинет"
                 class="p-button-outlined p-button-secondary menu__item" routerLinkActive="p-button-info">
@@ -47,8 +47,15 @@
             </a>
         </div>
         <ng-template #studentMenu>
-            <div class="menu__title">
-                {{authedUser!.name}}
+            <div class="menu__list">
+                <div class="menu__title">
+                    {{authedUser?.role?.name || 'Студент'}}
+
+                </div>
+                <a [routerLink]="'/personal-cabinet'" pButton type="button" label="Личный кабинет"
+                    class="p-button-outlined p-button-secondary menu__item" routerLinkActive="p-button-info">
+                </a>
+
             </div>
 
         </ng-template>

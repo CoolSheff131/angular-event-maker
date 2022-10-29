@@ -18,7 +18,11 @@
                     <td>{{event.title}}</td>
                     <td>{{event.peopleWillCome.length}}</td>
                     <td>{{ event.peopleCame.length}}</td>
-                    <td class="cell-number">{{ getAverageRate(event) | number: '1.3'}}</td>
+                    <td *ngIf="isEventHasReview; else noReviews" class="cell-number">{{ getAverageRate(event) | number:
+                        '1.3'}}</td>
+                    <ng-template #noReviews>
+                        <td>--</td>
+                    </ng-template>
                 </tr>
             </tbody>
         </table>
